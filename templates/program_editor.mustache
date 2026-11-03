@@ -1,0 +1,185 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/program_editor
+
+    Edit a program: details, audience, courses, headings and rules.
+
+    Example context (json):
+    {"id": 0, "default": {"courses": []}, "groupsections": [], "picker": [], "cohorts": [], "categories": [], "i": {} }
+}}
+<div class="ll-pedit" data-ll-pedit data-id="{{id}}" data-save="{{saveurl}}" data-sesskey="{{sesskey}}" data-done="{{doneurl}}">
+
+    <div class="ll-panel">
+        <div class="ll-panel-head">
+            <h2>{{#str}}programdetails, theme_lmslabs{{/str}}</h2>
+        </div>
+        <div class="ll-panel-body ll-form-grid">
+            <label class="ll-field-block">
+                <span data-ll-tip="{{#str}}tip_pg_name, theme_lmslabs{{/str}}">{{#str}}programname, theme_lmslabs{{/str}}</span>
+                <input type="text" class="form-control" data-f="pname" value="{{name}}" placeholder="{{#str}}programname_ph, theme_lmslabs{{/str}}">
+            </label>
+            <label class="ll-field-block">
+                <span data-ll-tip="{{#str}}tip_pg_desc, theme_lmslabs{{/str}}">{{#str}}programdesc, theme_lmslabs{{/str}} <em>{{#str}}optional, theme_lmslabs{{/str}}</em></span>
+                <input type="text" class="form-control" data-f="pdesc" value="{{description}}" placeholder="{{#str}}programdesc_ph, theme_lmslabs{{/str}}">
+            </label>
+        </div>
+    </div>
+
+    <div class="ll-panel" data-audience>
+        <div class="ll-panel-head">
+            <h2>{{#str}}whosees, theme_lmslabs{{/str}}</h2>
+            <div class="ll-seg" role="radiogroup" data-ll-tip="{{#str}}tip_pg_aud, theme_lmslabs{{/str}}" aria-label="{{#str}}whosees, theme_lmslabs{{/str}}">
+                <label><input type="radio" name="aud" value="everyone"{{#everyone}} checked{{/everyone}}><span>{{#str}}aud_everyone, theme_lmslabs{{/str}}</span></label>
+                <label><input type="radio" name="aud" value="specific"{{#specific}} checked{{/specific}}><span>{{#str}}aud_specific, theme_lmslabs{{/str}}</span></label>
+            </div>
+        </div>
+        <div class="ll-panel-body ll-aud-rules" data-aud-rules{{#everyone}} hidden{{/everyone}}>
+            <div class="ll-aud-match">
+                {{#str}}aud_learnerswho, theme_lmslabs{{/str}}
+                <select class="form-select custom-select" data-f="match" data-ll-tip="{{#str}}tip_pg_match, theme_lmslabs{{/str}}">
+                    <option value="any"{{#matchany}} selected{{/matchany}}>{{#str}}aud_any, theme_lmslabs{{/str}}</option>
+                    <option value="all"{{#matchall}} selected{{/matchall}}>{{#str}}aud_all, theme_lmslabs{{/str}}</option>
+                </select>
+                {{#str}}aud_ofthese, theme_lmslabs{{/str}}
+            </div>
+
+            <div class="ll-aud-grid">
+                <div class="ll-aud-box">
+                    <div class="ll-aud-title">{{{i.contact}}}{{#str}}cohorts, cohort{{/str}}</div>
+                    {{#hascohorts}}
+                    <input type="search" class="form-control ll-aud-filter" data-filter placeholder="{{#str}}filter, theme_lmslabs{{/str}}">
+                    <div class="ll-checklist" data-checklist="cohorts">
+                        {{#cohorts}}<label><input type="checkbox" value="{{id}}"{{#selected}} checked{{/selected}}><span>{{name}}</span></label>{{/cohorts}}
+                    </div>
+                    {{/hascohorts}}
+                    {{^hascohorts}}<p class="ll-aud-empty">{{#str}}nocohorts, theme_lmslabs{{/str}}</p>{{/hascohorts}}
+                </div>
+                <div class="ll-aud-box">
+                    <div class="ll-aud-title">{{{i.folder}}}{{#str}}aud_categories, theme_lmslabs{{/str}}</div>
+                    <input type="search" class="form-control ll-aud-filter" data-filter placeholder="{{#str}}filter, theme_lmslabs{{/str}}">
+                    <div class="ll-checklist" data-checklist="categories">
+                        {{#categories}}<label><input type="checkbox" value="{{id}}"{{#selected}} checked{{/selected}}><span>{{name}}</span></label>{{/categories}}
+                    </div>
+                </div>
+                <div class="ll-aud-box">
+                    <div class="ll-aud-title">{{{i.book}}}{{#str}}aud_courses, theme_lmslabs{{/str}}</div>
+                    <input type="search" class="form-control ll-aud-filter" data-filter placeholder="{{#str}}filter, theme_lmslabs{{/str}}">
+                    <div class="ll-checklist" data-checklist="courses">
+                        {{#audcourses}}<label><input type="checkbox" value="{{id}}"{{#selected}} checked{{/selected}}><span>{{name}}</span></label>{{/audcourses}}
+                    </div>
+                </div>
+                <div class="ll-aud-box">
+                    <div class="ll-aud-title" data-ll-tip="{{#str}}tip_pg_groups, theme_lmslabs{{/str}}">{{{i.group}}}{{#str}}aud_groups, theme_lmslabs{{/str}}</div>
+                    <p class="ll-aud-help">{{#str}}aud_groups_help, theme_lmslabs{{/str}}</p>
+                    <div class="ll-chips" data-chips>
+                        {{#groups}}<span class="ll-chip-tag" data-value="{{name}}">{{name}}<button type="button" data-act="chipx" aria-label="{{#str}}remove{{/str}}">{{{i.x}}}</button></span>{{/groups}}
+                        <input type="text" class="ll-chip-input" data-chip-input placeholder="{{#str}}aud_groups_ph, theme_lmslabs{{/str}}">
+                    </div>
+                </div>
+                <div class="ll-aud-box">
+                    <div class="ll-aud-title" data-ll-tip="{{#str}}tip_pg_fields, theme_lmslabs{{/str}}">{{{i.user}}}{{#str}}aud_fields, theme_lmslabs{{/str}}</div>
+                    <div class="ll-fieldrows" data-fieldrows>
+                        {{#fields}}{{> theme_lmslabs/program_fieldrow }}{{/fields}}
+                    </div>
+                    <button type="button" class="ll-linkbtn" data-act="addfield" data-ll-tip="{{#str}}tip_pg_addfield, theme_lmslabs{{/str}}">{{{i.plus}}}{{#str}}aud_addfield, theme_lmslabs{{/str}}</button>
+                </div>
+            </div>
+        </div>
+        <template data-fieldrow-template>
+            <div class="ll-fieldrow">
+                <select class="form-select custom-select" data-f="field" data-ll-tip="{{#str}}tip_pg_field, theme_lmslabs{{/str}}">
+                    {{#fieldoptions}}<option value="{{value}}">{{label}}</option>{{/fieldoptions}}
+                </select>
+                <select class="form-select custom-select" data-f="op" data-ll-tip="{{#str}}tip_pg_op, theme_lmslabs{{/str}}">
+                    <option value="is">{{#str}}op_is, theme_lmslabs{{/str}}</option>
+                    <option value="isnot">{{#str}}op_isnot, theme_lmslabs{{/str}}</option>
+                    <option value="contains">{{#str}}op_contains, theme_lmslabs{{/str}}</option>
+                    <option value="starts">{{#str}}op_starts, theme_lmslabs{{/str}}</option>
+                </select>
+                <input type="text" class="form-control" data-f="value" data-ll-tip="{{#str}}tip_pg_value, theme_lmslabs{{/str}}" placeholder="{{#str}}value, theme_lmslabs{{/str}}">
+                <button type="button" class="ll-iconbtn ll-danger" data-act="fieldx" aria-label="{{#str}}remove{{/str}}">{{{i.x}}}</button>
+            </div>
+        </template>
+    </div>
+
+    <div class="ll-panel">
+        <div class="ll-panel-head">
+            <h2>{{#str}}programcourses, theme_lmslabs{{/str}}</h2>
+            <div class="ll-panel-actions">
+                <button type="button" class="ll-pill" data-act="addgroup" data-ll-tip="{{#str}}tip_pg_addheading, theme_lmslabs{{/str}}">{{{i.plus}}}<span>{{#str}}addheading, theme_lmslabs{{/str}}</span></button>
+                <button type="button" class="ll-pill ll-pill-solid" data-act="openpicker" data-ll-tip="{{#str}}tip_pg_addcourses, theme_lmslabs{{/str}}">{{{i.plus}}}<span>{{#str}}addcourses, theme_lmslabs{{/str}}</span></button>
+            </div>
+        </div>
+        <div class="ll-panel-body">
+            <p class="ll-panel-help">{{#str}}editor_intro, theme_lmslabs{{/str}}</p>
+            {{#default}}
+            <section class="ll-pgroup is-default" data-group="0">
+                <div class="ll-pgroup-head"><span class="ll-pgroup-title">{{#str}}noheading, theme_lmslabs{{/str}}</span></div>
+                <ol class="ll-plist" data-list>
+                    {{#courses}}{{> theme_lmslabs/courses_row }}{{/courses}}
+                </ol>
+            </section>
+            {{/default}}
+            <div data-groups>
+            {{#groupsections}}
+            <section class="ll-pgroup" data-group="{{id}}">
+                {{> theme_lmslabs/program_grouphead }}
+                <ol class="ll-plist" data-list>
+                    {{#courses}}{{> theme_lmslabs/courses_row }}{{/courses}}
+                </ol>
+            </section>
+            {{/groupsections}}
+            </div>
+        </div>
+    </div>
+
+    <template data-group-template>
+        <section class="ll-pgroup" data-group="0">
+            {{> theme_lmslabs/program_grouphead }}
+            <ol class="ll-plist" data-list><li class="ll-plist-empty">{{#str}}dropcourseshere, theme_lmslabs{{/str}}</li></ol>
+        </section>
+    </template>
+    <template data-row-template>
+        {{> theme_lmslabs/courses_row }}
+    </template>
+
+    <div class="ll-picker" data-picker hidden>
+        <div class="ll-picker-backdrop" data-act="closepicker"></div>
+        <div class="ll-picker-panel" role="dialog" aria-modal="true" aria-label="{{#str}}addcourses, theme_lmslabs{{/str}}">
+            <div class="ll-picker-head">
+                <h3>{{#str}}addcourses, theme_lmslabs{{/str}}</h3>
+                <button type="button" class="ll-iconbtn" data-act="closepicker" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button>
+            </div>
+            <div class="ll-picker-search">{{{i.search}}}<input type="search" data-picker-search data-ll-tip="{{#str}}tip_pg_psearch, theme_lmslabs{{/str}}" placeholder="{{#str}}searchcourses{{/str}}"></div>
+            <ul class="ll-picker-list" data-picker-list>
+                {{#picker}}
+                <li data-pick="{{id}}" data-name="{{fullname}}" data-short="{{shortname}}" data-search="{{fullname}} {{shortname}} {{category}}"{{#added}} class="is-added"{{/added}}>
+                    <span class="ll-picker-name"><strong>{{fullname}}</strong><span>{{shortname}} · {{category}}</span></span>
+                    <button type="button" class="ll-pill" data-act="pick"><span class="ll-when-add">{{#str}}add{{/str}}</span><span class="ll-when-added">{{{i.check}}}{{#str}}added, theme_lmslabs{{/str}}</span></button>
+                </li>
+                {{/picker}}
+            </ul>
+        </div>
+    </div>
+
+    <div class="ll-savebar">
+        <span class="ll-savebar-status" data-status></span>
+        <a class="btn btn-secondary" href="{{doneurl}}" data-ll-tip="{{#str}}tip_pg_cancel, theme_lmslabs{{/str}}">{{#str}}cancel{{/str}}</a>
+        <button type="button" class="btn btn-primary" data-act="save" data-ll-tip="{{#str}}tip_pg_save, theme_lmslabs{{/str}}">{{#str}}saveprogram, theme_lmslabs{{/str}}</button>
+    </div>
+</div>

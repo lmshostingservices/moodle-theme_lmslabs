@@ -1,0 +1,46 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/adduser_field
+
+    One custom profile field.
+
+    Example context (json):
+    {"name": "profile_field_x", "label": "Field", "istext": true, "value": ""}
+}}
+<div class="ll-f{{#error}} has-error{{/error}}{{#istextarea}} ll-f-full{{/istextarea}}">
+    {{^ischeckbox}}
+    <label for="au-{{name}}"{{#tip}} data-ll-tip="{{tip}}"{{/tip}}>{{{label}}}{{#required}} <b class="ll-req" aria-hidden="true">*</b>{{/required}}</label>
+    {{#istext}}<input id="au-{{name}}" class="form-control" name="{{name}}" value="{{value}}"{{#required}} required{{/required}}>{{/istext}}
+    {{#isdatetime}}<input id="au-{{name}}" type="date" class="form-control" name="{{name}}" value="{{value}}"{{#required}} required{{/required}}>{{/isdatetime}}
+    {{#istextarea}}<textarea id="au-{{name}}" class="form-control" name="{{name}}" rows="3"{{#required}} required{{/required}}>{{value}}</textarea>{{/istextarea}}
+    {{#ismenu}}
+    <select id="au-{{name}}" class="form-select custom-select" name="{{name}}"{{#required}} required{{/required}}>
+        <option value="">{{#str}}choosedots{{/str}}</option>
+        {{#options}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{{label}}}</option>{{/options}}
+    </select>
+    {{/ismenu}}
+    {{/ischeckbox}}
+    {{#ischeckbox}}
+    <label class="ll-toggle ll-toggle-inline">
+        <span class="ll-toggle-text"><strong>{{{label}}}</strong>{{#tip}}<span>{{tip}}</span>{{/tip}}</span>
+        <input type="checkbox" name="{{name}}" value="1"{{#checked}} checked{{/checked}}>
+        <span class="ll-switch-track" aria-hidden="true"></span>
+    </label>
+    {{/ischeckbox}}
+    {{#error}}<p class="ll-ferr">{{error}}</p>{{/error}}
+</div>

@@ -1,0 +1,88 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/completion
+
+    Course completion rules.
+
+    Example context (json):
+    {"rules": [], "rows": [], "i": {}, "action": "#", "sesskey": "x"}
+}}
+<div class="ll-cp">
+    {{^enabled}}
+    <section class="ll-fcard ll-cp-off">
+        <div class="ll-fcard-body ll-cp-offbody">
+            <span class="ll-ib-blank-ico">{{{i.toggle}}}</span>
+            <h2>{{#str}}cp_off, theme_lmslabs{{/str}}</h2>
+            <p>{{#str}}cp_off_desc, theme_lmslabs{{/str}}</p>
+            <form method="post" action="{{action}}"><input type="hidden" name="sesskey" value="{{sesskey}}"><input type="hidden" name="enable" value="1"><button type="submit" class="btn btn-primary">{{#str}}cp_turnon, theme_lmslabs{{/str}}</button></form>
+        </div>
+    </section>
+    {{/enabled}}
+    {{#enabled}}
+    <div class="ll-rp-kpis ll-cp-kpis">
+        <div class="ll-rp-kpi">{{{i.trophy}}}<b>{{done}} / {{learners}}</b><span>{{#str}}cp_completed, theme_lmslabs{{/str}}</span></div>
+        <div class="ll-rp-kpi">{{{i.list}}}<b>{{activitycount}}</b><span>{{#str}}cp_tracked, theme_lmslabs{{/str}}</span></div>
+        <a class="ll-rp-kpi ll-cp-link" href="{{reporturl}}">{{{i.arrow}}}<b>{{#str}}cp_report, theme_lmslabs{{/str}}</b><span>{{#str}}cp_report_desc, theme_lmslabs{{/str}}</span></a>
+    </div>
+
+    {{#locked}}
+    <div class="ll-fnotice is-warn ll-cp-locked">
+        {{{i.lock}}}<span>{{#str}}cp_locked, theme_lmslabs{{/str}}</span>
+        <form method="post" action="{{action}}"><input type="hidden" name="sesskey" value="{{sesskey}}"><input type="hidden" name="unlock" value="1"><button type="submit" class="btn btn-secondary btn-sm" data-cp-unlock data-confirm="{{#str}}ch_delete_again, theme_lmslabs{{/str}}">{{#str}}cp_unlock, theme_lmslabs{{/str}}</button></form>
+    </div>
+    {{/locked}}
+
+    <form class="ll-cp-form" method="post" action="{{action}}" data-ll-cp>
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="save" value="1">
+        <fieldset class="ll-fcard"{{#locked}} disabled{{/locked}}>
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.trophy}}}</span><div><h2>{{#str}}cp_when, theme_lmslabs{{/str}}</h2><p>{{#notset}}{{#str}}cp_notset, theme_lmslabs{{/str}}{{/notset}}{{^notset}}{{#str}}cp_when_desc, theme_lmslabs{{/str}}{{/notset}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-cp-rules" role="radiogroup">
+                    {{#rules}}
+                    <label class="ll-cp-rule"><input type="radio" name="rule" value="{{key}}"{{#on}} checked{{/on}}><span class="ll-swcard-ico">{{{icon}}}</span><span class="ll-toggle-text"><strong>{{label}}</strong><span>{{desc}}</span></span></label>
+                    {{/rules}}
+                </div>
+                <div class="ll-cp-extra" data-for="some">
+                    {{#hasrows}}
+                    <div class="ll-cp-acts">
+                        <div class="ll-cp-actshead"><span>{{#str}}cp_pick, theme_lmslabs{{/str}}</span><button type="button" class="ll-linkbtn" data-cp-all>{{#str}}selectall{{/str}}</button></div>
+                        {{#rows}}<label class="ll-cp-act"><input type="checkbox" name="cms[]" value="{{id}}"{{#checked}} checked{{/checked}}><img src="{{icon}}" alt=""><span><strong>{{name}}</strong><small>{{section}}</small></span></label>{{/rows}}
+                    </div>
+                    {{/hasrows}}
+                    {{^hasrows}}<p class="ll-fhint">{{#str}}cp_noacts, theme_lmslabs{{/str}} <a href="{{bulkurl}}">{{#str}}cp_bulk, theme_lmslabs{{/str}}</a></p>{{/hasrows}}
+                </div>
+                <div class="ll-cp-extra" data-for="date">
+                    <label class="ll-f ll-f-narrow"><span>{{#str}}cp_date, theme_lmslabs{{/str}}</span><input type="date" class="form-control" name="date" value="{{date}}"></label>
+                </div>
+                <div class="ll-cp-extra" data-for="all">
+                    <p class="ll-fhint">{{#str}}cp_all_hint, theme_lmslabs, {{activitycount}}{{/str}} <a href="{{bulkurl}}">{{#str}}cp_bulk, theme_lmslabs{{/str}}</a></p>
+                </div>
+                <div class="ll-toggles">
+                    <label class="ll-toggle">
+                        <span class="ll-toggle-text"><strong>{{#str}}cp_self, theme_lmslabs{{/str}}</strong><span>{{#str}}cp_self_desc, theme_lmslabs{{/str}}</span></span>
+                        <input type="checkbox" name="self" value="1"{{#self}} checked{{/self}}>
+                        <span class="ll-switch-track" aria-hidden="true"></span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+        {{^locked}}<div class="ll-savebar ll-savebar-plain"><button type="submit" class="btn btn-primary ll-btn-icon">{{{i.check}}}<span>{{#str}}savechanges{{/str}}</span></button></div>{{/locked}}
+    </form>
+    {{/enabled}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

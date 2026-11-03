@@ -1,0 +1,101 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/help
+
+    Help centre.
+
+    Example context (json):
+    {"articles": [], "topics": [], "audiences": [], "mine": "admin", "total": 0, "support": "", "youtube": "", "i": {} }
+}}
+<div class="ll-help" data-ll-help data-mine="{{mine}}">
+    <header class="ll-help-hero">
+        <div>
+            <h2>{{#str}}help_heading, theme_lmslabs{{/str}}</h2>
+            <p>{{#str}}help_intro, theme_lmslabs{{/str}}</p>
+        </div>
+        <label class="ll-help-search">
+            {{{i.search}}}
+            <input type="search" data-ll-help-q autocomplete="off" placeholder="{{#str}}help_search, theme_lmslabs{{/str}}" aria-label="{{#str}}help_search, theme_lmslabs{{/str}}">
+            <kbd>/</kbd>
+        </label>
+    </header>
+
+    <div class="ll-help-filters">
+        <div class="ll-help-seg" role="group" aria-label="{{#str}}help_for, theme_lmslabs{{/str}}">
+            {{#audiences}}<button type="button" data-ll-help-aud="{{key}}">{{label}}</button>{{/audiences}}
+        </div>
+        <div class="ll-help-chips" role="group" aria-label="{{#str}}help_topic, theme_lmslabs{{/str}}">
+            <button type="button" class="is-on" data-ll-help-topic="">{{#str}}help_alltopics, theme_lmslabs{{/str}}</button>
+            {{#topics}}<button type="button" data-ll-help-topic="{{name}}">{{name}} <span>{{count}}</span></button>{{/topics}}
+        </div>
+    </div>
+
+    <p class="ll-help-count" aria-live="polite" data-ll-help-count></p>
+
+    <div class="ll-help-grid" data-ll-help-grid>
+        {{#articles}}
+        <button type="button" class="ll-help-card" data-key="{{key}}" data-topic="{{topic}}" data-aud="{{audience}}" data-search="{{search}}">
+            <span class="ll-help-shot{{^shot}} is-blank{{/shot}}">
+                <span class="ll-help-ph">{{{icon}}}</span>
+                {{#shot}}<img src="{{shot}}" alt="" loading="lazy">{{/shot}}
+            </span>
+            <span class="ll-help-body">
+                <span class="ll-help-meta"><span class="ll-help-tag">{{topic}}</span></span>
+                <strong>{{title}}</strong>
+                <span class="ll-help-sum">{{summary}}</span>
+            </span>
+        </button>
+        {{/articles}}
+    </div>
+
+    <div class="ll-help-empty" data-ll-help-empty hidden>
+        <strong>{{#str}}help_none, theme_lmslabs{{/str}}</strong>
+        <span>{{#str}}help_none_desc, theme_lmslabs{{/str}}</span>
+        <button type="button" class="ll-pill" data-ll-help-reset>{{#str}}help_clear, theme_lmslabs{{/str}}</button>
+    </div>
+
+    <footer class="ll-help-foot">
+        <span>{{#str}}help_still, theme_lmslabs{{/str}}</span>
+        <a class="ll-pill" href="mailto:{{support}}">{{{i.mail}}}<span>{{support}}</span></a>
+        <a class="ll-pill" href="{{youtube}}" target="_blank" rel="noopener">{{{i.video}}}<span>{{#str}}help_videos, theme_lmslabs{{/str}}</span></a>
+    </footer>
+
+    <div class="ll-help-scrim" data-ll-help-scrim hidden></div>
+    <aside class="ll-help-panel" data-ll-help-panel role="dialog" aria-modal="true" aria-labelledby="ll-help-ptitle" hidden>
+        <button type="button" class="ll-iconbtn ll-help-close" data-ll-help-close aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button>
+        {{#articles}}
+        <article class="ll-help-article" data-article="{{key}}" hidden>
+            <div class="ll-help-fig{{^shot}} is-blank{{/shot}}">
+                <div class="ll-help-frame"><i></i><i></i><i></i></div>
+                <div class="ll-help-ph is-big">{{{icon}}}<span>{{title}}</span></div>
+                {{#shot}}<div class="ll-help-imgwrap"><img src="{{shot}}" alt="{{title}}" decoding="async">{{#pins}}<span class="ll-help-pin" data-n="{{n}}"><i class="ll-help-box" style="left:{{rx}}%;top:{{ry}}%;width:{{rw}}%;height:{{rh}}%"></i><svg class="ll-help-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="{{x1}}" y1="{{y1}}" x2="{{x2}}" y2="{{y2}}" vector-effect="non-scaling-stroke"></line></svg><b style="left:{{cx}}%;top:{{cy}}%">{{n}}</b></span>{{/pins}}</div>{{/shot}}
+            </div>
+            <div class="ll-help-art-body">
+                <span class="ll-help-tag">{{topic}}</span>
+                <h3 id="ll-help-ptitle-{{key}}">{{title}}</h3>
+                <p class="ll-help-lead">{{summary}}</p>
+                <ol class="ll-help-steps">
+                    {{#steps}}<li data-n="{{n}}"><span>{{n}}</span><p>{{text}}</p></li>{{/steps}}
+                </ol>
+                <div class="ll-help-tip">{{{i.bulb}}}<p>{{tip}}</p></div>
+                <a class="btn btn-primary ll-help-open" href="{{url}}">{{#str}}help_open, theme_lmslabs{{/str}} {{{i.open}}}</a>
+            </div>
+        </article>
+        {{/articles}}
+    </aside>
+</div>

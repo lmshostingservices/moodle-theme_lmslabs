@@ -1,0 +1,106 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/calendar
+
+    Calendar: coming up, agenda / week / month, subscribe, reminders, personal events.
+
+    Example context (json):
+    {"config": "{}", "courses": [], "i": {}, "feeds": {} }
+}}
+<div class="ll-cal" data-ll-cal>
+    <script type="application/json" data-cal-config>{{{config}}}</script>
+
+    <aside class="ll-cal-side">
+        <section class="ll-cal-panel">
+            <h3>{{#str}}cal_comingup, theme_lmslabs{{/str}}</h3>
+            <div class="ll-cal-upcoming" data-cal="upcoming"><div class="ll-ib-loading"></div></div>
+        </section>
+        <label class="ll-cal-panel ll-cal-remind">
+            <span class="ll-cal-remind-ico">{{{i.bell}}}</span>
+            <span class="ll-toggle-text"><strong>{{#str}}cal_reminders, theme_lmslabs{{/str}}</strong><span>{{#str}}cal_reminders_desc, theme_lmslabs{{/str}}</span></span>
+            <input type="checkbox" data-cal="reminders"{{#reminders}} checked{{/reminders}}>
+            <span class="ll-switch-track" aria-hidden="true"></span>
+        </label>
+        {{#hascourses}}
+        <section class="ll-cal-panel">
+            <h3 data-ll-tip="{{#str}}cal_courses_tip, theme_lmslabs{{/str}}">{{#str}}cal_courses, theme_lmslabs{{/str}}</h3>
+            <div class="ll-cal-legend" data-cal="legend">
+                {{#courses}}<label><input type="checkbox" value="{{id}}" checked><i class="ll-cal-c{{colour}}"></i><span>{{{name}}}</span></label>{{/courses}}
+                <label><input type="checkbox" value="0" checked><i class="ll-cal-c8"></i><span>{{#str}}cal_kind_personal, theme_lmslabs{{/str}}</span></label>
+            </div>
+        </section>
+        {{/hascourses}}
+    </aside>
+
+    <section class="ll-cal-main">
+        <header class="ll-cal-bar">
+            <button type="button" class="btn btn-secondary ll-cal-today" data-cal="today">{{#str}}today, calendar{{/str}}</button>
+            <div class="ll-cal-nav">
+                <button type="button" class="ll-iconbtn" data-cal="prev" aria-label="{{#str}}previous{{/str}}">{{{i.left}}}</button>
+                <button type="button" class="ll-iconbtn" data-cal="next" aria-label="{{#str}}next{{/str}}">{{{i.right}}}</button>
+            </div>
+            <h2 class="ll-cal-title" data-cal="title"></h2>
+            <div class="ll-cal-views" role="tablist">
+                <button type="button" data-cal-view="agenda" role="tab">{{{i.list}}}<span>{{#str}}cal_agenda, theme_lmslabs{{/str}}</span></button>
+                <button type="button" data-cal-view="week" role="tab">{{{i.week}}}<span>{{#str}}week{{/str}}</span></button>
+                <button type="button" data-cal-view="month" role="tab">{{{i.month}}}<span>{{#str}}month{{/str}}</span></button>
+            </div>
+            <div class="ll-cal-sub">
+                <button type="button" class="ll-pill" data-cal="subscribe" aria-expanded="false" data-ll-tip-self data-ll-tip="{{#str}}cal_subscribe_tip, theme_lmslabs{{/str}}">{{{i.share}}}<span>{{#str}}cal_subscribe, theme_lmslabs{{/str}}</span></button>
+                <div class="ll-cal-subpop" data-cal="subpop" hidden>
+                    <p>{{#str}}cal_subscribe_desc, theme_lmslabs{{/str}}</p>
+                    <a class="ll-cal-subbtn" href="{{feeds.google}}" target="_blank" rel="noopener"><b class="ll-cal-g">G</b>{{#str}}cal_sub_google, theme_lmslabs{{/str}}</a>
+                    <a class="ll-cal-subbtn" href="{{feeds.outlook}}" target="_blank" rel="noopener"><b class="ll-cal-o">O</b>{{#str}}cal_sub_outlook, theme_lmslabs{{/str}}</a>
+                    <a class="ll-cal-subbtn" href="{{feeds.apple}}"><b class="ll-cal-a"></b>{{#str}}cal_sub_apple, theme_lmslabs{{/str}}</a>
+                    <div class="ll-cal-copy"><input type="text" readonly value="{{feeds.ics}}" aria-label="{{#str}}cal_feedurl, theme_lmslabs{{/str}}" data-cal="feed"><button type="button" class="ll-iconbtn" data-cal="copy" aria-label="{{#str}}cal_copy, theme_lmslabs{{/str}}">{{{i.copy}}}</button></div>
+                </div>
+            </div>
+            {{#canpersonal}}<button type="button" class="btn btn-primary ll-btn-icon" data-cal="new">{{{i.plus}}}<span>{{#str}}cal_new, theme_lmslabs{{/str}}</span></button>{{/canpersonal}}
+        </header>
+        <div class="ll-cal-body" data-cal="body" aria-live="polite"></div>
+        <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+    </section>
+
+    <div class="ll-cal-drawer" data-cal="drawer" hidden role="dialog" aria-modal="true">
+        <div class="ll-cal-drawercard" data-cal="detail"></div>
+    </div>
+
+    {{#canpersonal}}
+    <div class="ll-ib-modal" data-cal="newmodal" hidden role="dialog" aria-modal="true" aria-label="{{#str}}cal_new, theme_lmslabs{{/str}}">
+        <form class="ll-ib-modalcard" data-cal="newform">
+            <header><h3>{{#str}}cal_new, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-cal="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <p class="ll-ib-modalhelp">{{#str}}cal_new_desc, theme_lmslabs{{/str}}</p>
+            <label class="ll-f"><span>{{#str}}cal_what, theme_lmslabs{{/str}}</span><input class="form-control" data-cal="nname" required placeholder="{{#str}}cal_what_ph, theme_lmslabs{{/str}}"></label>
+            <div class="ll-frow">
+                <label class="ll-f"><span>{{#str}}date{{/str}}</span><input type="date" class="form-control" data-cal="ndate" required></label>
+                <label class="ll-f"><span>{{#str}}time{{/str}}</span><input type="time" class="form-control" data-cal="ntime" value="09:00"></label>
+            </div>
+            <div class="ll-f"><span>{{#str}}cal_length, theme_lmslabs{{/str}}</span>
+                <div class="ll-chipset">
+                    <label class="ll-chipopt"><input type="radio" name="cal-dur" value="0" checked><span>{{#str}}cal_dur_none, theme_lmslabs{{/str}}</span></label>
+                    <label class="ll-chipopt"><input type="radio" name="cal-dur" value="1800"><span>30 min</span></label>
+                    <label class="ll-chipopt"><input type="radio" name="cal-dur" value="3600"><span>1 h</span></label>
+                    <label class="ll-chipopt"><input type="radio" name="cal-dur" value="7200"><span>2 h</span></label>
+                    <label class="ll-chipopt"><input type="radio" name="cal-dur" value="86400"><span>{{#str}}cal_allday, theme_lmslabs{{/str}}</span></label>
+                </div>
+            </div>
+            <label class="ll-f"><span>{{#str}}cal_notes, theme_lmslabs{{/str}} <em class="ll-opt">{{#str}}optional, theme_lmslabs{{/str}}</em></span><textarea class="form-control" rows="2" data-cal="nnotes"></textarea></label>
+            <div class="ll-ib-modalfoot"><button type="submit" class="btn btn-primary">{{#str}}cal_add, theme_lmslabs{{/str}}</button></div>
+        </form>
+    </div>
+    {{/canpersonal}}
+</div>

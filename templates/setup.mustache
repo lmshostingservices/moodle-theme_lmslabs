@@ -1,0 +1,57 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/setup
+
+    Quick start checklist.
+
+    Example context (json):
+    {"steps": [], "done": 0, "total": 7, "percent": 0, "dash": 150.8, "i": {} }
+}}
+<div class="ll-setup">
+    <div class="ll-setup-hero">
+        <div class="ll-setup-ring" aria-hidden="true">
+            <svg viewBox="0 0 56 56"><circle class="ll-ring-track" cx="28" cy="28" r="24"/><circle class="ll-ring-bar" cx="28" cy="28" r="24" style="stroke-dashoffset: {{dash}}"/></svg>
+            <span><strong>{{done}}</strong>/{{total}}</span>
+        </div>
+        <div class="ll-setup-intro">
+            {{#complete}}<h2>{{#str}}setup_complete, theme_lmslabs{{/str}}</h2><p>{{#str}}setup_complete_desc, theme_lmslabs{{/str}}</p>{{/complete}}
+            {{^complete}}<h2>{{#str}}setup_heading, theme_lmslabs{{/str}}</h2><p>{{#str}}setup_intro, theme_lmslabs{{/str}}</p>{{/complete}}
+        </div>
+    </div>
+
+    <ol class="ll-steps">
+        {{#steps}}
+        <li class="ll-step{{#done}} is-done{{/done}}{{#isnext}} is-next{{/isnext}}">
+            <span class="ll-step-mark" aria-hidden="true">{{#done}}{{{i.check}}}{{/done}}{{^done}}{{number}}{{/done}}</span>
+            <span class="ll-step-ico" aria-hidden="true">{{{ico}}}</span>
+            <div class="ll-step-text">
+                <h3>{{title}}{{#done}}<span class="visually-hidden sr-only"> ({{#str}}setup_done, theme_lmslabs{{/str}})</span>{{/done}}</h3>
+                <p>{{desc}}</p>
+            </div>
+            <a data-ll-tip="{{#str}}tip_st_cta, theme_lmslabs{{/str}}" class="{{#isnext}}btn btn-primary{{/isnext}}{{^isnext}}ll-pill{{/isnext}} ll-step-cta" href="{{url}}">
+                {{#done}}{{#str}}setup_review, theme_lmslabs{{/str}}{{/done}}{{^done}}{{cta}}{{/done}}
+            </a>
+        </li>
+        {{/steps}}
+    </ol>
+
+    <p class="ll-classic">
+        {{#hidden}}<a href="{{showurl}}">{{#str}}setup_showcard, theme_lmslabs{{/str}}</a>{{/hidden}}
+        {{^hidden}}{{^complete}}<a href="{{hideurl}}">{{#str}}setup_hidecard, theme_lmslabs{{/str}}</a>{{/complete}}{{/hidden}}
+    </p>
+</div>

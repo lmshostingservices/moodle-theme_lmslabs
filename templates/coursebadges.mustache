@@ -1,0 +1,96 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+{{!
+    @template theme_lmslabs/coursebadges
+
+    Course badges as cards.
+
+    Example context (json):
+    {"cards": [], "i": {}, "ajax": "#", "sesskey": "x", "courseid": 2}
+}}
+<div class="ll-cb" data-ll-cb data-ajax="{{ajax}}" data-sesskey="{{sesskey}}" data-course="{{courseid}}">
+    <section class="ll-cb-head">
+        <div><h2>{{#str}}cb_heading, theme_lmslabs{{/str}}</h2><p class="ll-muted">{{summary}}</p></div>
+        <div class="ll-cb-headact">
+            <a class="ll-pill" href="{{mybadgesurl}}">{{{i.trophy}}}<span>{{#str}}cb_mine, theme_lmslabs{{/str}}</span></a>
+            {{#cancreate}}<button type="button" class="btn btn-primary ll-btn-icon" data-cb="opennew" data-ll-tip="{{#str}}cb_new_tip, theme_lmslabs{{/str}}">{{{i.plus}}}<span>{{#str}}cb_new, theme_lmslabs{{/str}}</span></button>{{/cancreate}}
+        </div>
+    </section>
+
+    {{#hascards}}
+    <div class="ll-cb-grid">
+        {{#cards}}
+        <article class="ll-cb-card{{#active}} is-live{{/active}}" data-cb-card="{{id}}">
+            <div class="ll-cb-top">
+                <img src="{{image}}" alt="" loading="lazy">
+                <div class="ll-cb-title"><strong>{{{name}}}</strong>
+                    <span class="ll-cb-state">{{#active}}{{#str}}cb_live, theme_lmslabs{{/str}}{{/active}}{{^active}}{{#str}}cb_draft, theme_lmslabs{{/str}}{{/active}}</span></div>
+                {{#canswitch}}
+                <label class="ll-toggle" data-ll-tip="{{#str}}cb_switch_tip, theme_lmslabs{{/str}}"><input type="checkbox" data-cb-switch="{{id}}"{{#active}} checked{{/active}} aria-label="{{#str}}cb_switch, theme_lmslabs{{/str}}"><span class="ll-switch-track"></span></label>
+                {{/canswitch}}
+            </div>
+            {{#description}}<p class="ll-cb-desc">{{description}}</p>{{/description}}
+            <div class="ll-cb-rule">
+                {{#manual}}<span class="ll-chip-tag">{{#str}}cb_rule_manual, theme_lmslabs{{/str}}</span>{{/manual}}
+                {{#criteria}}{{^manual}}<span class="ll-chip-tag">{{text}}</span>{{/manual}}{{/criteria}}
+                {{^hascriteria}}<span class="ll-cb-warn">{{#str}}cb_nocriteria, theme_lmslabs{{/str}}</span>{{/hascriteria}}
+            </div>
+            <div class="ll-cb-foot">
+                <span class="ll-cb-count" data-ll-tip="{{#str}}cb_awarded_tip, theme_lmslabs{{/str}}">{{{i.users}}}{{#str}}cb_awarded_n, theme_lmslabs, {{awarded}}{{/str}}</span>
+                <span class="ll-cb-links">
+                    {{#canaward}}<button type="button" class="btn btn-secondary btn-sm" data-cb="openaward" data-badge="{{id}}" data-name="{{name}}">{{#str}}cb_award, theme_lmslabs{{/str}}</button>{{/canaward}}
+                    <a class="ll-iconbtn" href="{{editurl}}" title="{{#str}}cb_edit, theme_lmslabs{{/str}}" aria-label="{{#str}}cb_edit, theme_lmslabs{{/str}}">{{{i.settings}}}</a>
+                </span>
+            </div>
+        </article>
+        {{/cards}}
+    </div>
+    {{/hascards}}
+    {{^hascards}}
+    <div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.award}}}</div><h2>{{#str}}cb_none, theme_lmslabs{{/str}}</h2><p>{{#str}}cb_none_desc, theme_lmslabs{{/str}}</p>
+        {{#cancreate}}<button type="button" class="btn btn-primary ll-btn-icon" data-cb="opennew">{{{i.plus}}}<span>{{#str}}cb_new, theme_lmslabs{{/str}}</span></button>{{/cancreate}}</div>
+    {{/hascards}}
+
+    {{#cancreate}}
+    <div class="ll-ib-modal" data-cb-modal="new" hidden role="dialog" aria-modal="true" aria-label="{{#str}}cb_new, theme_lmslabs{{/str}}">
+        <form class="ll-ib-modalcard" data-cb-form>
+            <header><h3>{{#str}}cb_new, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-cb="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <label class="ll-f"><span data-ll-tip="{{#str}}cb_name_tip, theme_lmslabs{{/str}}">{{#str}}cb_name, theme_lmslabs{{/str}}</span><input class="form-control" name="name" maxlength="120" required></label>
+            <label class="ll-f"><span data-ll-tip="{{#str}}cb_desc_tip, theme_lmslabs{{/str}}">{{#str}}cb_desc, theme_lmslabs{{/str}}</span><textarea class="form-control" name="description" rows="2"></textarea></label>
+            <div class="ll-cp-rules">
+                <label class="ll-cp-rule"><input type="radio" name="how" value="course" checked><span><strong>{{#str}}cb_how_course, theme_lmslabs{{/str}}</strong><small>{{#str}}cb_how_course_d, theme_lmslabs{{/str}}</small></span></label>
+                <label class="ll-cp-rule"><input type="radio" name="how" value="manual"><span><strong>{{#str}}cb_how_manual, theme_lmslabs{{/str}}</strong><small>{{#str}}cb_how_manual_d, theme_lmslabs{{/str}}</small></span></label>
+            </div>
+            <label class="ll-f"><span data-ll-tip="{{#str}}cb_image_tip, theme_lmslabs{{/str}}">{{#str}}cb_image, theme_lmslabs{{/str}}</span><input type="file" class="form-control" name="image" accept="image/png,image/jpeg,image/gif"></label>
+            <label class="ll-chipcheck"><input type="checkbox" name="live" value="1" checked><span data-ll-tip="{{#str}}cb_live_tip, theme_lmslabs{{/str}}">{{#str}}cb_live_now, theme_lmslabs{{/str}}</span></label>
+            <p class="ll-cb-error" data-cb-error hidden></p>
+            <div class="ll-ib-modalfoot"><button type="submit" class="btn btn-primary">{{#str}}cb_create, theme_lmslabs{{/str}}</button></div>
+        </form>
+    </div>
+    {{/cancreate}}
+    {{#canaward}}
+    <div class="ll-ib-modal" data-cb-modal="award" hidden role="dialog" aria-modal="true" aria-label="{{#str}}cb_award, theme_lmslabs{{/str}}">
+        <div class="ll-ib-modalcard">
+            <header><h3 data-cb-awardtitle>{{#str}}cb_award, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-cb="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <div class="ll-ib-search">{{{i.search}}}<input type="search" placeholder="{{#str}}pt_findperson, theme_lmslabs{{/str}}" aria-label="{{#str}}pt_findperson, theme_lmslabs{{/str}}" data-cb-find></div>
+            <ul class="ll-ib-people" data-cb-people></ul>
+            <div class="ll-ib-modalfoot"><button type="button" class="btn btn-primary" data-cb="doaward">{{#str}}cb_award_sel, theme_lmslabs{{/str}}</button></div>
+        </div>
+    </div>
+    {{/canaward}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

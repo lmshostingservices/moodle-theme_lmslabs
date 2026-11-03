@@ -1,0 +1,73 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+{{!
+    @template theme_lmslabs/questionbank
+
+    Question bank.
+
+    Example context (json):
+    {"banks": [], "i": {}, "categories": [], "questions": []}
+}}
+<div class="ll-qb" data-ll-qb>
+    {{^hasbanks}}<div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.help}}}</div><h2>{{#str}}qb_nobanks, theme_lmslabs{{/str}}</h2><p>{{#str}}qb_nobanks_desc, theme_lmslabs{{/str}}</p></div>{{/hasbanks}}
+    {{#hasbanks}}
+    {{#banks.1}}<nav class="ll-qb-banks" aria-label="{{#str}}qb_banks, theme_lmslabs{{/str}}">{{/banks.1}}
+    {{#banks}}{{#banks.1}}<a class="ll-pill{{#selected}} is-on{{/selected}}" href="{{url}}"><span>{{name}}</span></a>{{/banks.1}}{{/banks}}
+    {{#banks.1}}</nav>{{/banks.1}}
+    <div class="ll-qb-main">
+        <aside class="ll-qb-cats">
+            <h3>{{#str}}qb_categories, theme_lmslabs{{/str}}</h3>
+            <button type="button" class="ll-qb-cat is-on" data-qb-cat="0"><span>{{allcats}}</span><b>{{qcount}}</b></button>
+            {{#categories}}<button type="button" class="ll-qb-cat" data-qb-cat="{{id}}" style="padding-left:{{indent}}px"><span>{{{i.folder}}}{{name}}</span><b>{{n}}</b></button>{{/categories}}
+            <a class="ll-qb-manage" href="{{manageurl}}">{{#str}}qb_managecats, theme_lmslabs{{/str}}</a>
+        </aside>
+        <section class="ll-qb-list">
+            <div class="ll-qb-bar">
+                <div class="ll-ib-search">{{{i.search}}}<input type="search" placeholder="{{#str}}qb_search, theme_lmslabs{{/str}}" aria-label="{{#str}}qb_search, theme_lmslabs{{/str}}" data-qb-q></div>
+                <select class="form-select custom-select" data-qb-type aria-label="{{#str}}qb_type, theme_lmslabs{{/str}}">
+                    <option value="">{{#str}}qb_alltypes, theme_lmslabs{{/str}}</option>
+                    {{#types}}<option value="{{type}}">{{label}}</option>{{/types}}
+                </select>
+                {{#importurl}}<a class="ll-iconbtn" href="{{importurl}}" title="{{#str}}qb_import, theme_lmslabs{{/str}}" aria-label="{{#str}}qb_import, theme_lmslabs{{/str}}">{{{i.upload}}}</a>{{/importurl}}
+                <a class="ll-iconbtn" href="{{exporturl}}" title="{{#str}}qb_export, theme_lmslabs{{/str}}" aria-label="{{#str}}qb_export, theme_lmslabs{{/str}}">{{{i.download}}}</a>
+            </div>
+            {{#cannew}}
+            <div class="ll-qb-new"><span class="ll-muted" data-ll-tip="{{#str}}qb_new_tip, theme_lmslabs{{/str}}">{{#str}}qb_new, theme_lmslabs{{/str}}</span>
+                {{#newtypes}}<a class="ll-pill" href="{{url}}" data-qb-newlink="{{url}}">{{{i.plus}}}<span>{{label}}</span></a>{{/newtypes}}</div>
+            {{/cannew}}
+            {{#hasquestions}}
+            <div class="ll-qb-rows">
+                {{#questions}}
+                <article class="ll-qb-row" data-qb-row data-cat="{{cat}}" data-type="{{type}}" data-name="{{name}}">
+                    <span class="ll-qb-ico">{{{i.help}}}</span>
+                    <div class="ll-qb-name"><strong>{{{name}}}</strong>
+                        <span class="ll-muted">{{typelabel}} · {{when}}{{#used}} · {{#str}}qb_used, theme_lmslabs, {{used}}{{/str}}{{/used}}{{#draft}} · <em>{{#str}}qb_draft, theme_lmslabs{{/str}}</em>{{/draft}}</span></div>
+                    <span class="ll-cb-links">
+                        <a class="ll-iconbtn" href="{{previewurl}}" title="{{#str}}qb_preview, theme_lmslabs{{/str}}" aria-label="{{#str}}qb_preview, theme_lmslabs{{/str}}">{{{i.eye}}}</a>
+                        {{#editurl}}<a class="ll-iconbtn" href="{{editurl}}" title="{{#str}}edit{{/str}}" aria-label="{{#str}}edit{{/str}}">{{{i.pencil}}}</a>{{/editurl}}
+                    </span>
+                </article>
+                {{/questions}}
+            </div>
+            <p class="ll-muted" data-qb-none hidden>{{#str}}qb_nomatch, theme_lmslabs{{/str}}</p>
+            {{/hasquestions}}
+            {{^hasquestions}}<div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.help}}}</div><h2>{{#str}}qb_none, theme_lmslabs{{/str}}</h2><p>{{#str}}qb_none_desc, theme_lmslabs{{/str}}</p></div>{{/hasquestions}}
+        </section>
+    </div>
+    {{/hasbanks}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

@@ -1,0 +1,45 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/resume_card
+
+    "Continue where you left off": ring, bar and clickable activity circles. Rendered inside the resume context.
+
+    Example context (json):
+    {"url": "#", "fullname": "Course", "percent": 40, "ringdash": 90.5, "lastaccesslabel": "2 hours ago", "hasacts": true,
+     "acts": [{"num": 1, "url": "#", "name": "Intro", "done": true, "next": false, "state": "Completed"}],
+     "more": 0, "nexturl": "#", "actsdone": 1, "actstotal": 5, "i": {} }
+}}
+<div class="ll-mc-resume" data-ll-resume>
+    <div class="ll-mc-resume-ring" role="img" aria-label="{{percent}}%">
+        <svg viewBox="0 0 56 56" aria-hidden="true"><circle class="ll-rr-track" cx="28" cy="28" r="24"/><circle class="ll-rr-bar" cx="28" cy="28" r="24" data-dash="{{ringdash}}" style="stroke-dashoffset: 150.8"/></svg>
+        <span><strong data-countup="{{percent}}">0</strong><small>%</small></span>
+    </div>
+    <div class="ll-mc-resume-text">
+        <small>{{#str}}mc_continue, theme_lmslabs{{/str}}</small>
+        <a class="ll-mc-resume-title" href="{{url}}" data-ll-tip-self data-ll-tip="{{#str}}tip_mc_resume, theme_lmslabs{{/str}}">{{{fullname}}}</a>
+        <span class="ll-bar ll-bar-sm"><span class="ll-bar-fill" data-width="{{percent}}"></span></span>
+        {{#hasacts}}
+        <span class="ll-mc-acts">
+            {{#acts}}<a class="ll-mc-act{{#done}} is-done{{/done}}{{#next}} is-next{{/next}}" href="{{url}}" title="{{name}} · {{state}}" aria-label="{{name}} · {{state}}" style="--i: {{num}}">{{num}}</a>{{/acts}}
+            {{#more}}<span class="ll-mc-more">{{#str}}mc_acts_more, theme_lmslabs, {{more}}{{/str}}</span>{{/more}}
+        </span>
+        {{/hasacts}}
+        <em>{{lastaccesslabel}}</em>
+    </div>
+    <a class="ll-mc-resume-go" href="{{#nexturl}}{{nexturl}}{{/nexturl}}{{^nexturl}}{{url}}{{/nexturl}}">{{{i.play}}}<span>{{#str}}mc_resume_btn, theme_lmslabs{{/str}}</span></a>
+</div>

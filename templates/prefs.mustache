@@ -1,0 +1,57 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/prefs
+
+    Preferences as cards that save instantly.
+
+    Example context (json):
+    {"cards": [], "ajax": "#", "sesskey": "x"}
+}}
+<div class="ll-prefs" data-ll-prefs data-ajax="{{ajax}}" data-sesskey="{{sesskey}}">
+    <p class="ll-pagebar-text">{{#str}}pf_intro, theme_lmslabs{{/str}}</p>
+    <div class="ll-prefs-grid">
+        {{#cards}}
+        <section class="ll-pcard" id="pref-{{key}}">
+            <header>
+                <span class="ll-fcard-ico">{{{icon}}}</span>
+                <div><h2>{{title}}</h2><p>{{desc}}</p></div>
+            </header>
+            {{#selects}}
+            <label class="ll-f">
+                <span{{#tip}} data-ll-tip="{{tip}}"{{/tip}}>{{label}}</span>
+                <select class="form-select custom-select" data-pref="{{key}}">
+                    {{#options}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/options}}
+                </select>
+            </label>
+            {{/selects}}
+            {{#toggles}}
+            <label class="ll-toggle ll-toggle-inline">
+                <span class="ll-toggle-text"><strong>{{label}}</strong><span>{{desc}}</span></span>
+                <input type="checkbox" data-pref="{{key}}"{{#on}} checked{{/on}}>
+                <span class="ll-switch-track" aria-hidden="true"></span>
+            </label>
+            {{/toggles}}
+            {{#links.0}}
+            <div class="ll-pcard-links">
+                {{#links}}<a href="{{url}}">{{{icon}}}<span>{{label}}</span></a>{{/links}}
+            </div>
+            {{/links.0}}
+        </section>
+        {{/cards}}
+    </div>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}pf_all, theme_lmslabs{{/str}}</a></p>
+</div>

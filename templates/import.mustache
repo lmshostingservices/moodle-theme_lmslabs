@@ -1,0 +1,52 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/import
+
+    Import content from another course.
+
+    Example context (json):
+    {"cards": [], "i": {}, "action": "#", "sesskey": "x"}
+}}
+<form class="ll-im" method="post" action="{{action}}" data-ll-im>
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <div class="ll-im-head">
+        <p class="ll-muted">{{#str}}im_intro, theme_lmslabs, {{coursename}}{{/str}}</p>
+        <label class="ll-im-search">{{{i.search}}}<input type="search" class="form-control" placeholder="{{#str}}im_search, theme_lmslabs, {{count}}{{/str}}" data-im-q aria-label="{{#str}}search{{/str}}"></label>
+    </div>
+    <div class="ll-im-grid">
+        {{#cards}}
+        <label class="ll-im-card" data-im-card data-search="{{search}}">
+            <input type="radio" name="from" value="{{id}}" data-im-pick data-name="{{name}}">
+            <span class="ll-im-img">{{#image}}<img src="{{image}}" alt="" loading="lazy">{{/image}}{{^image}}<span class="ll-ccard-mono ll-tint-{{tint}}" aria-hidden="true">{{short}}</span>{{/image}}<span class="ll-im-tick">{{{i.check}}}</span></span>
+            <span class="ll-im-body">
+                <strong>{{name}}</strong>
+                <span>{{{category}}}</span>
+                <span class="ll-im-meta">{{{i.layers}}}{{#str}}im_acts, theme_lmslabs, {{activities}}{{/str}}{{#hidden}}<em>{{{i.eyeoff}}}{{#str}}hidden, grades{{/str}}</em>{{/hidden}}</span>
+            </span>
+        </label>
+        {{/cards}}
+    </div>
+    <div class="ll-bk-empty" data-im-none{{#hascards}} hidden{{/hascards}}>{{#str}}im_none, theme_lmslabs{{/str}}</div>
+
+    <div class="ll-im-bar" data-im-bar hidden>
+        <div class="ll-im-bartext"><strong data-im-name></strong><span>{{#str}}im_bar, theme_lmslabs{{/str}}</span></div>
+        <label class="ll-toggle ll-im-replace"><input type="checkbox" name="replace" value="1" data-im-replace><span class="ll-switch-track" aria-hidden="true"></span><span class="ll-toggle-text"><strong>{{#str}}im_replace, theme_lmslabs{{/str}}</strong><span>{{#str}}im_replace_desc, theme_lmslabs{{/str}}</span></span></label>
+        <span class="ll-rt-busy" data-im-busy hidden><span class="ll-spin"></span>{{#str}}im_busy, theme_lmslabs{{/str}}</span>
+        <button type="submit" class="btn btn-primary ll-btn-icon" data-im-go>{{{i.import}}}<span>{{#str}}im_go, theme_lmslabs{{/str}}</span></button>
+    </div>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}im_classic, theme_lmslabs{{/str}}</a></p>
+</form>

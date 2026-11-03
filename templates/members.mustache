@@ -1,0 +1,64 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/members
+
+    Manage the members of a group or cohort.
+
+    Example context (json):
+    {"type": "group", "id": 1, "name": "Team A", "i": {} }
+}}
+<div class="ll-members" data-ll-members data-type="{{type}}" data-id="{{id}}" data-url="{{ajaxurl}}" data-sesskey="{{sesskey}}">
+    <div class="ll-mhead">
+        <a data-ll-tip="{{#str}}tip_mb_back, theme_lmslabs{{/str}}" class="ll-iconbtn ll-mhead-back" href="{{backurl}}" aria-label="{{#str}}back{{/str}}">{{{i.back}}}</a>
+        <span class="ll-mhead-ico">{{{i.group}}}</span>
+        <div class="ll-mhead-text">
+            <h2>{{name}}</h2>
+            <p>{{intro}}</p>
+        </div>
+        <a data-ll-tip="{{#str}}tip_mb_settings, theme_lmslabs{{/str}}" class="ll-pill" href="{{editurl}}">{{{i.pencil}}}<span>{{#str}}settings{{/str}}</span></a>
+    </div>
+
+    <div class="ll-mgrid">
+        <section class="ll-mpanel" data-side="members">
+            <header class="ll-mpanel-head">
+                <div>
+                    <h3>{{#str}}members_current, theme_lmslabs{{/str}}</h3>
+                    <span class="ll-mpanel-count" data-count>—</span>
+                </div>
+                <button data-ll-tip="{{#str}}tip_mb_remove, theme_lmslabs{{/str}}" type="button" class="btn btn-secondary btn-sm ll-btn-icon" data-act="remove" disabled>{{{i.x}}}<span>{{#str}}members_remove, theme_lmslabs{{/str}}</span></button>
+            </header>
+            <div class="ll-msearch">{{{i.search}}}<input type="search" data-search placeholder="{{#str}}members_search, theme_lmslabs{{/str}}" aria-label="{{#str}}members_search, theme_lmslabs{{/str}}"></div>
+            <div class="ll-mselectall"><label><input type="checkbox" data-all> <span>{{#str}}selectall{{/str}}</span></label><span data-selected></span></div>
+            <ul class="ll-mlist" data-list aria-live="polite"></ul>
+        </section>
+
+        <section class="ll-mpanel is-candidates" data-side="candidates">
+            <header class="ll-mpanel-head">
+                <div>
+                    <h3>{{candidatestitle}}</h3>
+                    <span class="ll-mpanel-count" data-count>—</span>
+                </div>
+                <button data-ll-tip="{{#str}}tip_mb_add, theme_lmslabs{{/str}}" type="button" class="btn btn-primary btn-sm ll-btn-icon" data-act="add" disabled>{{{i.userplus}}}<span>{{addlabel}}</span></button>
+            </header>
+            <div class="ll-msearch">{{{i.search}}}<input type="search" data-search placeholder="{{#str}}members_search, theme_lmslabs{{/str}}" aria-label="{{#str}}members_search, theme_lmslabs{{/str}}"></div>
+            <div class="ll-mselectall"><label><input type="checkbox" data-all> <span>{{#str}}selectall{{/str}}</span></label><span data-selected></span></div>
+            <ul class="ll-mlist" data-list aria-live="polite"></ul>
+        </section>
+    </div>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

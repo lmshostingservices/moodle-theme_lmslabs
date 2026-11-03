@@ -1,0 +1,63 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/programs_list
+
+    The list of programs.
+
+    Example context (json):
+    {"programs": [], "hasprograms": false, "i": {} }
+}}
+<div class="ll-plistpage" data-ll-programs data-save="{{saveurl}}" data-sesskey="{{sesskey}}">
+    <div class="ll-pagebar">
+        <p class="ll-pagebar-text">{{#str}}programs_intro, theme_lmslabs{{/str}}</p>
+        <div class="ll-pagebar-actions">
+            <a data-ll-tip="{{#str}}tip_pl_preview, theme_lmslabs{{/str}}" class="ll-pill" href="{{previewurl}}">{{{i.eye}}}<span>{{#str}}viewmycourses, theme_lmslabs{{/str}}</span></a>
+            <a data-ll-tip="{{#str}}tip_pl_new, theme_lmslabs{{/str}}" class="btn btn-primary ll-btn-icon" href="{{newurl}}">{{{i.plus}}}<span>{{#str}}newprogram, theme_lmslabs{{/str}}</span></a>
+        </div>
+    </div>
+    {{^hasprograms}}
+    <div class="ll-empty">
+        <div class="ll-empty-ico">{{{i.layers}}}</div>
+        <h2>{{#str}}noprograms_title, theme_lmslabs{{/str}}</h2>
+        <p>{{#str}}noprograms_body, theme_lmslabs{{/str}}</p>
+        <a class="btn btn-primary mt-3" href="{{newurl}}">{{#str}}newprogram, theme_lmslabs{{/str}}</a>
+    </div>
+    {{/hasprograms}}
+    <ol class="ll-progcards" data-list>
+        {{#programs}}
+        <li class="ll-progcard" data-id="{{id}}">
+            <a data-ll-tip="{{#str}}tip_pl_edit, theme_lmslabs{{/str}}" class="ll-progcard-main" href="{{editurl}}">
+                <span class="ll-progcard-ico">{{{i.layers}}}</span>
+                <span class="ll-progcard-text">
+                    <strong>{{name}}</strong>
+                    <span class="ll-progcard-meta">
+                        <span class="ll-meta">{{{i.users}}}{{audience}}</span>
+                        <span class="ll-meta">{{{i.book}}}{{#str}}ncourses, theme_lmslabs, {{courses}}{{/str}}</span>
+                    </span>
+                </span>
+            </a>
+            <div class="ll-progcard-actions">
+                <button data-ll-tip="{{#str}}tip_pl_up, theme_lmslabs{{/str}}" type="button" class="ll-iconbtn" data-act="pup" aria-label="{{#str}}moveup{{/str}}">{{{i.up}}}</button>
+                <button data-ll-tip="{{#str}}tip_pl_down, theme_lmslabs{{/str}}" type="button" class="ll-iconbtn" data-act="pdown" aria-label="{{#str}}movedown{{/str}}">{{{i.down}}}</button>
+                <a data-ll-tip="{{#str}}tip_pl_edit, theme_lmslabs{{/str}}" class="ll-iconbtn" href="{{editurl}}" aria-label="{{#str}}edit{{/str}}">{{{i.pencil}}}</a>
+                <button data-ll-tip="{{#str}}tip_pl_delete, theme_lmslabs{{/str}}" type="button" class="ll-iconbtn ll-danger" data-act="pdelete" aria-label="{{#str}}delete{{/str}}">{{{i.x}}}</button>
+            </div>
+        </li>
+        {{/programs}}
+    </ol>
+</div>

@@ -1,0 +1,136 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/reset
+
+    Reset a course for a new intake.
+
+    Example context (json):
+    {"cards": [], "i": {}, "action": "#", "sesskey": "x"}
+}}
+<div class="ll-rs">
+    {{^hasresults}}
+    <nav class="ll-rs-tabs" aria-label="{{#str}}rs_title, theme_lmslabs{{/str}}">
+        <a href="{{nowurl}}" class="{{#tabnow}}is-on{{/tabnow}}">{{{i.refresh}}}{{#str}}rs_tab_now, theme_lmslabs{{/str}}</a>
+        <a href="{{rollingurl}}" class="{{#tabrolling}}is-on{{/tabrolling}}">{{{i.repeat}}}{{#str}}rs_tab_rolling, theme_lmslabs{{/str}}</a>
+    </nav>
+    {{/hasresults}}
+    {{#tabrolling}}
+    {{#rolling}}
+    <form method="post" action="{{rollingaction}}" class="ll-rl">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.repeat}}}</span><div><h2>{{#str}}rl_title, theme_lmslabs{{/str}}</h2><p>{{#str}}rl_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <label class="ll-toggle"><input type="checkbox" name="on" value="1"{{#on}} checked{{/on}} data-rl-on><span class="ll-switch-track" aria-hidden="true"></span><span class="ll-toggle-text"><strong data-ll-tip="{{#str}}tip_rl_on, theme_lmslabs{{/str}}">{{#str}}rl_on, theme_lmslabs{{/str}}</strong><span>{{#str}}rl_on_desc, theme_lmslabs{{/str}}</span></span></label>
+                <div class="ll-rl-sentence">
+                    <span>{{#str}}rl_s1, theme_lmslabs{{/str}}</span>
+                    <label class="ll-rl-num"><input type="number" name="months" min="1" max="120" value="{{months}}" class="form-control"><em>{{#str}}rl_months, theme_lmslabs{{/str}}</em></label>
+                    <span>{{#str}}rl_s2, theme_lmslabs{{/str}}</span>
+                    <label class="ll-rl-num"><input type="number" name="warn" min="0" max="365" value="{{warn}}" class="form-control"><em>{{#str}}rl_days, theme_lmslabs{{/str}}</em></label>
+                    <span>{{#str}}rl_s3, theme_lmslabs{{/str}}</span>
+                </div>
+                <div class="ll-cp-rules ll-rt-where">
+                    <label class="ll-cp-rule"><input type="radio" name="after" value="restart"{{#afterrestart}} checked{{/afterrestart}}><span class="ll-swcard-ico">{{{i.repeat}}}</span><span class="ll-toggle-text"><strong>{{#str}}rl_restart, theme_lmslabs{{/str}}</strong><span>{{#str}}rl_restart_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <label class="ll-cp-rule"><input type="radio" name="after" value="unenrol"{{#afterunenrol}} checked{{/afterunenrol}}><span class="ll-swcard-ico">{{{i.users}}}</span><span class="ll-toggle-text"><strong>{{#str}}rl_unenrol, theme_lmslabs{{/str}}</strong><span>{{#str}}rl_unenrol_desc, theme_lmslabs{{/str}}</span></span></label>
+                </div>
+            </div>
+        </section>
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.mail}}}</span><div><h2>{{#str}}rl_notify, theme_lmslabs{{/str}}</h2><p>{{#str}}rl_notify_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <label class="ll-toggle"><input type="checkbox" name="notify" value="1"{{#notify}} checked{{/notify}}><span class="ll-switch-track" aria-hidden="true"></span><span class="ll-toggle-text"><strong>{{#str}}rl_send, theme_lmslabs{{/str}}</strong><span>{{#str}}rl_send_desc, theme_lmslabs{{/str}}</span></span></label>
+                <div class="ll-rl-msgs">
+                    <div class="ll-rl-msg">
+                        <h3>{{#str}}rl_msg_warn, theme_lmslabs{{/str}}</h3>
+                        <label class="ll-f"><span data-ll-tip="{{#str}}tip_rl_subject, theme_lmslabs{{/str}}">{{#str}}rl_subject, theme_lmslabs{{/str}}</span><input class="form-control" name="subject" value="{{subject}}"></label>
+                        <label class="ll-f"><span>{{#str}}rl_body, theme_lmslabs{{/str}}</span><textarea class="form-control" name="body" rows="5">{{body}}</textarea></label>
+                    </div>
+                    <div class="ll-rl-msg">
+                        <h3>{{#str}}rl_msg_done, theme_lmslabs{{/str}}</h3>
+                        <label class="ll-f"><span>{{#str}}rl_subject, theme_lmslabs{{/str}}</span><input class="form-control" name="donesubject" value="{{donesubject}}"></label>
+                        <label class="ll-f"><span>{{#str}}rl_body, theme_lmslabs{{/str}}</span><textarea class="form-control" name="donebody" rows="5">{{donebody}}</textarea></label>
+                    </div>
+                </div>
+                <p class="ll-fhint"><span>{{#str}}rl_placeholders, theme_lmslabs{{/str}} <code>{name}</code> <code>{course}</code> <code>{date}</code> <code>{url}</code></span></p>
+            </div>
+        </section>
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.users}}}</span><div><h2>{{#str}}rl_upcoming, theme_lmslabs{{/str}}</h2><p>{{#str}}rl_upcoming_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-rp-kpis">
+                    <div class="ll-rp-kpi"><strong>{{nwaiting}}</strong><span>{{#str}}rl_state_waiting, theme_lmslabs{{/str}}</span></div>
+                    <div class="ll-rp-kpi"><strong>{{nsoon}}</strong><span>{{#str}}rl_state_soon, theme_lmslabs{{/str}}</span></div>
+                    <div class="ll-rp-kpi"><strong>{{ndue}}</strong><span>{{#str}}rl_state_due, theme_lmslabs{{/str}}</span></div>
+                </div>
+                {{#hasupcoming}}<div class="ll-rl-list">{{#upcoming}}
+                    <div class="ll-rl-row"><span class="ll-avatar ll-tint-{{tint}}">{{initials}}</span><span class="ll-rl-who"><strong>{{name}}</strong><span>{{#str}}rl_started, theme_lmslabs, {{start}}{{/str}}</span></span><span class="ll-rl-due">{{due}}</span><span class="ll-rl-state {{#isdue}}is-due{{/isdue}}{{#issoon}}is-soon{{/issoon}}">{{statelabel}}</span></div>
+                {{/upcoming}}</div>{{/hasupcoming}}
+                {{^hasupcoming}}<div class="ll-bk-empty">{{#str}}rl_nolearners, theme_lmslabs{{/str}}</div>{{/hasupcoming}}
+            </div>
+        </section>
+        <div class="ll-rt-bar">
+            <button type="submit" name="runnow" value="1" class="btn btn-outline-secondary ll-btn-icon" formnovalidate>{{{i.play}}}<span>{{#str}}rl_runnow, theme_lmslabs{{/str}}</span></button>
+            <button type="submit" class="btn btn-primary ll-btn-icon">{{{i.check}}}<span>{{#str}}savechanges{{/str}}</span></button>
+        </div>
+    </form>
+    {{/rolling}}
+    {{/tabrolling}}
+    {{#tabnow}}
+    {{#hasresults}}
+    <section class="ll-fcard ll-rs-done">
+        <div class="ll-fcard-body">
+            <span class="ll-ib-blank-ico ll-greenico">{{{i.check}}}</span>
+            <h2>{{#str}}rs_done, theme_lmslabs{{/str}}</h2>
+            <ul class="ll-rs-results">{{#results}}<li class="{{^ok}}is-bad{{/ok}}">{{#ok}}{{{i.check}}}{{/ok}}{{^ok}}{{{i.x}}}{{/ok}}<span><strong>{{component}}</strong> {{item}}</span></li>{{/results}}</ul>
+            <a class="btn btn-primary" href="{{courseurl}}">{{#str}}gr_opencourse, theme_lmslabs{{/str}}</a>
+        </div>
+    </section>
+    {{/hasresults}}
+    {{^hasresults}}
+    <div class="ll-fnotice is-warn ll-rs-warn">{{{i.alert}}}<span>{{#str}}rs_warn, theme_lmslabs{{/str}}</span><a class="ll-pill" href="{{backupurl}}">{{{i.backup}}}<span>{{#str}}rs_backupfirst, theme_lmslabs{{/str}}</span></a></div>
+    <form method="post" action="{{action}}" data-ll-rs>
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.refresh}}}</span><div><h2>{{#str}}rs_what, theme_lmslabs{{/str}}</h2><p>{{#str}}rs_what_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-switchgrid">
+                    {{#cards}}
+                    <label class="ll-swcard">
+                        <input type="checkbox" name="rs_{{key}}" value="1"{{#on}} checked{{/on}}>
+                        <span class="ll-swcard-ico">{{{icon}}}</span>
+                        <span class="ll-toggle-text"><strong>{{label}}</strong><span>{{desc}}</span></span>
+                        <span class="ll-switch-track" aria-hidden="true"></span>
+                    </label>
+                    {{/cards}}
+                </div>
+            </div>
+        </section>
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.calendar}}}</span><div><h2>{{#str}}rs_dates, theme_lmslabs{{/str}}</h2><p>{{datesdesc}}</p></div></header>
+            <div class="ll-fcard-body">
+                <label class="ll-f ll-f-narrow"><span data-ll-tip="{{#str}}tip_reset_start_date, theme_lmslabs{{/str}}">{{#str}}rs_newstart, theme_lmslabs{{/str}}</span><input type="date" class="form-control" name="startdate" value="{{startdate}}"></label>
+            </div>
+        </section>
+        <div class="ll-rs-confirm">
+            <label class="ll-f"><span>{{#str}}rs_type, theme_lmslabs{{/str}}</span><input class="form-control ll-mono" name="confirm" autocomplete="off" data-rs-confirm placeholder="RESET"></label>
+            <button type="submit" class="btn btn-danger ll-btn-icon" data-rs-go disabled>{{{i.refresh}}}<span>{{#str}}rs_go, theme_lmslabs{{/str}}</span></button>
+        </div>
+    </form>
+    {{/hasresults}}
+    {{/tabnow}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

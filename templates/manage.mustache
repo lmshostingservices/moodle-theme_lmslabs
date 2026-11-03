@@ -1,0 +1,142 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/manage
+
+    Courses and categories: summary, filters, category sections with course cards.
+
+    Example context (json):
+    {"sections": [], "stats": [], "counts": {"all": 0, "visible": 0, "hidden": 0}, "i": {} }
+}}
+<div class="ll-cm" data-ll-cm data-ajax="{{ajaxurl}}" data-sesskey="{{sesskey}}">
+    <div class="ll-pagebar">
+        <p class="ll-pagebar-text">{{#str}}cm_intro, theme_lmslabs{{/str}}</p>
+        <div class="ll-pagebar-actions">
+            {{#cancreatecategory}}<a data-ll-tip="{{#str}}tip_cm_t_newcat, theme_lmslabs{{/str}}" class="ll-pill" href="{{newcategoryurl}}">{{{i.folder}}}<span>{{#str}}cm_newcategory, theme_lmslabs{{/str}}</span></a>{{/cancreatecategory}}
+            <a data-ll-tip="{{#str}}tip_cm_t_newcourse, theme_lmslabs{{/str}}" class="btn btn-primary ll-btn-icon" href="{{newcourseurl}}">{{{i.plus}}}<span>{{#str}}cm_newcourse, theme_lmslabs{{/str}}</span></a>
+        </div>
+    </div>
+
+    <div class="ll-cm-stats">
+        {{#stats}}
+        <div class="ll-cm-stat">
+            <strong>{{value}}</strong>
+            <span>{{#dot}}<i class="ll-cm-sdot is-{{dot}}"></i>{{/dot}}{{label}}</span>
+        </div>
+        {{/stats}}
+    </div>
+
+    <div class="ll-cm-toolbar" role="toolbar" aria-label="{{#str}}filter, theme_lmslabs{{/str}}">
+        <label class="ll-fb-search">
+            {{{i.search}}}
+            <input data-ll-tip="{{#str}}tip_cm_t_search, theme_lmslabs{{/str}}" type="search" placeholder="{{#str}}cm_search, theme_lmslabs{{/str}}" aria-label="{{#str}}cm_search, theme_lmslabs{{/str}}" data-cm-q>
+        </label>
+        <div class="ll-cm-seg" role="group">
+            <button data-ll-tip="{{#str}}tip_cm_t_all, theme_lmslabs{{/str}}" type="button" class="is-on" data-cm-filter="all" aria-pressed="true">{{#str}}cm_all, theme_lmslabs{{/str}}<span>{{counts.all}}</span></button>
+            <button data-ll-tip="{{#str}}tip_cm_t_visible, theme_lmslabs{{/str}}" type="button" data-cm-filter="visible" aria-pressed="false"><i class="ll-cm-sdot is-on"></i>{{#str}}cm_visible, theme_lmslabs{{/str}}<span data-cm-count="visible">{{counts.visible}}</span></button>
+            <button data-ll-tip="{{#str}}tip_cm_t_hidden, theme_lmslabs{{/str}}" type="button" data-cm-filter="hidden" aria-pressed="false"><i class="ll-cm-sdot is-off"></i>{{#str}}cm_hidden, theme_lmslabs{{/str}}<span data-cm-count="hidden">{{counts.hidden}}</span></button>
+            <button data-ll-tip="{{#str}}tip_cm_t_empty, theme_lmslabs{{/str}}" type="button" data-cm-filter="empty" aria-pressed="false">{{#str}}cm_nolearners, theme_lmslabs{{/str}}</button>
+        </div>
+        <span class="ll-fb-spacer"></span>
+        <button data-ll-tip="{{#str}}tip_cm_t_toggle, theme_lmslabs{{/str}}" type="button" class="ll-fb-link" data-cm-toggleall>{{#str}}cm_collapseall, theme_lmslabs{{/str}}</button>
+    </div>
+
+    {{#sections}}
+    <section class="ll-cat ll-depth-{{depth}}{{^visible}} is-hiddencat{{/visible}}" data-cat="{{id}}"{{#canorder}} data-canorder="1"{{/canorder}}>
+        <header class="ll-cat-head">
+            <button data-ll-tip="{{#str}}tip_cm_t_collapse, theme_lmslabs{{/str}}" type="button" class="ll-cat-toggle" data-cm-collapse aria-expanded="true" aria-controls="ll-cat-{{id}}">
+                {{{i.chevron}}}
+                <span class="ll-cat-ico ll-tint-{{tint}}">{{{i.folder}}}</span>
+                <span class="ll-cat-title">
+                    <span class="ll-cat-name">{{#hasparent}}<span class="ll-cat-parent">{{{parent}}} / </span>{{/hasparent}}{{{name}}}</span>
+                    {{#meta}}<span class="ll-cat-meta">{{meta}}</span>{{/meta}}
+                    {{^visible}}<span class="ll-cat-meta">{{#str}}cm_hiddencat, theme_lmslabs{{/str}}</span>{{/visible}}
+                </span>
+                <span class="ll-cat-count">{{count}}</span>
+            </button>
+            <div class="ll-cat-actions">
+                {{#programurl}}<a class="ll-pill ll-pill-sm ll-pill-ghost" href="{{programurl}}" title="{{#str}}cm_makeprogram_tip, theme_lmslabs{{/str}}">{{{i.layers}}}<span>{{#str}}cm_makeprogram, theme_lmslabs{{/str}}</span></a>{{/programurl}}
+                {{#addurl}}<a data-ll-tip="{{#str}}tip_cm_t_addcourse, theme_lmslabs{{/str}}" class="ll-pill ll-pill-sm" href="{{addurl}}">{{{i.plus}}}<span>{{#str}}cm_addcourse, theme_lmslabs{{/str}}</span></a>{{/addurl}}
+                {{#editurl}}<a class="ll-iconbtn" href="{{editurl}}" title="{{#str}}cm_editcategory, theme_lmslabs{{/str}}" aria-label="{{#str}}cm_editcategory, theme_lmslabs{{/str}}: {{{name}}}">{{{i.pencil}}}</a>{{/editurl}}
+                {{#subcaturl}}<a class="ll-iconbtn" href="{{subcaturl}}" title="{{#str}}cm_addsubcat, theme_lmslabs{{/str}}" aria-label="{{#str}}cm_addsubcat, theme_lmslabs{{/str}}: {{{name}}}">{{{i.folder}}}</a>{{/subcaturl}}
+            </div>
+        </header>
+        <div class="ll-cat-body" id="ll-cat-{{id}}">
+            <div class="ll-cm-grid" data-cm-grid>
+                {{#courses}}
+                <article class="ll-ccourse{{^visible}} is-hidden{{/visible}}" data-course="{{id}}" data-visible="{{#visible}}1{{/visible}}{{^visible}}0{{/visible}}"
+                         data-empty="{{#nolearners}}1{{/nolearners}}{{^nolearners}}0{{/nolearners}}" data-search="{{search}}"{{#canorder}} draggable="true"{{/canorder}}>
+                    <a class="ll-ccourse-cover ll-tint-{{tint}}" href="{{viewurl}}" tabindex="-1" aria-hidden="true">
+                        {{#image}}<img src="{{image}}" alt="" loading="lazy">{{/image}}
+                        {{^image}}<span>{{initials}}</span>{{/image}}
+                    </a>
+                    {{#editurl}}<label class="ll-imgbtn" title="{{#str}}ci_change, theme_lmslabs{{/str}}"><input type="file" accept="image/*" data-ll-courseimage="{{id}}" aria-label="{{#str}}ci_change, theme_lmslabs{{/str}}">{{{i.image}}}</label>{{/editurl}}
+                    {{#canorder}}<span class="ll-ccourse-grip" title="{{#str}}cm_drag, theme_lmslabs{{/str}}" aria-hidden="true">{{{i.grip}}}</span>{{/canorder}}
+                    <span class="ll-ccourse-status" data-cm-status>
+                        <i class="ll-cm-sdot"></i><span class="ll-on">{{#str}}cm_visible, theme_lmslabs{{/str}}</span><span class="ll-off">{{#str}}cm_hidden, theme_lmslabs{{/str}}</span>
+                    </span>
+                    <div class="ll-ccourse-body">
+                        <a class="ll-ccourse-name" href="{{viewurl}}">{{{name}}}</a>
+                        <span class="ll-ccourse-code">{{{code}}}</span>
+                        <div class="ll-ccourse-people">
+                            {{#teachers.0}}<span class="ll-avatars">{{#teachers}}<span class="ll-avatar ll-avatar-xs ll-tint-{{tint}}" title="{{{name}}}">{{initials}}</span>{{/teachers}}</span>{{/teachers.0}}
+                            <span class="ll-ccourse-learners">{{{i.users}}}{{learnerslabel}}</span>
+                        </div>
+                        {{#hasprograms}}
+                        <div class="ll-ccourse-programs">
+                            {{#programs}}
+                            <a class="ll-ccourse-program" href="{{url}}" title="{{#hasrule}}{{rule}}{{/hasrule}}">{{{i.layers}}}<span>{{{name}}}</span><em>{{#str}}cm_step, theme_lmslabs, {{step}}{{/str}}</em>{{#hasrule}}{{{i.lock}}}{{/hasrule}}</a>
+                            {{/programs}}
+                        </div>
+                        {{/hasprograms}}
+                    </div>
+                    <footer class="ll-ccourse-foot">
+                        {{#canvisibility}}
+                        <label class="ll-switch" title="{{#str}}cm_visibletip, theme_lmslabs{{/str}}">
+                            <input data-ll-tip="{{#str}}tip_cm_t_vis, theme_lmslabs{{/str}}" type="checkbox" role="switch" data-cm-visibility{{#visible}} checked{{/visible}} aria-label="{{#str}}cm_visiblelearners, theme_lmslabs{{/str}}: {{{name}}}">
+                            <span class="ll-switch-track" aria-hidden="true"></span>
+                            <span class="ll-switch-label">{{#str}}cm_visible, theme_lmslabs{{/str}}</span>
+                        </label>
+                        {{/canvisibility}}
+                        <span class="ll-fb-spacer"></span>
+                        {{#editurl}}<a class="ll-iconbtn" href="{{editurl}}" title="{{#str}}cm_settings, theme_lmslabs{{/str}}" aria-label="{{#str}}cm_settings, theme_lmslabs{{/str}}: {{{name}}}">{{{i.pencil}}}</a>{{/editurl}}
+                        <a class="ll-ccourse-open" href="{{viewurl}}">{{#str}}cm_open, theme_lmslabs{{/str}}{{{i.arrow}}}</a>
+                    </footer>
+                </article>
+                {{/courses}}
+                {{#addurl}}
+                <a data-ll-tip="{{#str}}tip_cm_t_addcourse, theme_lmslabs{{/str}}" class="ll-ccourse-add" href="{{addurl}}">
+                    <span class="ll-ccourse-addico">{{{i.plus}}}</span>
+                    <span>{{{addlabel}}}</span>
+                </a>
+                {{/addurl}}
+            </div>
+            <p class="ll-cm-nomatch" data-cm-nomatch hidden>{{#str}}cm_nomatch, theme_lmslabs{{/str}}</p>
+        </div>
+    </section>
+    {{/sections}}
+    {{^hassections}}
+    <div class="ll-empty">
+        <div class="ll-empty-ico">{{{i.folder}}}</div>
+        <h2>{{#str}}cm_nocats, theme_lmslabs{{/str}}</h2>
+        <p>{{#str}}cm_nocats_desc, theme_lmslabs{{/str}}</p>
+    </div>
+    {{/hassections}}
+    <div class="ll-toastline" data-cm-toast role="status" aria-live="polite" hidden></div>
+    <script type="application/json" data-cm-str>{{{strjson}}}</script>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

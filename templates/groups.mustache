@@ -1,0 +1,83 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/groups
+
+    Course groups as cards.
+
+    Example context (json):
+    {"groups": [], "hasgroups": false, "stats": [], "i": {} }
+}}
+<div class="ll-groups">
+    <div class="ll-toolbar">
+        <div class="ll-stats">
+            {{#stats}}
+            <div class="ll-stat{{#warn}} is-warn{{/warn}}"><span class="ll-stat-value" data-countup="{{value}}">{{value}}</span><span class="ll-stat-label">{{label}}</span></div>
+            {{/stats}}
+        </div>
+        <div class="ll-toolbar-actions">
+            <a data-ll-tip="{{#str}}tip_gp_overview, theme_lmslabs{{/str}}" class="ll-pill" href="{{overviewurl}}">{{{i.chart}}}<span>{{#str}}overview, group{{/str}}</span></a>
+            <a data-ll-tip="{{#str}}tip_gp_groupings, theme_lmslabs{{/str}}" class="ll-pill" href="{{groupingsurl}}">{{{i.layers}}}<span>{{#str}}groupings, group{{/str}}</span></a>
+            <a data-ll-tip="{{#str}}tip_gp_import, theme_lmslabs{{/str}}" class="ll-pill" href="{{importurl}}">{{{i.upload}}}<span>{{#str}}import{{/str}}</span></a>
+            <a data-ll-tip="{{#str}}tip_gp_auto, theme_lmslabs{{/str}}" class="ll-pill" href="{{autourl}}">{{{i.sparkles}}}<span>{{#str}}autocreategroups, group{{/str}}</span></a>
+            <a data-ll-tip="{{#str}}tip_gp_create, theme_lmslabs{{/str}}" class="btn btn-primary ll-btn-icon" href="{{createurl}}">{{{i.plus}}}<span>{{#str}}creategroup, group{{/str}}</span></a>
+        </div>
+    </div>
+
+    {{^hasgroups}}
+    <div class="ll-empty">
+        <div class="ll-empty-ico">{{{i.group}}}</div>
+        <h2>{{#str}}nogroups_title, theme_lmslabs{{/str}}</h2>
+        <p>{{#str}}nogroups_body, theme_lmslabs{{/str}}</p>
+        <div class="ll-notice-actions justify-content-center">
+            <a class="btn btn-primary" href="{{createurl}}">{{#str}}creategroup, group{{/str}}</a>
+            <a data-ll-tip="{{#str}}tip_gp_auto, theme_lmslabs{{/str}}" class="btn btn-secondary" href="{{autourl}}">{{#str}}autocreategroups, group{{/str}}</a>
+        </div>
+    </div>
+    {{/hasgroups}}
+
+    <div class="ll-gcards">
+        {{#groups}}
+        <article class="ll-gcard">
+            <a class="ll-gcard-main" href="{{membersurl}}">
+                <div class="ll-gcard-top">
+                    <h3>{{name}}</h3>
+                    <span class="ll-count-badge">{{count}}</span>
+                </div>
+                {{#description}}<p class="ll-gcard-desc">{{description}}</p>{{/description}}
+                <div class="ll-gcard-people">
+                    <div class="ll-avatars">
+                        {{#people}}<span class="ll-avatar ll-tint-{{tint}}" title="{{name}}">{{initials}}</span>{{/people}}
+                        {{#hasmore}}<span class="ll-avatar ll-avatar-more">+{{more}}</span>{{/hasmore}}
+                    </div>
+                    {{^people}}<span class="ll-gcard-empty">{{#str}}nomembers, theme_lmslabs{{/str}}</span>{{/people}}
+                </div>
+                <div class="ll-gcard-tags">
+                    {{#idnumber}}<span class="ll-tag">{{idnumber}}</span>{{/idnumber}}
+                    {{#enrolkey}}<span class="ll-tag">{{{i.key}}} {{#str}}enrolmentkey, group{{/str}}</span>{{/enrolkey}}
+                </div>
+            </a>
+            <div class="ll-gcard-actions">
+                <a class="ll-gcard-cta" href="{{membersurl}}">{{{i.users}}}<span>{{#str}}managemembers, theme_lmslabs{{/str}}</span></a>
+                <a data-ll-tip="{{#str}}tip_gp_edit, theme_lmslabs{{/str}}" class="ll-iconbtn" href="{{editurl}}" aria-label="{{#str}}edit{{/str}} {{name}}" title="{{#str}}editgroupsettings, group{{/str}}">{{{i.pencil}}}</a>
+                <a data-ll-tip="{{#str}}tip_gp_delete, theme_lmslabs{{/str}}" class="ll-iconbtn ll-danger" href="{{deleteurl}}" aria-label="{{#str}}delete{{/str}} {{name}}" title="{{#str}}delete{{/str}}">{{{i.x}}}</a>
+            </div>
+        </article>
+        {{/groups}}
+    </div>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

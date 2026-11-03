@@ -1,0 +1,65 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/backup
+
+    Back up a course now, and list existing backups.
+
+    Example context (json):
+    {"files": [], "options": [], "i": {}, "action": "#", "sesskey": "x"}
+}}
+<div class="ll-bk">
+    <form method="post" action="{{action}}" class="ll-fcard ll-bk-now" data-ll-bk>
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="make" value="1">
+        <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.download}}}</span><div><h2>{{#str}}bk_now, theme_lmslabs{{/str}}</h2><p>{{#str}}bk_now_desc, theme_lmslabs{{/str}}</p></div></header>
+        <div class="ll-fcard-body">
+            <div class="ll-cp-rules">
+                <label class="ll-cp-rule"><input type="radio" name="kind" value="course"{{#kindcourse}} checked{{/kindcourse}}><span class="ll-swcard-ico">{{{i.book}}}</span><span class="ll-toggle-text"><strong>{{#str}}bk_kind_course, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_kind_course_desc, theme_lmslabs{{/str}}</span></span></label>
+                {{#canusers}}<label class="ll-cp-rule"><input type="radio" name="kind" value="all"{{#kindall}} checked{{/kindall}}><span class="ll-swcard-ico">{{{i.users}}}</span><span class="ll-toggle-text"><strong>{{#str}}bk_kind_all, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_kind_all_desc, theme_lmslabs{{/str}}</span></span></label>{{/canusers}}
+            </div>
+            <div class="ll-bk-opts">
+                <span class="ll-muted">{{#str}}bk_include, theme_lmslabs{{/str}}</span>
+                {{#options}}<label class="ll-chipcheck" data-ll-tip-self="{{tip}}"><input type="checkbox" name="opt_{{key}}" value="1"{{#on}} checked{{/on}}><span>{{{i.check}}}{{label}}</span></label>{{/options}}
+            </div>
+            <div class="ll-bk-go">
+                <button type="submit" class="btn btn-primary ll-btn-icon" data-bk-go>{{{i.download}}}<span>{{#str}}bk_go, theme_lmslabs{{/str}}</span></button>
+                <span class="ll-bk-busy" data-bk-busy hidden><span class="ll-spin"></span>{{#str}}bk_busy, theme_lmslabs{{/str}}</span>
+            </div>
+        </div>
+    </form>
+
+    <section class="ll-fcard">
+        <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.restore}}}</span><div><h2>{{#str}}bk_list, theme_lmslabs{{/str}}</h2><p>{{#str}}bk_list_desc, theme_lmslabs{{/str}}</p></div>
+            <a class="ll-pill ll-bk-headlink" href="{{restoreurl}}">{{{i.restore}}}<span>{{#str}}bk_restorefile, theme_lmslabs{{/str}}</span></a></header>
+        <div class="ll-fcard-body ll-bk-files">
+            {{#files}}
+            <div class="ll-bk-file{{#isnew}} is-new{{/isnew}}">
+                <span class="ll-bk-fico ll-bk-{{kindclass}}">{{{i.restore}}}</span>
+                <div class="ll-bk-fmain"><strong>{{when}}</strong><span>{{kind}} · {{size}} · {{ago}}</span></div>
+                {{#isnew}}<span class="ll-badge-new">{{#str}}bk_justmade, theme_lmslabs{{/str}}</span>{{/isnew}}
+                <a class="btn btn-primary btn-sm ll-btn-icon" href="{{download}}"{{#isnew}} data-bk-autodl{{/isnew}}>{{{i.download}}}<span>{{#str}}download{{/str}}</span></a>
+                <a class="btn btn-outline-secondary btn-sm ll-btn-icon" href="{{restore}}">{{{i.restore}}}<span>{{#str}}restore{{/str}}</span></a>
+                {{#delete}}<a class="ll-iconbtn ll-bk-del" href="{{delete}}" data-bk-del title="{{#str}}delete{{/str}}" aria-label="{{#str}}delete{{/str}}">{{{i.trash}}}</a>{{/delete}}
+            </div>
+            {{/files}}
+            {{^files}}<div class="ll-bk-empty">{{#str}}bk_none, theme_lmslabs{{/str}}</div>{{/files}}
+        </div>
+    </section>
+
+    <div class="ll-bk-auto{{#autoon}} is-on{{/autoon}}">{{{i.clock}}}<span>{{autotext}}</span>{{#autourl}}<a href="{{autourl}}">{{#str}}bk_autoset, theme_lmslabs{{/str}}</a>{{/autourl}}</div>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

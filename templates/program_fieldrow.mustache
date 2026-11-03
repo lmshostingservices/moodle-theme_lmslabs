@@ -1,0 +1,37 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/program_fieldrow
+
+    One profile-field condition.
+
+    Example context (json):
+    {"value": "Sales", "options": [], "is": true, "i": {} }
+}}
+<div class="ll-fieldrow">
+    <select class="form-select custom-select" data-f="field" data-ll-tip="{{#str}}tip_pg_field, theme_lmslabs{{/str}}">
+        {{#options}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/options}}
+    </select>
+    <select class="form-select custom-select" data-f="op" data-ll-tip="{{#str}}tip_pg_op, theme_lmslabs{{/str}}">
+        <option value="is"{{#is}} selected{{/is}}>{{#str}}op_is, theme_lmslabs{{/str}}</option>
+        <option value="isnot"{{#isnot}} selected{{/isnot}}>{{#str}}op_isnot, theme_lmslabs{{/str}}</option>
+        <option value="contains"{{#contains}} selected{{/contains}}>{{#str}}op_contains, theme_lmslabs{{/str}}</option>
+        <option value="starts"{{#starts}} selected{{/starts}}>{{#str}}op_starts, theme_lmslabs{{/str}}</option>
+    </select>
+    <input type="text" class="form-control" data-f="value" data-ll-tip="{{#str}}tip_pg_value, theme_lmslabs{{/str}}" value="{{value}}" placeholder="{{#str}}value, theme_lmslabs{{/str}}">
+    <button type="button" class="ll-iconbtn ll-danger" data-act="fieldx" data-ll-tip="{{#str}}tip_pg_rmrule, theme_lmslabs{{/str}}" aria-label="{{#str}}remove{{/str}}">{{{i.x}}}</button>
+</div>

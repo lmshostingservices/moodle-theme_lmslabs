@@ -1,0 +1,71 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/mybadges
+
+    Trophy shelf of earned badges and the ones to earn next.
+
+    Example context (json):
+    {"earned": [], "available": [], "i": {} }
+}}
+<div class="ll-badges" data-ll-badges data-copied="{{copied}}">
+    <section class="ll-mb-hero">
+        <span class="ll-mb-heroico">{{{i.medal}}}</span>
+        <div>
+            <h2>{{headline}}</h2>
+            <p>{{#str}}mb_intro, theme_lmslabs{{/str}}</p>
+        </div>
+        <div class="ll-mb-heroactions">
+            {{#backpackurl}}<a class="ll-pill" href="{{backpackurl}}" data-ll-tip-self data-ll-tip="{{#str}}mb_backpack_tip, theme_lmslabs{{/str}}">{{{i.link}}}<span>{{#str}}mb_backpack, theme_lmslabs{{/str}}</span></a>{{/backpackurl}}
+            <a class="ll-iconbtn" href="{{prefsurl}}" title="{{#str}}mb_prefs, theme_lmslabs{{/str}}" aria-label="{{#str}}mb_prefs, theme_lmslabs{{/str}}">{{{i.settings}}}</a>
+        </div>
+    </section>
+
+    {{#hasearned}}
+    <div class="ll-mb-shelf">
+        {{#earned}}
+        <article class="ll-mb-card">
+            {{#isnew}}<span class="ll-mb-new">{{#str}}mb_new, theme_lmslabs{{/str}}</span>{{/isnew}}
+            <a class="ll-mb-img" href="{{url}}"><img src="{{image}}" alt="" loading="lazy"></a>
+            <strong>{{{name}}}</strong>
+            <span class="ll-mb-meta">{{#course}}{{{course}}} · {{/course}}{{when}}</span>
+            {{#expires}}<span class="ll-mb-exp">{{#str}}mb_expires, theme_lmslabs, {{expires}}{{/str}}</span>{{/expires}}
+            <div class="ll-mb-actions">
+                <button type="button" class="ll-iconbtn" data-mb-share="{{url}}" title="{{#str}}mb_share, theme_lmslabs{{/str}}" aria-label="{{#str}}mb_share, theme_lmslabs{{/str}}">{{{i.share}}}</button>
+                <a class="ll-iconbtn" href="{{download}}" title="{{#str}}mb_download, theme_lmslabs{{/str}}" aria-label="{{#str}}mb_download, theme_lmslabs{{/str}}">{{{i.download}}}</a>
+                <a class="ll-iconbtn" href="{{url}}" title="{{#str}}mb_view, theme_lmslabs{{/str}}" aria-label="{{#str}}mb_view, theme_lmslabs{{/str}}">{{{i.link}}}</a>
+            </div>
+        </article>
+        {{/earned}}
+    </div>
+    {{/hasearned}}
+    {{^hasearned}}
+    <div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.award}}}</div><h2>{{#str}}mb_none, theme_lmslabs{{/str}}</h2><p>{{#str}}mb_none_desc, theme_lmslabs{{/str}}</p></div>
+    {{/hasearned}}
+
+    {{#hasavailable}}
+    <h2 class="ll-mb-h">{{{i.target}}}{{#str}}mb_next, theme_lmslabs{{/str}}</h2>
+    <div class="ll-mb-next">
+        {{#available}}
+        <a class="ll-mb-avail" href="{{#courseurl}}{{courseurl}}{{/courseurl}}{{^courseurl}}#{{/courseurl}}">
+            <img src="{{image}}" alt="" loading="lazy">
+            <span><strong>{{{name}}}</strong><small>{{{course}}}</small>{{#description}}<em>{{description}}</em>{{/description}}</span>
+        </a>
+        {{/available}}
+    </div>
+    {{/hasavailable}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

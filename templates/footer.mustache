@@ -1,0 +1,50 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/footer
+
+    Page footer: Moodle's standard footer output, then the LMS Labs bar (always shown).
+
+    Example context (json):
+    {
+        "output": {"login_info": "You are logged in as Jane", "standard_footer_html": ""},
+        "promo": {"labsurl": "https://lms-labs.com", "links": []}
+    }
+}}
+<footer id="page-footer" class="ll-footer">
+    <div class="tool_usertours-resettourcontainer" hidden></div>
+    {{{ output.standard_footer_html }}}
+    {{{ output.standard_end_of_body_html }}}
+    <div class="footer-content-debugging">{{{ output.debug_footer_html }}}</div>
+
+    {{#promo}}
+    <div class="ll-promo" data-ll-promo role="complementary" aria-label="LMS Labs">
+        <a class="ll-promo-brand" href="{{labsurl}}" target="_blank" rel="noopener">
+            <img class="ll-promo-logo" src="{{logo}}" alt="LMS Labs by LMS Hosting Services" width="156" height="47">
+        </a>
+        <ul class="ll-promo-links">
+            {{#links}}
+            <li><a class="{{class}}" href="{{url}}"{{#external}} target="_blank" rel="noopener"{{/external}}>{{{icon}}}<span>{{label}}</span></a></li>
+            {{/links}}
+        </ul>
+        <a class="ll-promo-deal" href="{{deal.url}}" target="_blank" rel="noopener" aria-describedby="ll-deal-tip{{#compact}}-c{{/compact}}">
+            {{{deal.gift}}}<span>{{#str}}promo_deal, theme_lmslabs{{/str}}</span><code>{{deal.code}}</code>
+            <span class="ll-promo-tip" role="tooltip" id="ll-deal-tip{{#compact}}-c{{/compact}}">{{#str}}promo_dealtip, theme_lmslabs, {{deal.code}}{{/str}}</span>
+        </a>
+    </div>
+    {{/promo}}
+</footer>

@@ -1,0 +1,195 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/addcourse
+
+    Add a course: essentials, dates, switches; remembered for next time.
+
+    Example context (json):
+    {"action": "#", "sesskey": "x", "e": {}, "i": {}, "categories": [], "durations": [], "switches": [], "langs": []}
+}}
+<form class="ll-fpage" method="post" action="{{action}}" enctype="multipart/form-data" autocomplete="off" novalidate data-ll-addcourse>
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <div class="ll-fmain">
+        {{#haserrors}}<div class="ll-fnotice is-warn" role="alert">{{#str}}au_fixerrors, theme_lmslabs{{/str}}</div>{{/haserrors}}
+
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.book}}}</span>
+                <div><h2>{{#str}}ac_course, theme_lmslabs{{/str}}</h2><p>{{#str}}ac_course_desc, theme_lmslabs{{/str}}</p></div>
+            </header>
+            <div class="ll-fcard-body">
+                <div class="ll-f{{#e.fullname}} has-error{{/e.fullname}}">
+                    <label for="ac-full" data-ll-tip="{{#str}}tip_fullname, theme_lmslabs{{/str}}">{{#str}}fullnamecourse{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                    <input id="ac-full" class="form-control ll-input-lg" name="fullname" value="{{fullname}}" required autofocus placeholder="{{#str}}ac_full_ph, theme_lmslabs{{/str}}" data-ac="full">
+                    {{#e.fullname}}<p class="ll-ferr">{{msg}}</p>{{/e.fullname}}
+                </div>
+                <div class="ll-frow">
+                    <div class="ll-f{{#e.shortname}} has-error{{/e.shortname}}">
+                        <label for="ac-short" data-ll-tip="{{#str}}tip_shortname, theme_lmslabs{{/str}}">{{#str}}shortnamecourse{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                        <div class="ll-input-wrap">
+                            <input id="ac-short" class="form-control" name="shortname" value="{{shortname}}" required data-ac="short" data-year="{{year}}" data-auto="{{^shortname}}1{{/shortname}}{{#shortname}}0{{/shortname}}">
+                            <span class="ll-autotag" data-ac="autotag">{{{i.wand}}}{{#str}}ac_auto, theme_lmslabs{{/str}}</span>
+                        </div>
+                        {{#e.shortname}}<p class="ll-ferr">{{msg}}</p>{{/e.shortname}}
+                    </div>
+                    <div class="ll-f{{#e.category}} has-error{{/e.category}}">
+                        <label for="ac-cat" data-ll-tip="{{#str}}tip_category, theme_lmslabs{{/str}}">{{#str}}category{{/str}}</label>
+                        <select id="ac-cat" class="form-select custom-select" name="categoryid" data-ac="cat">
+                            {{#categories}}<option value="{{id}}"{{#selected}} selected{{/selected}}>{{{name}}}</option>{{/categories}}
+                        </select>
+                    </div>
+                </div>
+                <div class="ll-f">
+                    <label for="ac-summary" data-ll-tip="{{#str}}tip_summary_editor, theme_lmslabs{{/str}}">{{#str}}ac_summary, theme_lmslabs{{/str}} <em class="ll-opt">{{#str}}optional, theme_lmslabs{{/str}}</em></label>
+                    <textarea id="ac-summary" class="form-control" name="summary" rows="2" placeholder="{{#str}}ac_summary_ph, theme_lmslabs{{/str}}">{{summary}}</textarea>
+                </div>
+            </div>
+        </section>
+
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.calendar}}}</span>
+                <div><h2>{{#str}}ac_dates, theme_lmslabs{{/str}}</h2><p>{{#str}}ac_dates_desc, theme_lmslabs{{/str}}</p></div>
+            </header>
+            <div class="ll-fcard-body">
+                <div class="ll-frow">
+                    <div class="ll-f">
+                        <label for="ac-start" data-ll-tip="{{#str}}tip_startdate, theme_lmslabs{{/str}}">{{#str}}startdate{{/str}}</label>
+                        <input id="ac-start" type="date" class="form-control" name="startdate" value="{{startdate}}" data-ac="start">
+                    </div>
+                    <div class="ll-f{{#e.enddate}} has-error{{/e.enddate}}">
+                        <label for="ac-end" data-ll-tip="{{#str}}tip_enddate, theme_lmslabs{{/str}}">{{#str}}enddate{{/str}}</label>
+                        <input id="ac-end" type="date" class="form-control" name="enddate" value="{{enddate}}" data-ac="end">
+                        {{#e.enddate}}<p class="ll-ferr">{{msg}}</p>{{/e.enddate}}
+                    </div>
+                </div>
+                <div class="ll-f">
+                    <label>{{#str}}ac_length, theme_lmslabs{{/str}}</label>
+                    <div class="ll-chipset" role="radiogroup" aria-label="{{#str}}ac_length, theme_lmslabs{{/str}}">
+                        {{#durations}}<label class="ll-chipopt"><input type="radio" name="duration" value="{{months}}"{{#selected}} checked{{/selected}} data-ac="duration"><span>{{label}}</span></label>{{/durations}}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{#hasaifopts}}
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.sparkles}}}</span>
+                <div><h2>{{#str}}ac_aif, theme_lmslabs{{/str}}</h2><p>{{#str}}ac_aif_desc, theme_lmslabs{{/str}}</p></div>
+            </header>
+            <div class="ll-fcard-body">
+                <div class="ll-aif-grid">
+                    {{#aifopts}}
+                    <label class="ll-aif-row" data-ll-tip-self{{#help}} data-ll-tip="{{help}}"{{/help}}>
+                        <span class="ll-aif-label">{{label}}</span>
+                        <select class="custom-select" name="aif_{{key}}">{{#options}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/options}}</select>
+                    </label>
+                    {{/aifopts}}
+                </div>
+            </div>
+        </section>
+        {{/hasaifopts}}
+
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.toggle}}}</span>
+                <div><h2>{{#str}}ac_switches, theme_lmslabs{{/str}}</h2><p>{{#str}}ac_switches_desc, theme_lmslabs{{/str}}{{#remembered}} {{#str}}ac_remembered, theme_lmslabs{{/str}}{{/remembered}}{{#editing}} {{#str}}ac_saveswitches, theme_lmslabs{{/str}}{{/editing}}</p></div>
+            </header>
+            <div class="ll-fcard-body">
+                <div class="ll-switchgrid">
+                    {{#switches}}
+                    <label class="ll-swcard">
+                        <input type="checkbox" name="sw_{{key}}" value="1"{{#on}} checked{{/on}} data-ac="sw-{{key}}">
+                        <span class="ll-swcard-ico">{{{icon}}}</span>
+                        <span class="ll-toggle-text"><strong>{{label}}</strong><span>{{desc}}</span></span>
+                        <span class="ll-switch-track" aria-hidden="true"></span>
+                    </label>
+                    {{/switches}}
+                </div>
+                {{#aiformat}}<p class="ll-fhint">{{{i.sparkles}}}{{#str}}ac_aiformat, theme_lmslabs{{/str}}</p>{{/aiformat}}
+            </div>
+        </section>
+
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.image}}}</span>
+                <div><h2>{{#str}}ac_image, theme_lmslabs{{/str}} <em>{{#str}}optional, theme_lmslabs{{/str}}</em></h2><p>{{#str}}ac_image_desc, theme_lmslabs{{/str}}</p></div>
+            </header>
+            <div class="ll-fcard-body">
+                <label class="ll-drop" data-ac="drop">
+                    <input type="file" name="image" accept="image/*" data-ac="file">
+                    <span class="ll-drop-ico">{{{i.upload}}}</span>
+                    <strong data-ac="dropname">{{#currentimage}}{{#str}}ac_dropreplace, theme_lmslabs{{/str}}{{/currentimage}}{{^currentimage}}{{#str}}ac_drop, theme_lmslabs{{/str}}{{/currentimage}}</strong>
+                    <span>{{#str}}ac_drop_desc, theme_lmslabs{{/str}}</span>
+                </label>
+            </div>
+        </section>
+
+        <details class="ll-acc"{{#e.idnumber}} open{{/e.idnumber}}>
+            <summary>
+                <span class="ll-fcard-ico">{{{i.list}}}</span>
+                <span class="ll-acc-text"><strong>{{#str}}au_more, theme_lmslabs{{/str}}</strong><span>{{#str}}ac_more_desc, theme_lmslabs{{/str}}</span></span>
+                <span class="ll-acc-chev">{{{i.chev}}}</span>
+            </summary>
+            <div class="ll-acc-body">
+                <div class="ll-frow">
+                    <div class="ll-f{{#e.idnumber}} has-error{{/e.idnumber}}">
+                        <label for="ac-id" data-ll-tip="{{#str}}tip_idnumber, theme_lmslabs{{/str}}">{{#str}}idnumbercourse{{/str}}</label>
+                        <input id="ac-id" class="form-control" name="idnumber" value="{{idnumber}}">
+                        {{#e.idnumber}}<p class="ll-ferr">{{msg}}</p>{{/e.idnumber}}
+                    </div>
+                    {{#haslangs}}
+                    <div class="ll-f">
+                        <label for="ac-lang" data-ll-tip="{{#str}}tip_lang, theme_lmslabs{{/str}}">{{#str}}forcelanguage{{/str}}</label>
+                        <select id="ac-lang" class="form-select custom-select" name="lang">{{#langs}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/langs}}</select>
+                    </div>
+                    {{/haslangs}}
+                </div>
+                <p class="ll-fhint">{{#str}}ac_more_hint, theme_lmslabs{{/str}}</p>
+            </div>
+        </details>
+
+        <div class="ll-savebar">
+            {{^editing}}
+            <button type="submit" class="btn btn-primary ll-btn-icon" name="next" value="open">{{{i.check}}}<span>{{#str}}ac_create, theme_lmslabs{{/str}}</span></button>
+            <button type="submit" class="btn btn-secondary" name="next" value="another">{{#str}}au_createanother, theme_lmslabs{{/str}}</button>
+            {{/editing}}
+            {{#editing}}<button type="submit" class="btn btn-primary ll-btn-icon">{{{i.check}}}<span>{{#str}}savechanges{{/str}}</span></button>{{/editing}}
+            <a class="ll-savebar-cancel" href="{{cancelurl}}">{{#str}}cancel{{/str}}</a>
+            <span class="ll-savebar-hint">{{^editing}}{{#str}}ac_hint, theme_lmslabs{{/str}}{{/editing}}{{#editing}}{{#str}}ac_hint_save, theme_lmslabs{{/str}}{{/editing}}</span>
+        </div>
+    </div>
+
+    <aside class="ll-faside">
+        <div class="ll-cpreview">
+            <div class="ll-cpreview-media{{#currentimage}} has-image{{/currentimage}}" data-ac="media"{{#currentimage}} style="background-image: url('{{currentimage}}')"{{/currentimage}}><span data-ac="mono">AB</span></div>
+            <div class="ll-cpreview-body">
+                <span class="ll-cpreview-cat" data-ac="pcat"></span>
+                <strong data-ac="pname" data-empty="{{#str}}ac_newcourse, theme_lmslabs{{/str}}">{{#str}}ac_newcourse, theme_lmslabs{{/str}}</strong>
+                <span class="ll-cpreview-meta" data-ac="pmeta"></span>
+                <span class="ll-cpreview-dates" data-ac="pdates" data-noend="{{#str}}ac_noend, theme_lmslabs{{/str}}"></span>
+            </div>
+        </div>
+        {{^editing}}
+        <a class="ll-asidelink" href="{{uploadurl}}">{{{i.upload}}}<span><strong>{{#str}}ac_many, theme_lmslabs{{/str}}</strong>{{#str}}ac_many_desc, theme_lmslabs{{/str}}</span></a>
+        <a class="ll-asidelink" href="{{restoreurl}}">{{{i.restore}}}<span><strong>{{#str}}ac_restore, theme_lmslabs{{/str}}</strong>{{#str}}ac_restore_desc, theme_lmslabs{{/str}}</span></a>
+        {{/editing}}
+        {{#deleteurl}}<a class="ll-asidelink ll-asidedanger" href="{{deleteurl}}">{{{i.restore}}}<span><strong>{{#str}}ac_delete, theme_lmslabs{{/str}}</strong>{{#str}}ac_delete_desc, theme_lmslabs{{/str}}</span></a>{{/deleteurl}}
+        <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+    </aside>
+</form>

@@ -1,0 +1,120 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/appearance
+
+    Brand settings with a live preview.
+
+    Example context (json):
+    {"swatches": [], "i": {}, "action": "#", "sesskey": "x"}
+}}
+<form class="ll-ap" method="post" action="{{action}}" enctype="multipart/form-data" data-ll-ap>
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <div class="ll-ap-main">
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.building}}}</span><div><h2>{{#str}}ap_brand, theme_lmslabs{{/str}}</h2><p>{{#str}}ap_brand_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-uu-fields" id="admin-fullname">
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_name, theme_lmslabs{{/str}}">{{#str}}fullsitename{{/str}}</span><input class="form-control" name="fullname" value="{{fullname}}" data-ap-name></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_short, theme_lmslabs{{/str}}">{{#str}}shortsitename{{/str}}</span><input class="form-control" name="shortname" value="{{shortname}}"></label>
+                </div>
+                <label class="ll-f" id="admin-summary"><span data-ll-tip="{{#str}}tip_ap_summary, theme_lmslabs{{/str}}">{{#str}}ap_summary, theme_lmslabs{{/str}}</span>
+                    <input type="hidden" name="summary_sent" value="1"><textarea class="form-control" name="summary" rows="2">{{summary}}</textarea></label>
+                <div class="ll-ap-colour">
+                    <span class="ll-ap-label" data-ll-tip="{{#str}}tip_ap_colour, theme_lmslabs{{/str}}">{{#str}}ap_colour, theme_lmslabs{{/str}}</span>
+                    <div class="ll-ap-swatches">
+                        {{#swatches}}<button type="button" class="ll-ap-sw{{#selected}} is-on{{/selected}}" style="--sw:{{hex}}" data-ap-sw="{{hex}}" title="{{label}}" aria-label="{{label}}"></button>{{/swatches}}
+                        <label class="ll-ap-hex"><span class="ll-ap-dot" style="--sw:{{accent}}" data-ap-dot></span><input class="form-control ll-mono" name="brandcolor" value="{{accent}}" maxlength="7" data-ap-hex aria-label="{{#str}}ap_hex, theme_lmslabs{{/str}}"></label>
+                    </div>
+                </div>
+                <div class="ll-ap-files" id="admin-logo">
+                    <div class="ll-ap-file">
+                        <span class="ll-ap-thumb ll-ap-logo">{{#logo}}<img src="{{logo}}" alt="" data-ap-logoimg>{{/logo}}{{^logo}}<b>{{initial}}</b>{{/logo}}</span>
+                        <div class="ll-ap-filemain"><strong data-ll-tip="{{#str}}tip_ap_logo, theme_lmslabs{{/str}}">{{#str}}logo, theme_lmslabs{{/str}}</strong><span>{{#str}}ap_logo_desc, theme_lmslabs{{/str}}</span>
+                            <div class="ll-ap-filebtns"><label class="btn btn-outline-secondary btn-sm ll-btn-icon">{{{i.upload}}}<span>{{#str}}ap_choose, theme_lmslabs{{/str}}</span><input type="file" name="logo" accept=".png,.jpg,.jpeg,.svg,.webp" data-ap-logo hidden></label>
+                            {{#haslogo}}<label class="ll-chipcheck"><input type="checkbox" name="removelogo" value="1"><span>{{{i.check}}}{{#str}}ap_remove, theme_lmslabs{{/str}}</span></label>{{/haslogo}}</div></div>
+                    </div>
+                    <div class="ll-ap-file">
+                        <span class="ll-ap-thumb">{{#loginimage}}<img src="{{loginimage}}" alt="">{{/loginimage}}{{^loginimage}}{{{i.image}}}{{/loginimage}}</span>
+                        <div class="ll-ap-filemain"><strong data-ll-tip="{{#str}}tip_ap_login, theme_lmslabs{{/str}}">{{#str}}loginimage, theme_lmslabs{{/str}}</strong><span>{{#str}}ap_login_desc, theme_lmslabs{{/str}}</span>
+                            <div class="ll-ap-filebtns"><label class="btn btn-outline-secondary btn-sm ll-btn-icon">{{{i.upload}}}<span>{{#str}}ap_choose, theme_lmslabs{{/str}}</span><input type="file" name="loginimage" accept=".png,.jpg,.jpeg,.webp" hidden></label>
+                            {{#hasloginimage}}<label class="ll-chipcheck"><input type="checkbox" name="removelogin" value="1"><span>{{{i.check}}}{{#str}}ap_remove, theme_lmslabs{{/str}}</span></label>{{/hasloginimage}}</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.type}}}</span><div><h2>{{#str}}ap_type, theme_lmslabs{{/str}}</h2><p>{{#str}}ap_type_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-uu-fields">
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_font, theme_lmslabs{{/str}}">{{#str}}font, theme_lmslabs{{/str}}</span>
+                        <select class="custom-select form-select" name="font" data-ap-font>{{#fontoptions}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/fontoptions}}</select></label>
+                    <div class="ll-f"><span data-ll-tip="{{#str}}tip_ap_size, theme_lmslabs{{/str}}">{{#str}}fontsize, theme_lmslabs{{/str}}</span>
+                        <div class="ll-ap-sizes">{{#sizes}}<label class="ll-chipopt"><input type="radio" name="fontsize" value="{{px}}"{{#selected}} checked{{/selected}} data-ap-size><span>{{label}}</span></label>{{/sizes}}</div></div>
+                </div>
+            </div>
+        </section>
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.mail}}}</span><div><h2>{{#str}}ap_contact, theme_lmslabs{{/str}}</h2><p>{{#str}}ap_contact_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-uu-fields" id="admin-contactemail">
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_email, theme_lmslabs{{/str}}">{{#str}}contactemail, theme_lmslabs{{/str}}</span><input class="form-control" type="email" name="contactemail" value="{{contactemail}}" data-ap-email></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_phone, theme_lmslabs{{/str}}">{{#str}}contactphone, theme_lmslabs{{/str}}</span><input class="form-control" name="contactphone" value="{{contactphone}}" data-ap-phone></label>
+                </div>
+            </div>
+        </section>
+        <section class="ll-fcard" id="admin-smtphosts">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.mail}}}</span><div><h2>{{#str}}ap_smtp, theme_lmslabs{{/str}}</h2><p>{{#str}}ap_smtp_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <input type="hidden" name="smtp_sent" value="1">
+                <div class="ll-uu-fields">
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_smtphosts, theme_lmslabs{{/str}}">{{#str}}smtphosts, admin{{/str}}</span><input class="form-control" name="smtphosts" value="{{smtphosts}}" placeholder="smtp.example.com:587"></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_smtpsecure, theme_lmslabs{{/str}}">{{#str}}smtpsecure, admin{{/str}}</span>
+                        <select class="custom-select form-select" name="smtpsecure">{{#smtpsecures}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/smtpsecures}}</select></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_smtpauth, theme_lmslabs{{/str}}">{{#str}}smtpauthtype, admin{{/str}}</span>
+                        <select class="custom-select form-select" name="smtpauthtype">{{#smtpauths}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/smtpauths}}</select></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_smtpuser, theme_lmslabs{{/str}}">{{#str}}smtpuser, admin{{/str}}</span><input class="form-control" name="smtpuser" value="{{smtpuser}}" autocomplete="off"></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_smtppass, theme_lmslabs{{/str}}">{{#str}}smtppass, admin{{/str}}</span><input class="form-control" type="password" name="smtppass" value="" autocomplete="new-password" placeholder="{{#haspass}}{{#str}}ap_smtp_keep, theme_lmslabs{{/str}}{{/haspass}}"></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_ap_noreply, theme_lmslabs{{/str}}">{{#str}}noreplyaddress, admin{{/str}}</span><input class="form-control" type="email" name="noreplyaddress" value="{{noreply}}"></label>
+                </div>
+                <p class="ll-fhint"><a href="{{testurl}}" data-ll-tip="{{#str}}tip_ap_smtptest, theme_lmslabs{{/str}}">{{#str}}ap_smtp_test, theme_lmslabs{{/str}}</a></p>
+            </div>
+        </section>
+        <div class="ll-rt-bar"><button type="submit" class="btn btn-primary ll-btn-icon">{{{i.check}}}<span>{{#str}}savechanges{{/str}}</span></button></div>
+    </div>
+
+    <aside class="ll-ap-aside" aria-label="{{#str}}ap_preview, theme_lmslabs{{/str}}">
+        <div class="ll-ap-prev" data-ap-prev style="--pa:{{accent}}">
+            <div class="ll-ap-prevtop"><span class="ll-ap-pcontact" data-ap-pcontact>{{contactemail}}{{#contactphone}} · {{contactphone}}{{/contactphone}}</span></div>
+            <div class="ll-ap-prevbody">
+                <div class="ll-ap-prevnav">
+                    <div class="ll-ap-prevbrand"><span class="ll-ap-prevlogo">{{#logo}}<img src="{{logo}}" alt="" data-ap-plogo>{{/logo}}{{^logo}}<b>{{initial}}</b>{{/logo}}</span><strong data-ap-pname>{{shortname}}</strong></div>
+                    <span class="is-on">{{{i.dash}}}{{#str}}ap_p_dash, theme_lmslabs{{/str}}</span>
+                    <span>{{{i.book}}}{{#str}}ap_p_courses, theme_lmslabs{{/str}}</span>
+                    <span>{{{i.users}}}{{#str}}ap_p_people, theme_lmslabs{{/str}}</span>
+                </div>
+                <div class="ll-ap-prevmain">
+                    <h4>{{#str}}ap_p_hello, theme_lmslabs{{/str}}</h4>
+                    <p>{{#str}}ap_p_text, theme_lmslabs{{/str}}</p>
+                    <div class="ll-ap-prevbtns"><span class="is-primary">{{#str}}ap_p_primary, theme_lmslabs{{/str}}</span><span>{{#str}}ap_p_secondary, theme_lmslabs{{/str}}</span></div>
+                    <div class="ll-ap-prevbar"><i></i></div>
+                </div>
+            </div>
+        </div>
+        <p class="ll-fhint"><span>{{#str}}ap_preview_hint, theme_lmslabs{{/str}}</span></p>
+    </aside>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</form>

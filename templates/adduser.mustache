@@ -1,0 +1,200 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/adduser
+
+    Add a person in one screen.
+
+    Example context (json):
+    {"action": "#", "sesskey": "x", "e": {}, "i": {}, "courses": [], "cohorts": [], "countries": [], "more": []}
+}}
+<form class="ll-fpage" method="post" action="{{action}}" autocomplete="off" novalidate data-ll-adduser>
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <div class="ll-fmain">
+        {{#haserrors}}
+        <div class="ll-fnotice is-warn" role="alert">{{#str}}au_fixerrors, theme_lmslabs{{/str}}</div>
+        {{/haserrors}}
+
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.user}}}</span>
+                <div>
+                    <h2>{{#str}}au_account, theme_lmslabs{{/str}}</h2>
+                    <p>{{#str}}au_account_desc, theme_lmslabs{{/str}}</p>
+                </div>
+            </header>
+            <div class="ll-fcard-body">
+                <div class="ll-f{{#e.username}} has-error{{/e.username}}">
+                    <label for="au-username" data-ll-tip="{{#str}}tip_username, theme_lmslabs{{/str}}">{{#str}}username{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                    <input id="au-username" class="form-control ll-input-lg" name="username" value="{{username}}" required autofocus
+                        autocapitalize="none" spellcheck="false" placeholder="{{#str}}au_username_ph, theme_lmslabs{{/str}}" data-au="username">
+                    {{#e.username}}<p class="ll-ferr">{{msg}}</p>{{/e.username}}
+                </div>
+
+                <div class="ll-f{{#e.email}} has-error{{/e.email}}">
+                    <label for="au-email" data-ll-tip="{{#str}}tip_email, theme_lmslabs{{/str}}">{{#str}}email{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                    <div class="ll-input-wrap">
+                        <input id="au-email" type="email" class="form-control" name="email" value="{{email}}" required spellcheck="false"
+                            placeholder="name@example.com" data-au="email" data-synced="{{#emailsynced}}1{{/emailsynced}}{{^emailsynced}}0{{/emailsynced}}">
+                        <button type="button" class="ll-linkchip" data-au="link" aria-pressed="{{#emailsynced}}true{{/emailsynced}}{{^emailsynced}}false{{/emailsynced}}"
+                            title="{{#str}}au_linked_tip, theme_lmslabs{{/str}}">{{{i.link}}}<span>{{#str}}au_linked, theme_lmslabs{{/str}}</span></button>
+                    </div>
+                    {{#e.email}}<p class="ll-ferr">{{msg}}</p>{{/e.email}}
+                </div>
+
+                <div class="ll-f{{#e.newpassword}} has-error{{/e.newpassword}}" data-au="pwrow"{{#createpassword}} hidden{{/createpassword}}>
+                    <label for="au-password" data-ll-tip="{{policy}}">{{#str}}password{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                    <div class="ll-input-wrap">
+                        <input id="au-password" type="password" class="form-control ll-mono" name="newpassword" autocomplete="new-password" data-au="password">
+                        <button type="button" class="ll-iconbtn" data-au="reveal" aria-label="{{#str}}au_show, theme_lmslabs{{/str}}" title="{{#str}}au_show, theme_lmslabs{{/str}}">{{{i.eye}}}</button>
+                        <button type="button" class="ll-pill ll-pill-sm" data-au="generate">{{{i.dice}}}<span>{{#str}}au_generate, theme_lmslabs{{/str}}</span></button>
+                    </div>
+                    <div class="ll-pwmeter" data-au="meter" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                    {{#e.newpassword}}<p class="ll-ferr">{{msg}}</p>{{/e.newpassword}}
+                </div>
+
+                <div class="ll-toggles">
+                    <label class="ll-toggle">
+                        <span class="ll-toggle-text"><strong>{{#str}}au_emaillink, theme_lmslabs{{/str}}</strong><span>{{#str}}au_emaillink_desc, theme_lmslabs{{/str}}</span></span>
+                        <input type="checkbox" name="createpassword" value="1"{{#createpassword}} checked{{/createpassword}} data-au="createpassword">
+                        <span class="ll-switch-track" aria-hidden="true"></span>
+                    </label>
+                    <label class="ll-toggle" data-au="forcerow"{{#createpassword}} hidden{{/createpassword}}>
+                        <span class="ll-toggle-text"><strong>{{#str}}au_forcechange, theme_lmslabs{{/str}}</strong><span>{{#str}}au_forcechange_desc, theme_lmslabs{{/str}}</span></span>
+                        <input type="checkbox" name="forcechange" value="1"{{#forcechange}} checked{{/forcechange}}>
+                        <span class="ll-switch-track" aria-hidden="true"></span>
+                    </label>
+                </div>
+
+                <div class="ll-frow">
+                    <div class="ll-f{{#e.firstname}} has-error{{/e.firstname}}">
+                        <label for="au-first" data-ll-tip="{{#str}}tip_firstname, theme_lmslabs{{/str}}">{{#str}}firstname{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                        <input id="au-first" class="form-control" name="firstname" value="{{firstname}}" required autocomplete="off" data-au="first">
+                        {{#e.firstname}}<p class="ll-ferr">{{msg}}</p>{{/e.firstname}}
+                    </div>
+                    <div class="ll-f{{#e.lastname}} has-error{{/e.lastname}}">
+                        <label for="au-last" data-ll-tip="{{#str}}tip_lastname, theme_lmslabs{{/str}}">{{#str}}lastname{{/str}} <b class="ll-req" aria-hidden="true">*</b></label>
+                        <input id="au-last" class="form-control" name="lastname" value="{{lastname}}" required autocomplete="off" data-au="last">
+                        {{#e.lastname}}<p class="ll-ferr">{{msg}}</p>{{/e.lastname}}
+                    </div>
+                </div>
+
+                {{#hasrequiredprofile}}
+                <div class="ll-fsub">{{#str}}au_profilefields, theme_lmslabs{{/str}}</div>
+                <div class="ll-frow ll-frow-wrap">
+                    {{#requiredprofile}}{{> theme_lmslabs/adduser_field }}{{/requiredprofile}}
+                </div>
+                {{/hasrequiredprofile}}
+            </div>
+        </section>
+
+        {{#hascourses}}
+        <section class="ll-fcard">
+            <header class="ll-fcard-head">
+                <span class="ll-fcard-ico">{{{i.book}}}</span>
+                <div>
+                    <h2>{{#str}}au_access, theme_lmslabs{{/str}} <em>{{#str}}optional, theme_lmslabs{{/str}}</em></h2>
+                    <p>{{#str}}au_access_desc, theme_lmslabs{{/str}}{{#remembered}} {{#str}}au_remembered, theme_lmslabs{{/str}}{{/remembered}}</p>
+                </div>
+            </header>
+            <div class="ll-fcard-body">
+                <div class="ll-f">
+                    <label data-ll-tip="{{#str}}au_courses_tip, theme_lmslabs{{/str}}">{{#str}}au_courses, theme_lmslabs{{/str}}</label>
+                    <div class="ll-pick" data-au="pick">
+                        <div class="ll-pick-chips" data-pick-chips></div>
+                        <div class="ll-pick-search">{{{i.search}}}<input type="search" placeholder="{{#str}}au_findcourse, theme_lmslabs{{/str}}" data-pick-filter aria-label="{{#str}}au_findcourse, theme_lmslabs{{/str}}"></div>
+                        <div class="ll-pick-list" data-pick-list>
+                            {{#courses}}
+                            <label class="ll-pick-item" data-name="{{{name}}} {{{short}}}">
+                                <input type="checkbox" name="courses[]" value="{{id}}"{{#selected}} checked{{/selected}}>
+                                <span class="ll-pick-name">{{{name}}}</span>
+                                <span class="ll-pick-meta">{{{short}}}{{#hidden}} · {{#str}}hidden, theme_lmslabs{{/str}}{{/hidden}}</span>
+                                <span class="ll-pick-tick">{{{i.check}}}</span>
+                            </label>
+                            {{/courses}}
+                        </div>
+                    </div>
+                </div>
+                {{#hascohorts}}
+                <div class="ll-f ll-f-narrow">
+                    <label for="au-cohort" data-ll-tip="{{#str}}au_cohort_tip, theme_lmslabs{{/str}}">{{#str}}cohort, cohort{{/str}}</label>
+                    <select id="au-cohort" name="cohort" class="form-select custom-select" data-au="cohort">
+                        <option value="0">{{#str}}au_nocohort, theme_lmslabs{{/str}}</option>
+                        {{#cohorts}}<option value="{{id}}"{{#selected}} selected{{/selected}}>{{{name}}}</option>{{/cohorts}}
+                    </select>
+                </div>
+                {{/hascohorts}}
+            </div>
+        </section>
+        {{/hascourses}}
+
+        <details class="ll-acc">
+            <summary>
+                <span class="ll-fcard-ico">{{{i.list}}}</span>
+                <span class="ll-acc-text"><strong>{{#str}}au_more, theme_lmslabs{{/str}}</strong><span>{{#str}}au_more_desc, theme_lmslabs{{/str}}</span></span>
+                <span class="ll-acc-chev">{{{i.chev}}}</span>
+            </summary>
+            <div class="ll-acc-body">
+                <div class="ll-frow ll-frow-wrap">
+                    {{#more}}
+                    <div class="ll-f">
+                        <label for="au-{{name}}" data-ll-tip="{{tip}}">{{label}}</label>
+                        <input id="au-{{name}}" class="form-control" name="{{name}}" value="{{value}}">
+                    </div>
+                    {{/more}}
+                    <div class="ll-f">
+                        <label for="au-country" data-ll-tip="{{#str}}tip_country, theme_lmslabs{{/str}}">{{#str}}country{{/str}}</label>
+                        <select id="au-country" class="form-select custom-select" name="country">
+                            <option value="">{{#str}}selectacountry{{/str}}</option>
+                            {{#countries}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/countries}}
+                        </select>
+                    </div>
+                    {{#optionalprofile}}{{> theme_lmslabs/adduser_field }}{{/optionalprofile}}
+                </div>
+                <div class="ll-toggles">
+                    <label class="ll-toggle">
+                        <span class="ll-toggle-text"><strong>{{#str}}au_suspended, theme_lmslabs{{/str}}</strong><span>{{#str}}tip_suspended, theme_lmslabs{{/str}}</span></span>
+                        <input type="checkbox" name="suspended" value="1"{{#suspended}} checked{{/suspended}}>
+                        <span class="ll-switch-track" aria-hidden="true"></span>
+                    </label>
+                </div>
+            </div>
+        </details>
+
+        <div class="ll-savebar">
+            <button type="submit" class="btn btn-primary ll-btn-icon" name="next" value="people">{{{i.check}}}<span>{{#str}}au_create, theme_lmslabs{{/str}}</span></button>
+            <button type="submit" class="btn btn-secondary" name="next" value="another">{{#str}}au_createanother, theme_lmslabs{{/str}}</button>
+            <a class="ll-savebar-cancel" href="{{peopleurl}}">{{#str}}cancel{{/str}}</a>
+            <span class="ll-savebar-hint">{{#str}}au_hint, theme_lmslabs{{/str}}</span>
+        </div>
+    </div>
+
+    <aside class="ll-faside">
+        <div class="ll-preview">
+            <span class="ll-preview-avatar" data-au="initials">?</span>
+            <strong class="ll-preview-name" data-au="pname" data-empty="{{#str}}au_newperson, theme_lmslabs{{/str}}">{{#str}}au_newperson, theme_lmslabs{{/str}}</strong>
+            <span class="ll-preview-mail" data-au="pmail">&nbsp;</span>
+            <ul class="ll-preview-list">
+                <li>{{{i.key}}}<span data-au="plogin" data-pw="{{#str}}au_login_pw, theme_lmslabs{{/str}}" data-link="{{#str}}au_login_link, theme_lmslabs{{/str}}"></span></li>
+                {{#hascourses}}<li>{{{i.book}}}<span data-au="pcourses" data-none="{{#str}}au_pcourses_none, theme_lmslabs{{/str}}" data-some="{{pcoursessome}}"></span></li>{{/hascourses}}
+                {{#hascohorts}}<li>{{{i.contact}}}<span data-au="pcohort" data-none="{{#str}}au_nocohort, theme_lmslabs{{/str}}"></span></li>{{/hascohorts}}
+            </ul>
+        </div>
+        <a class="ll-asidelink" href="{{uploadurl}}">{{{i.upload}}}<span><strong>{{#str}}au_many, theme_lmslabs{{/str}}</strong>{{#str}}au_many_desc, theme_lmslabs{{/str}}</span></a>
+        <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+    </aside>
+</form>

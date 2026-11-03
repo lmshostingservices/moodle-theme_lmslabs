@@ -1,0 +1,73 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/grading
+
+    Grading inbox for a course.
+
+    Example context (json):
+    {"rows": [], "hasrows": false, "waiting": 0, "activities": 0, "i": {} }
+}}
+<div class="ll-grading">
+    <div class="ll-gr-hero{{#waiting}} has-work{{/waiting}}">
+        <div class="ll-gr-ico">{{{i.inbox}}}</div>
+        <div class="ll-gr-heroText">
+            <h2>{{#waiting}}{{#str}}gr_waiting, theme_lmslabs, {{waiting}}{{/str}}{{/waiting}}{{^waiting}}{{#str}}gr_allclear, theme_lmslabs{{/str}}{{/waiting}}</h2>
+            <p>{{#str}}gr_intro, theme_lmslabs{{/str}}</p>
+        </div>
+        <div class="ll-gr-tools">
+            {{#hasfastgrade}}<span class="ll-gr-tool is-fg">{{{i.bolt}}}Fast Grade</span>{{/hasfastgrade}}
+            {{#hasaigrader}}<span class="ll-gr-tool is-ai">{{{i.sparkles}}}AI Essay Grader</span>{{/hasaigrader}}
+        </div>
+    </div>
+
+    {{#hasrows}}
+    <div class="ll-gr-list">
+        {{#rows}}
+        <article class="ll-gr-row{{#hastodo}} has-todo{{/hastodo}}">
+            <img class="ll-gr-modicon" src="{{icon}}" alt="" aria-hidden="true">
+            <div class="ll-gr-main">
+                <a class="ll-gr-name" href="{{viewurl}}">{{{name}}}</a>
+                <span class="ll-gr-meta">{{type}} · {{{section}}}</span>
+            </div>
+            <div class="ll-gr-stat"><strong>{{submitted}}</strong><span>{{#str}}gr_submitted, theme_lmslabs{{/str}}</span></div>
+            <div class="ll-gr-stat ll-gr-todo">
+                {{#hastodo}}<strong>{{todo}}</strong><span>{{#str}}gr_tomark, theme_lmslabs{{/str}}</span>{{/hastodo}}
+                {{^hastodo}}{{#done}}<span class="ll-status is-on"><span class="ll-dot"></span>{{#str}}gr_uptodate, theme_lmslabs{{/str}}</span>{{/done}}{{^done}}<span class="ll-muted">{{#str}}gr_nothingyet, theme_lmslabs{{/str}}</span>{{/done}}{{/hastodo}}
+            </div>
+            <div class="ll-gr-actions">
+                {{#reporturl}}<a class="ll-iconbtn" href="{{reporturl}}" title="{{#str}}gr_report, theme_lmslabs{{/str}}" aria-label="{{#str}}gr_report, theme_lmslabs{{/str}}">{{{i.chart}}}</a>{{/reporturl}}
+                {{#secondaryurl}}<a class="ll-pill ll-pill-sm" href="{{secondaryurl}}">{{{i.bolt}}}<span>Fast Grade</span></a>{{/secondaryurl}}
+                <a class="btn ll-btn-icon ll-gr-go{{#isfastgrade}} is-fg{{/isfastgrade}}{{#isaigrader}} is-ai{{/isaigrader}}" href="{{primaryurl}}">
+                    {{#isfastgrade}}{{{i.bolt}}}{{/isfastgrade}}{{#isaigrader}}{{{i.sparkles}}}{{/isaigrader}}<span>{{primarylabel}}</span>
+                </a>
+            </div>
+        </article>
+        {{/rows}}
+    </div>
+    {{/hasrows}}
+    {{^hasrows}}
+    <div class="ll-empty">
+        <div class="ll-empty-ico">{{{i.check}}}</div>
+        <h2>{{#str}}gr_none, theme_lmslabs{{/str}}</h2>
+        <p>{{#str}}gr_none_desc, theme_lmslabs{{/str}}</p>
+    </div>
+    {{/hasrows}}
+    {{^hasfastgrade}}
+    <p class="ll-gr-tip">{{#str}}gr_tip, theme_lmslabs{{/str}} <a href="{{labsurl}}" target="_blank" rel="noopener">lms-labs.com</a></p>
+    {{/hasfastgrade}}
+</div>

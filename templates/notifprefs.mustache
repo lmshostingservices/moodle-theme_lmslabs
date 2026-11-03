@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/notifprefs
+
+    Notification settings.
+
+    Example context (json):
+    {"channels": [], "groups": [], "i": {}, "saveurl": "#", "sesskey": "x"}
+}}
+<div class="ll-np" style="--n: {{channelcount}}" data-ll-np data-save="{{saveurl}}" data-sesskey="{{sesskey}}">
+    {{#disabled}}<div class="ll-fnotice is-warn">{{#str}}np_disabled, theme_lmslabs{{/str}} <a href="{{prefsurl}}">{{#str}}preferences{{/str}}</a></div>{{/disabled}}
+    <div class="ll-np-top">
+        <div class="ll-chsearch">{{{i.search}}}<input type="search" placeholder="{{#str}}np_search, theme_lmslabs{{/str}}" aria-label="{{#str}}np_search, theme_lmslabs{{/str}}" data-np-q></div>
+        <div class="ll-np-masters">
+            {{#channels}}
+            <div class="ll-np-master" data-ll-tip-self data-ll-tip="{{#str}}np_master_tip, theme_lmslabs{{/str}}">
+                {{{icon}}}<span>{{label}}</span>
+                <button type="button" class="ll-linkbtn" data-np-all="{{name}}" data-on="1">{{#str}}np_allon, theme_lmslabs{{/str}}</button>
+                <button type="button" class="ll-linkbtn" data-np-all="{{name}}" data-on="0">{{#str}}np_alloff, theme_lmslabs{{/str}}</button>
+            </div>
+            {{/channels}}
+        </div>
+    </div>
+    <div class="ll-np-head">
+        <span>{{#str}}np_what, theme_lmslabs{{/str}}</span>
+        {{#channels}}<span class="ll-np-ch">{{{icon}}}{{label}}</span>{{/channels}}
+    </div>
+    {{#groups}}
+    <details class="ll-np-group" open data-np-group>
+        <summary><span>{{{label}}}</span><b>{{count}}</b><span class="ll-acc-chev">{{{i.chev}}}</span></summary>
+        {{#rows}}
+        <div class="ll-np-row" data-np-row data-key="{{key}}" data-name="{{label}}">
+            <span class="ll-np-label">{{label}}</span>
+            {{#cells}}
+            <span class="ll-np-cell">
+                {{#supported}}
+                {{^locked}}<label class="ll-np-switch"><input type="checkbox" data-ch="{{name}}"{{#on}} checked{{/on}} aria-label="{{label}}"><span class="ll-switch-track" aria-hidden="true"></span></label>{{/locked}}
+                {{#locked}}<span class="ll-np-locked" title="{{lockedmessage}}" data-ch-locked="{{name}}" data-on="{{#on}}1{{/on}}">{{{i.lock}}}{{#on}}{{#str}}on, theme_lmslabs{{/str}}{{/on}}{{^on}}{{#str}}off, theme_lmslabs{{/str}}{{/on}}</span>{{/locked}}
+                {{/supported}}
+            </span>
+            {{/cells}}
+        </div>
+        {{/rows}}
+    </details>
+    {{/groups}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

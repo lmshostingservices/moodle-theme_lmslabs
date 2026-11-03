@@ -1,0 +1,38 @@
+// LMS Labs theme: variables applied before Bootstrap compiles.
+// The accent ($primary) is prepended by theme_lmslabs_get_pre_scss().
+
+$font-family-sans-serif: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-size-base: .9375rem;
+$headings-font-weight: 600;
+$line-height-base: 1.55;
+
+$white: #fff;
+$gray-100: #f5f6f8;
+$gray-200: #eceef1;
+$gray-300: #dfe2e7;
+$gray-400: #c9ced6;
+$gray-500: #9aa1ad;
+$gray-600: #6b7280;
+$gray-700: #4b5563;
+$gray-800: #2d3440;
+$gray-900: #111827;
+$body-color: #1f2937;
+$body-bg: #fff;
+$border-color: #e6e8ec;
+
+$border-radius: .5rem;
+$border-radius-sm: .375rem;
+$border-radius-lg: .75rem;
+
+$input-border-color: #d9dde3;
+$input-btn-focus-width: .1875rem;
+$box-shadow-sm: 0 1px 2px rgba(16, 24, 40, .05);
+
+$navbar-height: 56px;
+$link-decoration: none;
+$card-border-color: #e6e8ec;
+$card-cap-bg: transparent;
+$table-border-color: #eceef1;
+$dropdown-border-color: #e6e8ec;
+$dropdown-box-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 12px 32px -8px rgba(16, 24, 40, .18);
+$modal-content-border-radius: .875rem;

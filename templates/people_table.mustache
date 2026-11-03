@@ -1,0 +1,82 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/people_table
+
+    The people table with row checkboxes (People and Bulk user actions).
+
+    Example context (json):
+    {"rows": [], "hasrows": false, "range": "", "i": {} }
+}}
+        <div class="ll-table-card">
+            <div class="ll-table-head">
+                <span class="ll-table-count">{{range}}</span>
+                <span class="ll-fb-spacer"></span>
+                {{#fb}}{{> theme_lmslabs/filterbar_sort }}{{/fb}}
+                {{#prevurl}}<a data-ll-tip="{{#str}}tip_pe_prev, theme_lmslabs{{/str}}" class="ll-iconbtn" href="{{prevurl}}" aria-label="{{#str}}previous{{/str}}">{{{i.left}}}</a>{{/prevurl}}
+                {{#nexturl}}<a data-ll-tip="{{#str}}tip_pe_next, theme_lmslabs{{/str}}" class="ll-iconbtn ll-flip" href="{{nexturl}}" aria-label="{{#str}}next{{/str}}">{{{i.left}}}</a>{{/nexturl}}
+            </div>
+            {{#hasrows}}
+            <table class="ll-table">
+                <thead>
+                    <tr>
+                        <th class="ll-col-check"><input data-ll-tip="{{#str}}tip_pe_selall, theme_lmslabs{{/str}}" type="checkbox" data-select-all aria-label="{{#str}}selectall{{/str}}"></th>
+                        <th>{{#str}}fb_person, theme_lmslabs{{/str}}</th>
+                        <th class="ll-hide-sm">{{#str}}cohorts, cohort{{/str}}</th>
+                        <th class="ll-hide-sm">{{#str}}courses{{/str}}</th>
+                        <th class="ll-hide-xs">{{#str}}fb_lastaccess, theme_lmslabs{{/str}}</th>
+                        <th>{{#str}}fb_status, theme_lmslabs{{/str}}</th>
+                        <th class="ll-col-actions"><span class="visually-hidden sr-only">{{#str}}actions{{/str}}</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#rows}}
+                    <tr>
+                        <td class="ll-col-check"><input data-ll-tip="{{#str}}tip_pe_selrow, theme_lmslabs{{/str}}" type="checkbox" name="users[]" value="{{id}}" aria-label="{{#str}}select{{/str}} {{name}}" {{#checked}} checked{{/checked}} data-select-row></td>
+                        <td>
+                            <a data-ll-tip="{{#str}}tip_pe_profile, theme_lmslabs{{/str}}" class="ll-person" href="{{profileurl}}">
+                                <span class="ll-avatar ll-tint-{{tint}}">{{initials}}</span>
+                                <span class="ll-person-text"><strong>{{name}}</strong><span>{{email}}</span></span>
+                            </a>
+                        </td>
+                        <td class="ll-hide-sm">
+                            <span class="ll-tags">{{#cohorts}}<span class="ll-tag">{{{name}}}</span>{{/cohorts}}{{#hasmorecohorts}}<span class="ll-tag">+{{morecohorts}}</span>{{/hasmorecohorts}}</span>
+                        </td>
+                        <td class="ll-hide-sm ll-num">{{courses}}</td>
+                        <td class="ll-hide-xs">{{#never}}<span class="ll-muted">{{#str}}never{{/str}}</span>{{/never}}{{^never}}<span title="{{lastaccessfull}}">{{lastaccess}}</span>{{/never}}</td>
+                        <td>
+                            {{#suspended}}<span class="ll-status is-off"><span class="ll-dot"></span>{{#str}}fb_suspended, theme_lmslabs{{/str}}</span>{{/suspended}}
+                            {{^suspended}}<span class="ll-status is-on"><span class="ll-dot"></span>{{#str}}fb_active, theme_lmslabs{{/str}}</span>{{/suspended}}
+                            {{#auth}}<span class="ll-tag">{{auth}}</span>{{/auth}}
+                        </td>
+                        <td class="ll-col-actions">
+                            <a data-ll-tip="{{#str}}tip_pe_profile, theme_lmslabs{{/str}}" class="ll-iconbtn" href="{{profileurl}}" aria-label="{{#str}}viewprofile{{/str}}: {{name}}" title="{{#str}}viewprofile{{/str}}">{{{i.eye}}}</a>
+                            <a data-ll-tip="{{#str}}tip_pe_edit, theme_lmslabs{{/str}}" class="ll-iconbtn" href="{{editurl}}" aria-label="{{#str}}edit{{/str}}: {{name}}" title="{{#str}}edit{{/str}}">{{{i.pencil}}}</a>
+                        </td>
+                    </tr>
+                    {{/rows}}
+                </tbody>
+            </table>
+            {{/hasrows}}
+            {{^hasrows}}
+            <div class="ll-empty ll-empty-flat">
+                <div class="ll-empty-ico">{{{i.users}}}</div>
+                <h2>{{#str}}fb_noresults, theme_lmslabs{{/str}}</h2>
+                <p>{{#str}}fb_noresults_desc, theme_lmslabs{{/str}}</p>
+            </div>
+            {{/hasrows}}
+        </div>

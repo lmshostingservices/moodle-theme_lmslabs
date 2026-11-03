@@ -1,0 +1,117 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/gradebook
+
+    Course gradebook grid.
+
+    Example context (json):
+    {"courseid": 2, "cols": [], "hascols": false, "rows": [], "hasrows": false, "avgs": [], "waiting": 0, "canedit": true, "i": {} }
+}}
+<div class="ll-gb" data-ll-gb data-course="{{courseid}}" data-sesskey="{{sesskey}}" data-ajax="{{ajax}}"
+     data-saved="{{#str}}gb_saved, theme_lmslabs{{/str}}" data-scheme="{{scheme}}" data-awaiting="{{#str}}gb_waiting_mark, theme_lmslabs{{/str}}" data-notsub="{{#str}}gb_notsub, theme_lmslabs{{/str}}" data-competent="{{#str}}gb_competent, theme_lmslabs{{/str}}" data-notcompetent="{{#str}}gb_notcompetent, theme_lmslabs{{/str}}"
+     style="--ll-gb-pass: {{passcolour}}; --ll-gb-fail: {{failcolour}};">
+    <div class="ll-gb-bar">
+        <label class="ll-ib-search" data-ll-tip="{{#str}}gb_search_tip, theme_lmslabs{{/str}}">{{{i.search}}}
+            <input type="search" data-gb-q placeholder="{{#str}}gb_search, theme_lmslabs{{/str}}" aria-label="{{#str}}gb_search, theme_lmslabs{{/str}}">
+        </label>
+        <div class="ll-seg" role="group" data-ll-tip-self data-ll-tip="{{#str}}gb_filter_tip, theme_lmslabs{{/str}}">
+            <button type="button" class="is-on" data-gb-filter="">{{#str}}gb_all, theme_lmslabs{{/str}}</button>
+            <button type="button" data-gb-filter="waiting">{{#str}}gb_towmark, theme_lmslabs{{/str}}{{#waiting}} <b>{{waiting}}</b>{{/waiting}}</button>
+            <button type="button" data-gb-filter="missing">{{#str}}gb_missing, theme_lmslabs{{/str}}</button>
+        </div>
+        <span class="ll-gb-spacer"></span>
+        <div class="ll-seg ll-gb-scheme" role="group" data-ll-tip-self data-ll-tip="{{#str}}gb_scheme_tip, theme_lmslabs{{/str}}">
+            <button type="button" data-gb-scheme="snys">{{#str}}gb_s_snys, theme_lmslabs{{/str}}</button>
+            <button type="button" data-gb-scheme="marks">{{#str}}gb_s_marks, theme_lmslabs{{/str}}</button>
+            <button type="button" data-gb-scheme="pct">%</button>
+            <button type="button" data-gb-scheme="grade">{{#str}}gb_s_grade, theme_lmslabs{{/str}}</button>
+            <button type="button" data-gb-scheme="points">{{#str}}gb_s_points, theme_lmslabs{{/str}}</button>
+        </div>
+        <div class="ll-gb-colours" data-ll-tip-self data-ll-tip="{{#str}}gb_colours_tip, theme_lmslabs{{/str}}">
+            <label><input type="color" value="{{passcolour}}" data-gb-colour="pass" aria-label="{{#str}}gb_c_pass, theme_lmslabs{{/str}}"><span>{{#str}}gb_c_pass, theme_lmslabs{{/str}}</span></label>
+            <label><input type="color" value="{{failcolour}}" data-gb-colour="fail" aria-label="{{#str}}gb_c_fail, theme_lmslabs{{/str}}"><span>{{#str}}gb_c_fail, theme_lmslabs{{/str}}</span></label>
+            <button type="button" data-gb-colour-reset aria-label="{{#str}}gb_c_reset, theme_lmslabs{{/str}}" data-ll-tip="{{#str}}gb_c_reset, theme_lmslabs{{/str}}">&#x21BA;</button>
+        </div>
+        {{#waiting}}<a class="ll-pill ll-pill-sm" href="{{gradingurl}}" data-ll-tip-self data-ll-tip="{{#str}}gb_grading_tip, theme_lmslabs{{/str}}">{{{i.inbox}}}<span>{{#str}}gb_grading, theme_lmslabs{{/str}}</span></a>{{/waiting}}
+        <button type="button" class="ll-iconbtn" data-gb-csv data-ll-tip-self data-ll-tip="{{#str}}gb_csv_tip, theme_lmslabs{{/str}}" aria-label="{{#str}}gb_csv, theme_lmslabs{{/str}}">{{{i.download}}}</button>
+        {{#canedit}}<a class="ll-iconbtn" href="{{setupurl}}" data-ll-tip-self data-ll-tip="{{#str}}gb_setup_tip, theme_lmslabs{{/str}}" aria-label="{{#str}}gb_setup, theme_lmslabs{{/str}}">{{{i.settings}}}</a>{{/canedit}}
+    </div>
+
+    {{#hasrows}}{{#hascols}}
+    <div class="ll-gb-stats" data-gb-stats>
+        <button type="button" class="ll-gb-stat is-mark" data-gb-filter="waiting" data-ll-tip-self data-ll-tip="{{#str}}gb_stat_mark_tip, theme_lmslabs{{/str}}"><b data-stat="mark">0</b><span>{{#str}}gb_waiting_mark, theme_lmslabs{{/str}}</span></button>
+        <span class="ll-gb-stat is-gap"><b data-stat="gap">0</b><span>{{#str}}gb_stat_gap, theme_lmslabs{{/str}}</span></span>
+        <span class="ll-gb-stat"><b data-stat="notsub">0</b><span>{{#str}}gb_notsub, theme_lmslabs{{/str}}</span></span>
+        <span class="ll-gb-stat is-ok"><b data-stat="ok">0</b><span>{{#str}}gb_competent, theme_lmslabs{{/str}}</span></span>
+    </div>
+    <div class="ll-gb-scroll">
+        <table class="ll-gb-table">
+            <thead>
+                <tr>
+                    <th class="ll-gb-who">{{#str}}gb_learner, theme_lmslabs{{/str}} <span class="ll-muted">({{learners}})</span></th>
+                    {{#cols}}
+                    <th class="ll-gb-col{{#istotal}} is-total{{/istotal}}">
+                        {{#url}}<a href="{{url}}" data-ll-tip-self data-ll-tip="{{#str}}gb_open_tip, theme_lmslabs{{/str}}">{{{icon}}}<span>{{name}}</span></a>{{/url}}
+                        {{^url}}<span class="ll-gb-colname">{{{icon}}}<span>{{name}}</span></span>{{/url}}
+                        {{#maxlabel}}<small>/ {{maxlabel}}</small>{{/maxlabel}}
+                    </th>
+                    {{/cols}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#rows}}
+                <tr data-gb-row data-name="{{name}} {{email}}" data-waiting="{{needs}}">
+                    <th class="ll-gb-who">
+                        <a class="ll-person" href="{{reporturl}}" data-ll-tip="{{#str}}gb_report_tip, theme_lmslabs{{/str}}">
+                            <span class="ll-avatar ll-tint-{{tint}}">{{initials}}</span>
+                            <span class="ll-person-text"><strong>{{name}}</strong></span>
+                        </a>
+                    </th>
+                    {{#cells}}
+                    <td class="ll-gb-cell band-{{band}}{{#istotal}} is-total{{/istotal}}{{#waiting}} is-waiting{{/waiting}}{{#overridden}} is-overridden{{/overridden}}{{^has}} is-empty{{/has}}" data-item="{{itemid}}" data-passpct="{{passpct}}" data-max="{{max}}"{{#markurl}} data-mark="{{markurl}}"{{/markurl}}{{#has}} data-has="1" data-pct="{{pct}}"{{/has}}>
+                        <span class="ll-gb-badge" data-gb-badge{{#editable}} role="button" tabindex="0"{{/editable}}{{#markurl}} data-ll-tip-self data-ll-tip="{{#str}}gb_mark_tip, theme_lmslabs{{/str}}"{{/markurl}}></span>
+                        {{#editable}}
+                        <input type="text" inputmode="decimal" class="ll-gb-input" value="{{value}}" data-gb-input data-user="{{id}}" data-item="{{itemid}}" data-orig="{{value}}"
+                               data-max="{{max}}" aria-label="{{name}}" {{#feedback}}data-ll-tip="{{feedback}}"{{/feedback}}{{^feedback}}data-ll-tip="{{#str}}gb_cell_tip, theme_lmslabs{{/str}}"{{/feedback}}
+                               placeholder="{{#waiting}}{{#str}}gb_waiting_mark, theme_lmslabs{{/str}}{{/waiting}}{{^waiting}}–{{/waiting}}">
+                        {{/editable}}
+                        {{^editable}}<span class="ll-gb-static" data-gb-static>{{#has}}{{display}}{{/has}}{{^has}}–{{/has}}</span>{{/editable}}
+                    </td>
+                    {{/cells}}
+                </tr>
+                {{/rows}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th class="ll-gb-who"><span class="ll-gb-cohort">{{#str}}gb_cohort, theme_lmslabs{{/str}}</span><small>{{learners}} {{#str}}gb_learners, theme_lmslabs{{/str}}</small></th>
+                    {{#avgs}}<td class="ll-gb-avg" data-avg="{{itemid}}"><div class="ll-gb-rate"><b data-rate-main>–</b><span data-rate-unit></span></div><div class="ll-gb-track" aria-hidden="true"><i data-rate-bar></i></div><small data-rate-sub></small></td>{{/avgs}}
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <p class="ll-gb-none ll-muted" data-gb-none hidden>{{#str}}gb_nomatch, theme_lmslabs{{/str}}</p>
+    {{/hascols}}
+    {{^hascols}}
+    <div class="ll-empty">{{{i.chart}}}<h3>{{#str}}gb_noitems, theme_lmslabs{{/str}}</h3><p>{{#str}}gb_noitems_help, theme_lmslabs{{/str}}</p></div>
+    {{/hascols}}
+    {{/hasrows}}
+    {{^hasrows}}
+    <div class="ll-empty">{{{i.chart}}}<h3>{{#str}}gb_nolearners, theme_lmslabs{{/str}}</h3><p>{{#str}}gb_nolearners_help, theme_lmslabs{{/str}}</p></div>
+    {{/hasrows}}
+    <p class="ll-classic"><a href="{{classicurl}}" data-ll-tip="{{#str}}gb_classic_tip, theme_lmslabs{{/str}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

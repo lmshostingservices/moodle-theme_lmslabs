@@ -1,0 +1,94 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+{{!
+    @template theme_lmslabs/overrides
+
+    Overrides for an assignment or quiz.
+
+    Example context (json):
+    {"activities": [], "i": {}, "ajax": "#", "sesskey": "x", "courseid": 2}
+}}
+<div class="ll-ov" data-ll-ov data-nothing="{{#str}}ov_nothing, theme_lmslabs{{/str}}" data-ajax="{{ajax}}" data-sesskey="{{sesskey}}" data-cmid="{{cmid}}">
+    <section class="ll-ov-pick">
+        <label class="ll-f"><span data-ll-tip="{{#str}}ov_activity_tip, theme_lmslabs{{/str}}">{{#str}}ov_activity, theme_lmslabs{{/str}}</span>
+            <select class="form-select custom-select" data-ov-activity>
+                {{^picked}}<option value="">{{#str}}ov_choose, theme_lmslabs{{/str}}</option>{{/picked}}
+                {{#activities}}<option value="{{url}}"{{#selected}} selected{{/selected}}>{{name}}{{#count}} ({{count}}){{/count}}</option>{{/activities}}
+            </select>
+        </label>
+        {{#picked}}<a class="ll-pill" href="{{activityurl}}"><span>{{#str}}ov_open, theme_lmslabs{{/str}}</span></a>{{/picked}}
+    </section>
+    {{^hasactivities}}<div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.clock}}}</div><h2>{{#str}}ov_none, theme_lmslabs{{/str}}</h2><p>{{#str}}ov_none_desc, theme_lmslabs{{/str}}</p></div>{{/hasactivities}}
+    {{#hasactivities}}{{^picked}}
+    <div class="ll-ov-cards">
+        {{#activities}}<a class="ll-ov-card" href="{{url}}"><span class="ll-ov-ico">{{{icon}}}</span><strong>{{name}}</strong><span class="ll-muted">{{#count}}{{#str}}ov_count, theme_lmslabs, {{count}}{{/str}}{{/count}}{{^count}}{{#str}}ov_count0, theme_lmslabs{{/str}}{{/count}}</span></a>{{/activities}}
+    </div>
+    {{/picked}}{{/hasactivities}}
+
+    {{#picked}}
+    <div class="ll-ov-main">
+        <section class="ll-fcard">
+            <div class="ll-fcard-head"><h3>{{#str}}ov_who, theme_lmslabs{{/str}}</h3>
+                <div class="ll-seg"><button type="button" class="is-on" data-ov-mode="people">{{#str}}ov_people, theme_lmslabs{{/str}}</button><button type="button" data-ov-mode="group">{{#str}}ov_group, theme_lmslabs{{/str}}</button></div></div>
+            <div class="ll-fcard-body">
+                <div data-ov-peoplepane>
+                    <div class="ll-ib-search">{{{i.search}}}<input type="search" placeholder="{{#str}}pt_findperson, theme_lmslabs{{/str}}" aria-label="{{#str}}pt_findperson, theme_lmslabs{{/str}}" data-ov-find></div>
+                    <ul class="ll-ib-people ll-ov-people" data-ov-people></ul>
+                </div>
+                <div data-ov-grouppane hidden>
+                    <select class="form-select custom-select" data-ov-groups></select>
+                </div>
+            </div>
+        </section>
+
+        <section class="ll-fcard">
+            <div class="ll-fcard-head"><h3>{{#str}}ov_what, theme_lmslabs{{/str}}</h3></div>
+            <div class="ll-fcard-body">
+                {{#hasquick}}<div class="ll-ov-quick">
+                    <span class="ll-muted">{{#str}}ov_quick, theme_lmslabs{{/str}}</span>
+                    {{#quick}}<button type="button" class="ll-pill" data-ov-quick="{{act}}" data-delta="{{delta}}"><span>{{label}}</span></button>{{/quick}}
+                </div>{{/hasquick}}
+                <div class="ll-ov-fields">
+                    {{#fields}}
+                    <label class="ll-f"><span data-ll-tip="{{tip}}">{{label}}</span>
+                        <input class="form-control" name="{{name}}" data-ov-field="{{name}}" data-base="{{base}}"
+                            {{#date}}type="datetime-local"{{/date}}{{#number}}type="number" min="0"{{/number}}{{#text}}type="text" autocomplete="off"{{/text}}>
+                        <small class="ll-fhint">{{#shown}}{{#str}}ov_now, theme_lmslabs, {{shown}}{{/str}}{{/shown}}{{^shown}}{{#text}}{{#str}}ov_pw_hint, theme_lmslabs{{/str}}{{/text}}{{/shown}}</small>
+                    </label>
+                    {{/fields}}
+                </div>
+                <p class="ll-cb-error" data-ov-error hidden></p>
+                <div class="ll-ov-apply"><button type="button" class="btn btn-primary" data-ov="save" disabled><span data-ov-applylabel data-one="{{#str}}ov_apply_one, theme_lmslabs{{/str}}" data-many="{{#str}}ov_apply_many, theme_lmslabs, {n}{{/str}}" data-group="{{#str}}ov_apply_group, theme_lmslabs{{/str}}">{{#str}}ov_apply_none, theme_lmslabs{{/str}}</span></button></div>
+            </div>
+        </section>
+    </div>
+
+    <section class="ll-ov-list">
+        <h3>{{#str}}ov_existing, theme_lmslabs{{/str}} <span class="ll-badge-count">{{rowcount}}</span></h3>
+        {{^hasrows}}<p class="ll-muted">{{#str}}ov_norows, theme_lmslabs{{/str}}</p>{{/hasrows}}
+        {{#rows}}
+        <article class="ll-ov-row" data-ov-row="{{id}}">
+            <span class="ll-avatar ll-tint-{{tint}}">{{#isgroup}}{{{i.users}}}{{/isgroup}}{{^isgroup}}{{initials}}{{/isgroup}}</span>
+            <div class="ll-ov-who"><strong>{{who}}</strong>
+                <span class="ll-ov-changes">{{#changes}}<span class="ll-chip-tag">{{label}}: {{value}}<small>{{#str}}ov_was, theme_lmslabs, {{was}}{{/str}}</small></span>{{/changes}}</span></div>
+            <button type="button" class="ll-iconbtn" data-ov="remove" data-id="{{id}}" title="{{#str}}ov_remove, theme_lmslabs{{/str}}" aria-label="{{#str}}ov_remove, theme_lmslabs{{/str}}">{{{i.trash}}}</button>
+        </article>
+        {{/rows}}
+    </section>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+    {{/picked}}
+</div>

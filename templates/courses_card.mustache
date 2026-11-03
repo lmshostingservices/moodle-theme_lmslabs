@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/courses_card
+
+    One course card on My courses.
+
+    Example context (json):
+    {"id": 2, "fullname": "Course", "shortname": "C1", "percent": 40, "dash": 90, "status": "inprogress", "i": {} }
+}}
+<article class="ll-ccard{{#locked}} is-locked{{/locked}}{{#complete}} is-complete{{/complete}}" data-mc-item data-status="{{status}}" data-cat="{{categoryid}}"
+         data-search="{{search}}" data-access="{{lastaccess}}" data-percent="{{percent}}" data-order="{{order}}" data-name="{{fullname}}">
+    <a class="ll-ccard-link" href="{{^locked}}{{url}}{{/locked}}{{#locked}}#{{/locked}}"{{#locked}} aria-disabled="true" data-ll-locked{{/locked}}>
+        <div class="ll-ccard-media">
+            {{#image}}<img src="{{image}}" alt="" loading="lazy">{{/image}}
+            {{^image}}<span class="ll-ccard-mono ll-tint-{{tint}}" aria-hidden="true">{{initial}}</span>{{/image}}
+            {{#locked}}<span class="ll-ccard-lock" aria-hidden="true">{{{i.lock}}}</span>{{/locked}}
+        </div>
+        <div class="ll-ccard-ring" aria-hidden="true">
+            <svg viewBox="0 0 56 56">
+                <circle class="ll-ring-track" cx="28" cy="28" r="24"/>
+                <circle class="ll-ring-bar" cx="28" cy="28" r="24" data-dash="{{dash}}" style="stroke-dashoffset: 150.8"/>
+            </svg>
+            {{#complete}}<span class="ll-ring-done">{{{i.check}}}</span>{{/complete}}
+            {{^complete}}<span class="ll-ring-num"><span data-countup="{{percent}}">0</span><small>%</small></span>{{/complete}}
+        </div>
+        <div class="ll-ccard-body">
+            <div class="ll-ccard-meta">{{#hasstep}}<span class="ll-ccard-step">{{#str}}coursestep, theme_lmslabs, {{step}}{{/str}}</span>{{/hasstep}}<span class="ll-ccard-cat">{{{category}}}</span></div>
+            <h3 class="ll-ccard-title">{{{fullname}}}</h3>
+            <div class="ll-ccard-short">{{{shortname}}} · <span title="{{#str}}mc_lastaccess, theme_lmslabs{{/str}}">{{lastaccesslabel}}</span></div>
+            <div class="ll-ccard-foot">
+                {{#locked}}<span class="ll-chip ll-chip-locked">{{{i.lock}}}{{lockreason}}</span>{{/locked}}
+                {{^locked}}
+                <div class="ll-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{percent}}" aria-label="{{#str}}progress, theme_lmslabs{{/str}}">
+                    <span class="ll-bar-fill" data-width="{{percent}}"></span>
+                </div>
+                <span class="ll-ccard-state">
+                    {{#complete}}{{#str}}status_complete, theme_lmslabs{{/str}}{{/complete}}
+                    {{#inprogress}}{{percent}}% {{#str}}status_done, theme_lmslabs{{/str}}{{/inprogress}}
+                    {{#notstarted}}{{#str}}status_notstarted, theme_lmslabs{{/str}}{{/notstarted}}
+                </span>
+                {{/locked}}
+            </div>
+        </div>
+    </a>
+    {{#canimage}}<label class="ll-imgbtn" title="{{#str}}ci_change, theme_lmslabs{{/str}}"><input type="file" accept="image/*" data-ll-courseimage="{{id}}" aria-label="{{#str}}ci_change, theme_lmslabs{{/str}}">{{{i.image}}}</label>{{/canimage}}
+</article>

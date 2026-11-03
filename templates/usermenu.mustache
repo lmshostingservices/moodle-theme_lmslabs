@@ -1,0 +1,45 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/usermenu
+
+    Avatar menu with sections.
+
+    Example context (json):
+    {"fullname": "Sam Lee", "email": "sam@example.com", "sections": [], "logouturl": "#"}
+}}
+<div class="ll-um" data-ll-um>
+    <button type="button" class="ll-um-btn" aria-haspopup="true" aria-expanded="false" data-ll-um-toggle aria-label="{{fullname}}">
+        <span class="ll-um-avatar">{{{avatar}}}</span>
+        {{#unread}}<span class="ll-um-dot" aria-hidden="true"></span>{{/unread}}
+    </button>
+    <div class="ll-um-menu" role="menu" hidden data-ll-um-menu>
+        <div class="ll-um-head">
+            <span class="ll-um-avatar ll-um-avatar-lg">{{{avatar}}}</span>
+            <span class="ll-um-who"><strong>{{fullname}}</strong><span>{{email}}</span></span>
+        </div>
+        {{#metadata}}<div class="ll-um-meta">{{{content}}}</div>{{/metadata}}
+        {{#sections}}
+        <div class="ll-um-section">
+            <div class="ll-um-title">{{title}}</div>
+            {{#items}}
+            <a role="menuitem" class="ll-um-item{{#active}} is-active{{/active}}" href="{{url}}">{{{icon}}}<span>{{label}}</span>{{#badge}}<b class="ll-um-badge">{{badge}}</b>{{/badge}}</a>
+            {{/items}}
+        </div>
+        {{/sections}}
+        <a role="menuitem" class="ll-um-item ll-um-logout" href="{{logouturl}}">{{{logouticon}}}<span>{{#str}}logout{{/str}}</span></a>
+    </div>
+</div>

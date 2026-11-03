@@ -1,0 +1,99 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/messages
+
+    Full-page inbox.
+
+    Example context (json):
+    {"config": "{}", "i": {} }
+}}
+<div class="ll-inbox" data-ll-inbox>
+    <script type="application/json" data-inbox-config>{{{config}}}</script>
+
+    <section class="ll-ib-list" aria-label="{{#str}}msg_conversations, theme_lmslabs{{/str}}">
+        <header class="ll-ib-listhead">
+            <h2>{{#str}}messages, message{{/str}}</h2>
+            <div class="ll-ib-listactions">
+                <a class="ll-iconbtn" href="{{prefsurl}}" title="{{#str}}msg_prefs, theme_lmslabs{{/str}}" aria-label="{{#str}}msg_prefs, theme_lmslabs{{/str}}">{{{i.settings}}}</a>
+                <button type="button" class="btn btn-primary btn-sm ll-btn-icon" data-ib="new">{{{i.plus}}}<span>{{#str}}msg_new, theme_lmslabs{{/str}}</span></button>
+            </div>
+        </header>
+        <div class="ll-ib-search">{{{i.search}}}<input type="search" placeholder="{{#str}}msg_search, theme_lmslabs{{/str}}" aria-label="{{#str}}msg_search, theme_lmslabs{{/str}}" data-ib="search"></div>
+        <div class="ll-ib-tabs" role="tablist">
+            <button type="button" role="tab" class="is-on" data-ib-tab="all" aria-selected="true">{{#str}}all{{/str}}</button>
+            <button type="button" role="tab" data-ib-tab="unread" aria-selected="false">{{#str}}msg_unread, theme_lmslabs{{/str}} <b data-ib="unreadcount"></b></button>
+            <button type="button" role="tab" data-ib-tab="starred" aria-selected="false">{{#str}}msg_starred, theme_lmslabs{{/str}}</button>
+            <button type="button" role="tab" data-ib-tab="groups" aria-selected="false">{{#str}}groups{{/str}}</button>
+        </div>
+        <ul class="ll-ib-convs" data-ib="convs" aria-live="polite"></ul>
+        <div class="ll-ib-searchres" data-ib="results" hidden></div>
+    </section>
+
+    <section class="ll-ib-thread" aria-label="{{#str}}msg_thread, theme_lmslabs{{/str}}">
+        <div class="ll-ib-blank" data-ib="blank">
+            <span class="ll-ib-blank-ico">{{{i.chat}}}</span>
+            <h3>{{#str}}msg_pick, theme_lmslabs{{/str}}</h3>
+            <p>{{#str}}msg_pick_desc, theme_lmslabs{{/str}}</p>
+            <div class="ll-ib-blank-actions">
+                <button type="button" class="btn btn-primary ll-btn-icon" data-ib="new">{{{i.plus}}}<span>{{#str}}msg_new, theme_lmslabs{{/str}}</span></button>
+                {{#canbroadcast}}<button type="button" class="btn btn-secondary ll-btn-icon" data-ib="broadcast">{{{i.users}}}<span>{{#str}}msg_broadcast, theme_lmslabs{{/str}}</span></button>{{/canbroadcast}}
+            </div>
+        </div>
+        <div class="ll-ib-chat" data-ib="chat" hidden>
+            <header class="ll-ib-chathead">
+                <button type="button" class="ll-iconbtn ll-ib-back" data-ib="back" aria-label="{{#str}}back{{/str}}">{{{i.back}}}</button>
+                <span class="ll-avatar ll-ib-av" data-ib="hav"></span>
+                <div class="ll-ib-chatwho">
+                    <strong data-ib="hname"></strong>
+                    <span data-ib="hsub"></span>
+                </div>
+                <button type="button" class="ll-iconbtn" data-ib="star" aria-pressed="false" title="{{#str}}msg_star, theme_lmslabs{{/str}}" aria-label="{{#str}}msg_star, theme_lmslabs{{/str}}">{{{i.star}}}</button>
+                <button type="button" class="ll-iconbtn" data-ib="info" aria-pressed="true" title="{{#str}}msg_details, theme_lmslabs{{/str}}" aria-label="{{#str}}msg_details, theme_lmslabs{{/str}}">{{{i.info}}}</button>
+            </header>
+            <div class="ll-ib-msgs" data-ib="msgs" aria-live="polite"></div>
+            <form class="ll-ib-compose" data-ib="compose">
+                <textarea rows="1" placeholder="{{#str}}msg_write, theme_lmslabs{{/str}}" aria-label="{{#str}}msg_write, theme_lmslabs{{/str}}" data-ib="text"></textarea>
+                <button type="submit" class="ll-ib-send" aria-label="{{#str}}send, message{{/str}}" data-ib="send" disabled>{{{i.send}}}</button>
+                <span class="ll-ib-hint">{{#str}}msg_enterhint, theme_lmslabs{{/str}}</span>
+            </form>
+        </div>
+    </section>
+
+    <aside class="ll-ib-side" data-ib="side" hidden aria-label="{{#str}}msg_details, theme_lmslabs{{/str}}">
+        <div class="ll-ib-person" data-ib="person"></div>
+    </aside>
+
+    <div class="ll-ib-modal" data-ib="newmodal" hidden role="dialog" aria-modal="true" aria-label="{{#str}}msg_new, theme_lmslabs{{/str}}">
+        <div class="ll-ib-modalcard">
+            <header><h3>{{#str}}msg_new, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-ib="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <div class="ll-ib-search">{{{i.search}}}<input type="search" placeholder="{{#str}}msg_findperson, theme_lmslabs{{/str}}" aria-label="{{#str}}msg_findperson, theme_lmslabs{{/str}}" data-ib="peoplesearch"></div>
+            <ul class="ll-ib-people" data-ib="people"></ul>
+        </div>
+    </div>
+
+    {{#canbroadcast}}
+    <div class="ll-ib-modal" data-ib="bcmodal" hidden role="dialog" aria-modal="true" aria-label="{{#str}}msg_broadcast, theme_lmslabs{{/str}}">
+        <form class="ll-ib-modalcard" data-ib="bcform">
+            <header><h3>{{#str}}msg_broadcast, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-ib="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <p class="ll-ib-modalhelp">{{#str}}msg_broadcast_desc, theme_lmslabs{{/str}}</p>
+            <label class="ll-f"><span data-ll-tip="{{#str}}msg_bccourse_tip, theme_lmslabs{{/str}}">{{#str}}course{{/str}}</span><select class="form-select custom-select" data-ib="bccourse"></select></label>
+            <label class="ll-f"><span>{{#str}}message, message{{/str}}</span><textarea class="form-control" rows="5" data-ib="bctext" placeholder="{{#str}}msg_write, theme_lmslabs{{/str}}"></textarea></label>
+            <div class="ll-ib-modalfoot"><button type="submit" class="btn btn-primary ll-btn-icon">{{{i.send}}}<span>{{#str}}msg_sendall, theme_lmslabs{{/str}}</span></button></div>
+        </form>
+    </div>
+    {{/canbroadcast}}
+</div>

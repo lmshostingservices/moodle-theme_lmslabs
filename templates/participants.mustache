@@ -1,0 +1,120 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/participants
+
+    Course participants.
+
+    Example context (json):
+    {"rows": [], "counts": {}, "i": {}, "roles": [], "groups": [], "assignable": []}
+}}
+<div class="ll-pt" data-ll-pt data-course="{{courseid}}" data-ajax="{{ajax}}" data-sesskey="{{sesskey}}" data-one="{{countone}}" data-many="{{countmany}}">
+    <div class="ll-pt-stats">
+        <button type="button" class="ll-pt-stat is-on" data-pt-status="">{{{i.users}}}<b>{{counts.all}}</b><span>{{#str}}pt_everyone, theme_lmslabs{{/str}}</span></button>
+        <button type="button" class="ll-pt-stat" data-pt-status="active"><i class="ll-dot is-on"></i><b>{{counts.active}}</b><span>{{#str}}pt_status_active, theme_lmslabs{{/str}}</span></button>
+        <button type="button" class="ll-pt-stat" data-pt-status="idle" data-ll-tip-self data-ll-tip="{{#str}}pt_idle_tip, theme_lmslabs{{/str}}"><i class="ll-dot is-amber"></i><b>{{counts.idle}}</b><span>{{#str}}pt_status_idle, theme_lmslabs{{/str}}</span></button>
+        <button type="button" class="ll-pt-stat" data-pt-status="never"><i class="ll-dot"></i><b>{{counts.never}}</b><span>{{#str}}pt_status_never, theme_lmslabs{{/str}}</span></button>
+        {{#counts.suspended}}<button type="button" class="ll-pt-stat" data-pt-status="suspended"><i class="ll-dot is-off"></i><b>{{counts.suspended}}</b><span>{{#str}}pt_status_suspended, theme_lmslabs{{/str}}</span></button>{{/counts.suspended}}
+        {{#avgprogress}}<div class="ll-pt-stat is-static" data-ll-tip-self data-ll-tip="{{#str}}pt_avg_tip, theme_lmslabs{{/str}}">{{{i.chart}}}<b>{{avgprogress}}%</b><span>{{#str}}pt_avg, theme_lmslabs{{/str}}</span></div>{{/avgprogress}}
+    </div>
+
+    <div class="ll-pt-bar">
+        <label class="ll-fb-search">{{{i.search}}}<input type="search" placeholder="{{#str}}fb_search, theme_lmslabs{{/str}}" aria-label="{{#str}}fb_search, theme_lmslabs{{/str}}" data-pt-q></label>
+        <label class="ll-fb-sort"><select data-pt-role aria-label="{{#str}}role{{/str}}"><option value="">{{#str}}pt_allroles, theme_lmslabs{{/str}}</option>{{#roles}}<option value="{{id}}">{{name}}</option>{{/roles}}</select></label>
+        {{#hasgroups}}<label class="ll-fb-sort"><select data-pt-group aria-label="{{#str}}group{{/str}}"><option value="">{{#str}}pt_allgroups, theme_lmslabs{{/str}}</option>{{#groups}}<option value="{{id}}">{{{name}}}</option>{{/groups}}</select></label>{{/hasgroups}}
+        <span class="ll-fb-spacer"></span>
+        <a class="ll-pill" href="{{enrolurl}}" data-ll-tip-self data-ll-tip="{{#str}}ph_enrol, theme_lmslabs{{/str}}">{{{i.door}}}<span>{{#str}}enrolmentinstances, enrol{{/str}}</span></a>
+        {{#canenrol}}<button type="button" class="btn btn-primary ll-btn-icon" data-pt="openenrol">{{{i.userplus}}}<span>{{#str}}pt_enrol, theme_lmslabs{{/str}}</span></button>{{/canenrol}}
+    </div>
+
+    <div class="ll-table-card">
+        <table class="ll-table">
+            <thead>
+                <tr>
+                    {{#canbulk}}<th class="ll-col-check"><input type="checkbox" data-pt-all aria-label="{{#str}}selectall{{/str}}"></th>{{/canbulk}}
+                    <th>{{#str}}fb_person, theme_lmslabs{{/str}}</th>
+                    <th class="ll-hide-sm">{{#str}}roles{{/str}}</th>
+                    {{#hasgroups}}<th class="ll-hide-sm">{{#str}}groups{{/str}}</th>{{/hasgroups}}
+                    <th class="ll-hide-xs">{{#str}}pt_progress, theme_lmslabs{{/str}}</th>
+                    <th class="ll-hide-xs">{{#str}}fb_lastaccess, theme_lmslabs{{/str}}</th>
+                    <th class="ll-col-actions"><span class="visually-hidden sr-only">{{#str}}actions{{/str}}</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#rows}}
+                <tr data-pt-row data-id="{{id}}" data-status="{{status}}" data-roles=" {{roleids}} " data-groups=" {{groupids}} " data-name="{{name}} {{email}}">
+                    {{#canbulk}}<td class="ll-col-check"><input type="checkbox" value="{{id}}" data-pt-check aria-label="{{#str}}select{{/str}} {{name}}"></td>{{/canbulk}}
+                    <td>
+                        <a class="ll-person" href="{{profileurl}}">
+                            <span class="ll-avatar ll-tint-{{tint}}">{{initials}}</span>
+                            <span class="ll-person-text"><strong>{{name}}</strong><span>{{email}}</span></span>
+                        </a>
+                    </td>
+                    <td class="ll-hide-sm"><span class="ll-tags">{{#roles}}<span class="ll-tag">{{name}}</span>{{/roles}}</span></td>
+                    {{#hasgroups}}<td class="ll-hide-sm"><span class="ll-tags">{{#groups}}<span class="ll-tag is-soft">{{{name}}}</span>{{/groups}}</span></td>{{/hasgroups}}
+                    <td class="ll-hide-xs">{{#progress}}<span class="ll-ib-prog"><span class="ll-bar"><span class="ll-bar-fill" style="width: {{progress}}%"></span></span><b>{{progress}}%</b></span>{{/progress}}{{^progress}}<span class="ll-muted">—</span>{{/progress}}</td>
+                    <td class="ll-hide-xs"><span class="ll-status is-{{status}}"><span class="ll-dot"></span>{{last}}</span></td>
+                    <td class="ll-col-actions">
+                        <a class="ll-iconbtn" href="{{messageurl}}" title="{{#str}}message, message{{/str}}" aria-label="{{#str}}message, message{{/str}}: {{name}}">{{{i.msg}}}</a>
+                        <a class="ll-iconbtn" href="{{gradesurl}}" title="{{#str}}grades{{/str}}" aria-label="{{#str}}grades{{/str}}: {{name}}">{{{i.chart}}}</a>
+                        <a class="ll-iconbtn" href="{{profileurl}}" title="{{#str}}viewprofile{{/str}}" aria-label="{{#str}}viewprofile{{/str}}: {{name}}">{{{i.eye}}}</a>
+                    </td>
+                </tr>
+                {{/rows}}
+            </tbody>
+        </table>
+        <p class="ll-ch-none" data-pt-none hidden>{{#str}}fb_noresults, theme_lmslabs{{/str}}</p>
+        {{^hasrows}}<div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.users}}}</div><h2>{{#str}}pt_empty, theme_lmslabs{{/str}}</h2><p>{{#str}}pt_empty_desc, theme_lmslabs{{/str}}</p></div>{{/hasrows}}
+    </div>
+
+    {{#canbulk}}
+    <div class="ll-bulkbar" data-pt-bulkbar hidden>
+        <span class="ll-bulk-count" data-pt-count></span>
+        {{#canmessage}}<button type="button" class="ll-pill" data-pt="openmsg">{{{i.send}}}<span>{{#str}}bk_message, theme_lmslabs{{/str}}</span></button>{{/canmessage}}
+        {{#cangroup}}<span class="ll-bulk-cohort"><select class="form-select custom-select" data-pt-groupsel aria-label="{{#str}}group{{/str}}">{{#groups}}<option value="{{id}}">{{{name}}}</option>{{/groups}}</select><button type="button" class="ll-pill" data-pt="group">{{{i.users}}}<span>{{#str}}pt_addgroup, theme_lmslabs{{/str}}</span></button></span>{{/cangroup}}
+        <button type="button" class="ll-pill" data-pt="csv">{{{i.download}}}<span>CSV</span></button>
+        {{#canunenrol}}<button type="button" class="ll-pill ll-danger" data-pt="unenrol" data-confirm="{{#str}}ch_delete_again, theme_lmslabs{{/str}}">{{{i.minus}}}<span>{{#str}}pt_remove, theme_lmslabs{{/str}}</span></button>{{/canunenrol}}
+        <button type="button" class="ll-iconbtn" data-pt="clear" aria-label="{{#str}}bulk_clear, theme_lmslabs{{/str}}">{{{i.x}}}</button>
+    </div>
+    {{/canbulk}}
+
+    {{#canenrol}}
+    <div class="ll-ib-modal" data-pt-modal="enrol" hidden role="dialog" aria-modal="true" aria-label="{{#str}}pt_enrol, theme_lmslabs{{/str}}">
+        <div class="ll-ib-modalcard ll-pt-enrol">
+            <header><h3>{{#str}}pt_enrol, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-pt="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <div class="ll-pick-chips" data-pt-chips hidden></div>
+            <div class="ll-ib-search">{{{i.search}}}<input type="search" placeholder="{{#str}}pt_findperson, theme_lmslabs{{/str}}" aria-label="{{#str}}pt_findperson, theme_lmslabs{{/str}}" data-pt-search></div>
+            <ul class="ll-ib-people" data-pt-results></ul>
+            <details class="ll-pt-paste"><summary>{{{i.paste}}}{{#str}}ch_paste, theme_lmslabs{{/str}}</summary><textarea class="form-control" rows="3" data-pt-paste placeholder="{{#str}}ch_paste_ph, theme_lmslabs{{/str}}"></textarea></details>
+            <div class="ll-ib-modalfoot ll-pt-enrolfoot">
+                <label class="ll-f"><span data-ll-tip="{{#str}}pt_role_tip, theme_lmslabs{{/str}}">{{#str}}pt_enrolas, theme_lmslabs{{/str}}</span><select class="form-select custom-select" data-pt-roleid>{{#assignable}}<option value="{{id}}"{{#selected}} selected{{/selected}}>{{name}}</option>{{/assignable}}</select></label>
+                <button type="button" class="btn btn-primary" data-pt="enrol">{{#str}}pt_enrolbtn, theme_lmslabs{{/str}}</button>
+            </div>
+        </div>
+    </div>
+    {{/canenrol}}
+    {{#canmessage}}
+    <div class="ll-ib-modal" data-pt-modal="msg" hidden role="dialog" aria-modal="true" aria-label="{{#str}}bk_message, theme_lmslabs{{/str}}">
+        <div class="ll-ib-modalcard">
+            <header><h3>{{#str}}bk_message, theme_lmslabs{{/str}}</h3><button type="button" class="ll-iconbtn" data-pt="close" aria-label="{{#str}}closebuttontitle{{/str}}">{{{i.x}}}</button></header>
+            <p class="ll-ib-modalhelp">{{#str}}msg_broadcast_desc, theme_lmslabs{{/str}}</p>
+            <textarea class="form-control" rows="5" data-pt-msg placeholder="{{#str}}msg_write, theme_lmslabs{{/str}}"></textarea>
+            <div class="ll-ib-modalfoot"><button type="button" class="btn btn-primary ll-btn-icon" data-pt="send">{{{i.send}}}<span>{{#str}}send, message{{/str}}</span></button></div>
+        </div>
+    </div>
+    {{/canmessage}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

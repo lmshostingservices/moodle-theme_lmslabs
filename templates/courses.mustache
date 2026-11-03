@@ -1,0 +1,125 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/courses
+
+    My courses: summary, continue card, filters, and Path / Cards / List views.
+
+    Example context (json):
+    {"programs": [], "all": [], "hascourses": false, "total": 0, "done": 0, "counts": {}, "i": {} }
+}}
+<div class="ll-prog ll-mc" data-ll-prog data-ll-mc>
+    <div class="ll-mc-head">
+        <h1>{{#str}}mycourses{{/str}}</h1>
+        {{#canedit}}<a class="ll-pill ll-mc-arrange" href="{{editurl}}">{{{i.pencil}}}<span>{{#str}}arrangecourses, theme_lmslabs{{/str}}</span></a>{{/canedit}}
+    </div>
+    {{^hascourses}}
+    <div class="ll-empty">
+        <div class="ll-empty-ico">{{{i.book}}}</div>
+        <h2>{{#str}}nocourses_title, theme_lmslabs{{/str}}</h2>
+        <p>{{#str}}nocourses_body, theme_lmslabs{{/str}}</p>
+    </div>
+    {{/hascourses}}
+
+    {{#hascourses}}
+    <div class="ll-mc-top">
+        {{#resume}}
+        {{> theme_lmslabs/resume_card }}
+        {{/resume}}
+        <div class="ll-mc-summary">
+            <div class="ll-mc-hello">{{#str}}mc_hello, theme_lmslabs, {{firstname}}{{/str}}</div>
+            <div class="ll-mc-sub"><b data-countup="{{done}}">{{done}}</b> {{#str}}mc_of, theme_lmslabs, {{total}}{{/str}}</div>
+            <div class="ll-mc-seg" role="img" aria-label="{{#str}}mc_overall, theme_lmslabs{{/str}}">
+                {{#counts.complete}}<i class="is-done" style="width: {{seg.done}}%"></i>{{/counts.complete}}
+                {{#counts.inprogress}}<i class="is-prog" style="width: {{seg.prog}}%"></i>{{/counts.inprogress}}
+                {{#counts.locked}}<i class="is-lock" style="width: {{seg.lock}}%"></i>{{/counts.locked}}
+                <i class="is-rest"></i>
+            </div>
+            <ul class="ll-mc-legend">
+                <li><span><i class="ll-mc-dot is-done"></i>{{#str}}mc_completed, theme_lmslabs{{/str}}</span><b>{{counts.complete}}</b></li>
+                <li><span><i class="ll-mc-dot is-prog"></i>{{#str}}mc_inprogress, theme_lmslabs{{/str}}</span><b>{{counts.inprogress}}</b></li>
+                <li><span><i class="ll-mc-dot is-new"></i>{{#str}}mc_notstarted, theme_lmslabs{{/str}}</span><b>{{counts.notstarted}}</b></li>
+                {{#counts.locked}}<li><span><i class="ll-mc-dot is-lock"></i>{{#str}}mc_locked, theme_lmslabs{{/str}}</span><b>{{counts.locked}}</b></li>{{/counts.locked}}
+            </ul>
+        </div>
+    </div>
+
+    <div class="ll-mc-bar" role="toolbar" aria-label="{{#str}}filter, theme_lmslabs{{/str}}">
+        <label class="ll-fb-search">{{{i.search}}}<input type="search" placeholder="{{#str}}mc_search, theme_lmslabs{{/str}}" aria-label="{{#str}}mc_search, theme_lmslabs{{/str}}" data-mc-q></label>
+        {{#hascategories}}
+        <label class="ll-fb-sort">{{{i.folder}}}<select data-mc-cat aria-label="{{#str}}category{{/str}}"><option value="">{{#str}}mc_allcats, theme_lmslabs{{/str}}</option>{{#categories}}<option value="{{id}}">{{{name}}}</option>{{/categories}}</select></label>
+        {{/hascategories}}
+        <label class="ll-fb-sort">{{{i.sort}}}<select data-mc-sort aria-label="{{#str}}sortby{{/str}}">
+            <option value="order">{{#str}}mc_sort_order, theme_lmslabs{{/str}}</option>
+            <option value="access">{{#str}}mc_sort_access, theme_lmslabs{{/str}}</option>
+            <option value="name">{{#str}}mc_sort_name, theme_lmslabs{{/str}}</option>
+            <option value="progress">{{#str}}mc_sort_progress, theme_lmslabs{{/str}}</option>
+        </select></label>
+        <div class="ll-mc-views" role="group" aria-label="{{#str}}mc_view, theme_lmslabs{{/str}}">
+            {{#hasprograms}}<button type="button" data-mc-view="path" title="{{#str}}mc_view_path, theme_lmslabs{{/str}}" aria-label="{{#str}}mc_view_path, theme_lmslabs{{/str}}">{{{i.path}}}</button>{{/hasprograms}}
+            <button type="button" data-mc-view="cards" title="{{#str}}mc_view_cards, theme_lmslabs{{/str}}" aria-label="{{#str}}mc_view_cards, theme_lmslabs{{/str}}">{{{i.grid}}}</button>
+            <button type="button" data-mc-view="list" title="{{#str}}mc_view_list, theme_lmslabs{{/str}}" aria-label="{{#str}}mc_view_list, theme_lmslabs{{/str}}">{{{i.list}}}</button>
+        </div>
+    </div>
+    <div class="ll-mc-status">
+        <div class="ll-cm-seg" role="group">
+            <button type="button" class="is-on" data-mc-status="" aria-pressed="true">{{#str}}mc_all, theme_lmslabs{{/str}}<span>{{total}}</span></button>
+            <button type="button" data-mc-status="inprogress" aria-pressed="false"><i class="ll-mc-dot is-prog"></i>{{#str}}mc_inprogress, theme_lmslabs{{/str}}<span>{{counts.inprogress}}</span></button>
+            <button type="button" data-mc-status="notstarted" aria-pressed="false"><i class="ll-mc-dot is-new"></i>{{#str}}mc_notstarted, theme_lmslabs{{/str}}<span>{{counts.notstarted}}</span></button>
+            <button type="button" data-mc-status="complete" aria-pressed="false"><i class="ll-mc-dot is-done"></i>{{#str}}mc_completed, theme_lmslabs{{/str}}<span>{{counts.complete}}</span></button>
+            {{#counts.locked}}<button type="button" data-mc-status="locked" aria-pressed="false"><i class="ll-mc-dot is-lock"></i>{{#str}}mc_locked, theme_lmslabs{{/str}}<span>{{counts.locked}}</span></button>{{/counts.locked}}
+        </div>
+    </div>
+
+    <div class="ll-mc-view" data-view="path"{{^hasprograms}} hidden{{/hasprograms}}>
+        {{#programs}}
+        <section class="ll-program{{#isothers}} is-others{{/isothers}}" data-mc-group>
+            {{#name}}
+            <header class="ll-program-head">
+                <div class="ll-program-title"><h2>{{{name}}}</h2>{{#hasdescription}}<p>{{{description}}}</p>{{/hasdescription}}</div>
+                {{^isothers}}<div class="ll-program-meter"><span class="ll-program-count"><strong>{{completed}}</strong> / {{count}}</span><span class="ll-bar ll-bar-sm"><span class="ll-bar-fill" data-width="{{percent}}"></span></span></div>{{/isothers}}
+            </header>
+            {{/name}}
+            {{#sections}}
+            <section class="ll-prog-section" data-mc-group>
+                {{#hasname}}<h2 class="ll-prog-heading">{{{name}}}</h2>{{/hasname}}
+                <div class="ll-prog-grid">{{#courses}}{{> theme_lmslabs/courses_card }}{{/courses}}</div>
+            </section>
+            {{/sections}}
+        </section>
+        {{/programs}}
+    </div>
+
+    <div class="ll-mc-view" data-view="cards" hidden><div class="ll-prog-grid" data-mc-sortable>{{#all}}{{> theme_lmslabs/courses_card }}{{/all}}</div></div>
+
+    <div class="ll-mc-view" data-view="list" hidden>
+        <div class="ll-table-card"><div class="ll-mc-list" data-mc-sortable>
+            {{#all}}
+            <a class="ll-mc-row{{#locked}} is-locked{{/locked}}" href="{{^locked}}{{url}}{{/locked}}{{#locked}}#{{/locked}}"{{#locked}} aria-disabled="true" data-ll-locked{{/locked}}
+               data-mc-item data-status="{{status}}" data-cat="{{categoryid}}" data-search="{{search}}" data-access="{{lastaccess}}" data-percent="{{percent}}" data-order="{{order}}" data-name="{{fullname}}">
+                <span class="ll-mc-thumb">{{#image}}<img src="{{image}}" alt="" loading="lazy">{{/image}}{{^image}}<span class="ll-ccard-mono ll-tint-{{tint}}">{{initial}}</span>{{/image}}</span>
+                <span class="ll-mc-name"><strong>{{{fullname}}}</strong><span>{{{category}}}{{#hasstep}} · {{#str}}coursestep, theme_lmslabs, {{step}}{{/str}}{{/hasstep}}</span></span>
+                <span class="ll-mc-prog">{{^locked}}<span class="ll-bar"><span class="ll-bar-fill" data-width="{{percent}}"></span></span><b>{{percent}}%</b>{{/locked}}{{#locked}}<span class="ll-chip ll-chip-locked">{{{i.lock}}}{{lockreason}}</span>{{/locked}}</span>
+                <span class="ll-mc-when ll-hide-sm">{{lastaccesslabel}}</span>
+                <span class="ll-mc-state is-{{status}}">{{#complete}}{{#str}}status_complete, theme_lmslabs{{/str}}{{/complete}}{{#inprogress}}{{#str}}mc_inprogress, theme_lmslabs{{/str}}{{/inprogress}}{{#notstarted}}{{#str}}status_notstarted, theme_lmslabs{{/str}}{{/notstarted}}{{#locked}}{{#str}}mc_locked, theme_lmslabs{{/str}}{{/locked}}</span>
+            </a>
+            {{/all}}
+        </div></div>
+    </div>
+    <p class="ll-cm-nomatch" data-mc-none hidden>{{#str}}mc_none, theme_lmslabs{{/str}}</p>
+    {{/hascourses}}
+</div>

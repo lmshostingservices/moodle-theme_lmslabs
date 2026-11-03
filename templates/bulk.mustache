@@ -1,0 +1,93 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/bulk
+
+    Bulk user actions: filters and table on the left, actions on the right.
+
+    Example context (json):
+    {"fb": {}, "rows": [], "hasrows": false, "total": 0, "i": {}, "cohorts": [], "courses": [], "roles": []}
+}}
+<div class="ll-people ll-bulk" data-ll-list>
+    <div class="ll-pagebar">
+        <p class="ll-pagebar-text">{{#str}}bk_intro, theme_lmslabs{{/str}}</p>
+    </div>
+
+    {{#fb}}{{> theme_lmslabs/filterbar }}{{/fb}}
+
+    <form method="post" action="{{bulkurl}}" data-bulk-form data-ll-bulk data-total="{{total}}" data-apply="{{applylabel}}" data-one="{{countone}}" data-many="{{countmany}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="returnurl" value="{{returnurl}}">
+        <input type="hidden" name="filterquery" value="{{filterquery}}">
+        <div class="ll-bulk-grid">
+            <div class="ll-bulk-main">
+                {{> theme_lmslabs/people_table }}
+            </div>
+
+            <aside class="ll-bulk-panel" aria-label="{{#str}}bk_actions, theme_lmslabs{{/str}}">
+                <div class="ll-bulk-sel">
+                    <strong data-bk-count>{{#str}}bk_none, theme_lmslabs{{/str}}</strong>
+                    <span data-bk-none-text hidden>{{#str}}bk_none, theme_lmslabs{{/str}}</span>
+                    {{#total}}
+                    <label class="ll-bulk-all"><input type="checkbox" name="allmatching" value="1" data-bk-all> <span>{{selectallmatching}}</span></label>
+                    {{/total}}
+                </div>
+
+                <div class="ll-bulk-actions" role="radiogroup" aria-label="{{#str}}bk_actions, theme_lmslabs{{/str}}">
+                    {{#hascourses}}
+                    <label class="ll-bact"><input type="radio" name="action" value="enrol" checked><span class="ll-bact-ico">{{{i.book}}}</span><span class="ll-bact-text"><strong>{{#str}}bk_enrol, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_enrol_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <div class="ll-bact-opts" data-for="enrol">
+                        <select name="courseid" class="form-select custom-select" aria-label="{{#str}}course{{/str}}">
+                            {{#courses}}<option value="{{id}}">{{{name}}}</option>{{/courses}}
+                        </select>
+                        <select name="roleid" class="form-select custom-select" aria-label="{{#str}}role{{/str}}">
+                            {{#roles}}<option value="{{id}}">{{name}}</option>{{/roles}}
+                        </select>
+                    </div>
+                    {{/hascourses}}
+                    {{#hascohorts}}
+                    <label class="ll-bact"><input type="radio" name="action" value="cohort"{{^hascourses}} checked{{/hascourses}}><span class="ll-bact-ico">{{{i.contact}}}</span><span class="ll-bact-text"><strong>{{#str}}bulk_addcohort, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_cohort_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <div class="ll-bact-opts" data-for="cohort uncohort">
+                        <select name="cohortid" class="form-select custom-select" aria-label="{{#str}}cohort, cohort{{/str}}">
+                            {{#cohorts}}<option value="{{id}}">{{{name}}}</option>{{/cohorts}}
+                        </select>
+                    </div>
+                    <label class="ll-bact"><input type="radio" name="action" value="uncohort"><span class="ll-bact-ico">{{{i.minus}}}</span><span class="ll-bact-text"><strong>{{#str}}bk_uncohort, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_uncohort_desc, theme_lmslabs{{/str}}</span></span></label>
+                    {{/hascohorts}}
+                    {{#canmessage}}
+                    <label class="ll-bact"><input type="radio" name="action" value="message"><span class="ll-bact-ico">{{{i.send}}}</span><span class="ll-bact-text"><strong>{{#str}}bk_message, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_message_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <div class="ll-bact-opts" data-for="message">
+                        <textarea name="message" class="form-control" rows="4" placeholder="{{#str}}bk_message_ph, theme_lmslabs{{/str}}" aria-label="{{#str}}message, message{{/str}}"></textarea>
+                    </div>
+                    {{/canmessage}}
+                    <label class="ll-bact"><input type="radio" name="action" value="suspend"><span class="ll-bact-ico">{{{i.pause}}}</span><span class="ll-bact-text"><strong>{{#str}}bulk_suspend, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_suspend_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <label class="ll-bact"><input type="radio" name="action" value="unsuspend"><span class="ll-bact-ico">{{{i.play}}}</span><span class="ll-bact-text"><strong>{{#str}}bulk_unsuspend, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_unsuspend_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <label class="ll-bact"><input type="radio" name="action" value="forcepw"><span class="ll-bact-ico">{{{i.key}}}</span><span class="ll-bact-text"><strong>{{#str}}bk_forcepw, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_forcepw_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <label class="ll-bact"><input type="radio" name="action" value="download"><span class="ll-bact-ico">{{{i.download}}}</span><span class="ll-bact-text"><strong>{{#str}}bk_download, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_download_desc, theme_lmslabs{{/str}}</span></span></label>
+                    {{#candelete}}
+                    <label class="ll-bact is-danger"><input type="radio" name="action" value="delete"><span class="ll-bact-ico">{{{i.trash}}}</span><span class="ll-bact-text"><strong>{{#str}}bk_delete, theme_lmslabs{{/str}}</strong><span>{{#str}}bk_delete_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <div class="ll-bact-opts" data-for="delete">
+                        <label class="ll-bact-confirm">{{#str}}bk_delete_type, theme_lmslabs{{/str}}<input type="text" name="confirm" class="form-control" autocomplete="off" data-bk-confirm></label>
+                    </div>
+                    {{/candelete}}
+                </div>
+
+                <button type="submit" class="btn btn-primary ll-btn-icon ll-bulk-go" data-bk-go disabled>{{{i.check}}}<span data-bk-golabel>{{#str}}bk_pick, theme_lmslabs{{/str}}</span></button>
+                <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+            </aside>
+        </div>
+    </form>
+</div>

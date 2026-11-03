@@ -1,0 +1,58 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/people
+
+    People list with filter bar and bulk actions.
+
+    Example context (json):
+    {"fb": {}, "rows": [], "hasrows": false, "total": 0, "i": {} }
+}}
+<div class="ll-people" data-ll-list>
+    <div class="ll-pagebar">
+        <p class="ll-pagebar-text">{{#str}}people_intro, theme_lmslabs{{/str}}</p>
+        <div class="ll-pagebar-actions">
+            <a data-ll-tip="{{#str}}tip_pe_upload, theme_lmslabs{{/str}}" class="ll-pill" href="{{uploadurl}}">{{{i.upload}}}<span>{{#str}}uploadusers, tool_uploaduser{{/str}}</span></a>
+            <a data-ll-tip="{{#str}}tip_pe_add, theme_lmslabs{{/str}}" class="btn btn-primary ll-btn-icon" href="{{adduserurl}}">{{{i.userplus}}}<span>{{#str}}addnewuser{{/str}}</span></a>
+        </div>
+    </div>
+
+    {{#fb}}{{> theme_lmslabs/filterbar }}{{/fb}}
+
+    <form method="post" action="{{bulkurl}}" data-bulk-form>
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="returnurl" value="{{returnurl}}">
+        {{> theme_lmslabs/people_table }}
+
+        <div class="ll-bulkbar" data-bulkbar hidden>
+            <span class="ll-bulk-count" data-bulk-count></span>
+            <button data-ll-tip="{{#str}}tip_pe_suspend, theme_lmslabs{{/str}}" type="submit" name="action" value="suspend" class="ll-pill">{{{i.pause}}}<span>{{#str}}bulk_suspend, theme_lmslabs{{/str}}</span></button>
+            <button data-ll-tip="{{#str}}tip_pe_unsuspend, theme_lmslabs{{/str}}" type="submit" name="action" value="unsuspend" class="ll-pill">{{{i.play}}}<span>{{#str}}bulk_unsuspend, theme_lmslabs{{/str}}</span></button>
+            {{#hascohorts}}
+            <span class="ll-bulk-cohort">
+                <select data-ll-tip="{{#str}}tip_pe_cohortsel, theme_lmslabs{{/str}}" name="cohortid" class="form-select custom-select" aria-label="{{#str}}cohort, cohort{{/str}}">
+                    {{#cohorts}}<option value="{{id}}">{{{name}}}</option>{{/cohorts}}
+                </select>
+                <button data-ll-tip="{{#str}}tip_pe_cohort, theme_lmslabs{{/str}}" type="submit" name="action" value="cohort" class="ll-pill">{{{i.contact}}}<span>{{#str}}bulk_addcohort, theme_lmslabs{{/str}}</span></button>
+            </span>
+            {{/hascohorts}}
+            <button data-ll-tip="{{#str}}tip_pe_more, theme_lmslabs{{/str}}" type="submit" name="action" value="moodle" class="ll-pill">{{{i.more}}}<span>{{#str}}bulk_more, theme_lmslabs{{/str}}</span></button>
+            <button data-ll-tip="{{#str}}tip_pe_clear, theme_lmslabs{{/str}}" type="button" class="ll-iconbtn" data-bulk-clear aria-label="{{#str}}bulk_clear, theme_lmslabs{{/str}}">{{{i.x}}}</button>
+        </div>
+    </form>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

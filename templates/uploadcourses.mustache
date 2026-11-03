@@ -1,0 +1,126 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/uploadcourses
+
+    Upload courses from a CSV file.
+
+    Example context (json):
+    {"pick": true, "i": {}, "action": "#", "sesskey": "x"}
+}}
+<div class="ll-uu">
+    {{#pick}}
+    <form method="post" action="{{action}}" enctype="multipart/form-data" class="ll-rt-drop" data-rt-drop>
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="file" name="csv" accept=".csv,text/csv,text/plain" data-rt-file>
+        <span class="ll-rt-dropico">{{{i.upload}}}</span>
+        <strong>{{#str}}uc_drop, theme_lmslabs{{/str}}</strong>
+        <span>{{#str}}uu_drop_desc, theme_lmslabs, {{maxsize}}{{/str}}</span>
+        <span class="ll-rt-busy" data-rt-busy hidden><span class="ll-spin"></span>{{#str}}uu_reading, theme_lmslabs{{/str}}</span>
+    </form>
+    <section class="ll-fcard">
+        <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.book}}}</span><div><h2>{{#str}}uu_format, theme_lmslabs{{/str}}</h2><p>{{#str}}uu_format_desc, theme_lmslabs{{/str}}</p></div>
+            <a class="ll-pill ll-bk-headlink" href="{{exampleurl}}">{{{i.download}}}<span>{{#str}}uu_example, theme_lmslabs{{/str}}</span></a></header>
+        <div class="ll-fcard-body">
+            <div class="ll-uu-cols">
+                <span class="is-need"><b>shortname</b>{{#str}}uc_c_shortname, theme_lmslabs{{/str}}</span>
+                <span class="is-need"><b>fullname</b>{{#str}}uc_c_fullname, theme_lmslabs{{/str}}</span>
+                <span><b>category</b>{{#str}}uc_c_category, theme_lmslabs{{/str}}</span>
+                <span><b>idnumber</b>{{#str}}uc_c_idnumber, theme_lmslabs{{/str}}</span>
+                <span><b>startdate</b>{{#str}}uc_c_startdate, theme_lmslabs{{/str}}</span>
+                <span><b>visible</b>{{#str}}uc_c_visible, theme_lmslabs{{/str}}</span>
+            </div>
+        </div>
+    </section>
+    {{/pick}}
+
+    {{#review}}
+    <section class="ll-rt-summary">
+        <span class="ll-rt-sumico">{{{i.upload}}}</span>
+        <div class="ll-rt-summain">
+            <h2>{{totalmsg}}</h2>
+            <p>{{#str}}uu_checked, theme_lmslabs{{/str}}</p>
+            <div class="ll-uu-colchips">
+                {{#cols}}<span class="{{^known}}is-unknown{{/known}}" {{^known}}title="{{#str}}uu_unknown_tip, theme_lmslabs{{/str}}"{{/known}}>{{#known}}{{{i.check}}}{{/known}}{{name}}</span>{{/cols}}
+            </div>
+        </div>
+        <a class="ll-iconbtn" href="{{action}}" title="{{#str}}uu_other, theme_lmslabs{{/str}}" aria-label="{{#str}}uu_other, theme_lmslabs{{/str}}">{{{i.x}}}</a>
+    </section>
+    {{#hasmissing}}<div class="ll-fnotice is-warn">{{{i.alert}}}<span>{{#str}}uu_missing, theme_lmslabs{{/str}} {{#missing}}<b>{{name}}</b> {{/missing}}</span></div>{{/hasmissing}}
+    <section class="ll-fcard">
+        <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.book}}}</span><div><h2>{{#str}}uu_preview, theme_lmslabs{{/str}}</h2><p>{{#str}}uu_preview_desc, theme_lmslabs{{/str}}</p></div></header>
+        <div class="ll-fcard-body ll-uu-scroll">
+            <table class="ll-uu-table"><thead><tr>{{#headers}}<th>{{name}}</th>{{/headers}}</tr></thead>
+                <tbody>{{#preview}}<tr>{{#cells}}<td>{{{v}}}</td>{{/cells}}</tr>{{/preview}}</tbody></table>
+        </div>
+    </section>
+    {{#canimport}}
+    <form method="post" action="{{action}}" data-rt-go>
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="iid" value="{{iid}}">
+        <input type="hidden" name="run" value="1">
+        <section class="ll-fcard">
+            <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.refresh}}}</span><div><h2>{{#str}}uu_what, theme_lmslabs{{/str}}</h2><p>{{#str}}uu_what_desc, theme_lmslabs{{/str}}</p></div></header>
+            <div class="ll-fcard-body">
+                <div class="ll-cp-rules ll-rt-where">
+                    <label class="ll-cp-rule"><input type="radio" name="mode" value="new" checked><span class="ll-swcard-ico">{{{i.plus}}}</span><span class="ll-toggle-text"><strong>{{#str}}uc_mode_new, theme_lmslabs{{/str}}</strong><span>{{#str}}uc_mode_new_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <label class="ll-cp-rule"><input type="radio" name="mode" value="both"><span class="ll-swcard-ico">{{{i.refresh}}}</span><span class="ll-toggle-text"><strong>{{#str}}uu_mode_both, theme_lmslabs{{/str}}</strong><span>{{#str}}uc_mode_both_desc, theme_lmslabs{{/str}}</span></span></label>
+                    <label class="ll-cp-rule"><input type="radio" name="mode" value="update"><span class="ll-swcard-ico">{{{i.book}}}</span><span class="ll-toggle-text"><strong>{{#str}}uu_mode_update, theme_lmslabs{{/str}}</strong><span>{{#str}}uc_mode_update_desc, theme_lmslabs{{/str}}</span></span></label>
+                </div>
+                <div class="ll-uu-fields">
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_uc_category, theme_lmslabs{{/str}}">{{#str}}uc_category, theme_lmslabs{{/str}}</span>
+                        <select class="custom-select form-select" name="category">{{#categories}}<option value="{{id}}">{{{name}}}</option>{{/categories}}</select></label>
+                    <label class="ll-f"><span data-ll-tip="{{#str}}tip_uc_template, theme_lmslabs{{/str}}">{{#str}}uc_template, theme_lmslabs{{/str}}</span>
+                        <select class="custom-select form-select" name="template"><option value="">{{#str}}uc_template_none, theme_lmslabs{{/str}}</option>{{#templates}}<option value="{{short}}">{{{name}}}</option>{{/templates}}</select></label>
+                </div>
+                <div class="ll-toggles ll-uu-toggles">
+                    <label class="ll-toggle"><input type="checkbox" name="visible" value="1" checked><span class="ll-switch-track" aria-hidden="true"></span><span class="ll-toggle-text"><strong>{{#str}}uc_visible, theme_lmslabs{{/str}}</strong><span>{{#str}}uc_visible_desc, theme_lmslabs{{/str}}</span></span></label>
+                </div>
+            </div>
+        </section>
+        <div class="ll-rt-bar">
+            <span class="ll-rt-busy" data-rt-busy hidden><span class="ll-spin"></span>{{#str}}uc_busy, theme_lmslabs{{/str}}</span>
+            <button type="submit" class="btn btn-primary ll-btn-icon" data-rt-submit>{{{i.upload}}}<span>{{#str}}uc_go, theme_lmslabs, {{total}}{{/str}}</span></button>
+        </div>
+    </form>
+    {{/canimport}}
+    {{/review}}
+
+    {{#done}}
+    <section class="ll-fcard ll-rs-done">
+        <div class="ll-fcard-body">
+            <span class="ll-ib-blank-ico {{#allok}}ll-greenico{{/allok}}">{{#allok}}{{{i.check}}}{{/allok}}{{^allok}}{{{i.alert}}}{{/allok}}</span>
+            <h2>{{#allok}}{{#str}}uc_done_ok, theme_lmslabs{{/str}}{{/allok}}{{^allok}}{{#str}}uc_done_some, theme_lmslabs{{/str}}{{/allok}}</h2>
+            <div class="ll-rp-kpis ll-uu-kpis">
+                <div class="ll-rp-kpi"><strong>{{ok}}</strong><span>{{#str}}uu_k_ok, theme_lmslabs{{/str}}</span></div>
+                <div class="ll-rp-kpi"><strong>{{failed}}</strong><span>{{#str}}uu_k_failed, theme_lmslabs{{/str}}</span></div>
+            </div>
+            <div class="ll-uu-actions">
+                <a class="btn btn-primary" href="{{coursesurl}}">{{#str}}uc_view, theme_lmslabs{{/str}}</a>
+                <a class="btn btn-outline-secondary" href="{{action}}">{{#str}}uc_another, theme_lmslabs{{/str}}</a>
+            </div>
+        </div>
+    </section>
+    <section class="ll-fcard">
+        <header class="ll-fcard-head"><span class="ll-fcard-ico">{{{i.book}}}</span><div><h2>{{#str}}uc_rows, theme_lmslabs, {{total}}{{/str}}</h2></div></header>
+        <div class="ll-fcard-body ll-uu-scroll">
+            <table class="ll-uu-table"><thead><tr><th>{{#str}}uucsvline, tool_uploaduser{{/str}}</th><th>{{#str}}shortname{{/str}}</th><th>{{#str}}fullname{{/str}}</th><th>{{#str}}uu_what_happened, theme_lmslabs{{/str}}</th></tr></thead>
+            <tbody>{{#rows}}<tr class="{{#bad}}is-bad{{/bad}}"><td>{{line}}</td><td>{{#url}}<a href="{{url}}">{{shortname}}</a>{{/url}}{{^url}}{{shortname}}{{/url}}</td><td>{{fullname}}</td><td>{{note}}</td></tr>{{/rows}}</tbody></table>
+        </div>
+    </section>
+    {{/done}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

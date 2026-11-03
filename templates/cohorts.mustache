@@ -1,0 +1,107 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/cohorts
+
+    Site cohorts: create in a line, open one to add people three ways.
+
+    Example context (json):
+    {"rows": [], "hasrows": false, "i": {}, "action": "#", "sesskey": "x"}
+}}
+<div class="ll-cohorts" data-ll-cohorts>
+    <div class="ll-pagebar">
+        <p class="ll-pagebar-text">{{#str}}ch_intro, theme_lmslabs{{/str}} <strong>{{summary}}</strong></p>
+    </div>
+
+    {{#canmanage}}
+    <form class="ll-chnew" method="post" action="{{action}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="create">
+        <span class="ll-fcard-ico">{{{i.plus}}}</span>
+        <input type="text" name="name" class="ll-chnew-name" required placeholder="{{#str}}ch_new_ph, theme_lmslabs{{/str}}" aria-label="{{#str}}ch_newname, theme_lmslabs{{/str}}" data-ll-tip-self data-ll-tip="{{#str}}ch_newname_tip, theme_lmslabs{{/str}}">
+        <input type="text" name="idnumber" class="ll-chnew-id" placeholder="{{#str}}ch_idnumber_ph, theme_lmslabs{{/str}}" aria-label="{{#str}}idnumber{{/str}}" data-ll-tip-self data-ll-tip="{{#str}}tip_idnumber, theme_lmslabs{{/str}}">
+        <button type="submit" class="btn btn-primary">{{#str}}ch_create, theme_lmslabs{{/str}}</button>
+    </form>
+    {{/canmanage}}
+
+    {{#hasrows}}
+    <div class="ll-chsearch">{{{i.search}}}<input type="search" placeholder="{{#str}}ch_search, theme_lmslabs{{/str}}" aria-label="{{#str}}ch_search, theme_lmslabs{{/str}}" data-ch-search></div>
+    <div class="ll-chlist">
+        {{#rows}}
+        <details class="ll-ch" id="cohort-{{id}}" data-name="{{rawname}} {{idnumber}}"{{#open}} open{{/open}}>
+            <summary>
+                <span class="ll-ch-ico">{{{i.contact}}}</span>
+                <span class="ll-ch-title">
+                    <strong>{{{name}}}</strong>
+                    <span>{{#description}}{{description}}{{/description}}{{^description}}{{#idnumber}}{{idnumber}}{{/idnumber}}{{/description}}</span>
+                </span>
+                <span class="ll-faces" aria-hidden="true">
+                    {{#faces}}<span class="ll-avatar ll-tint-{{tint}}" title="{{name}}">{{initials}}</span>{{/faces}}
+                    {{#more}}<span class="ll-avatar ll-faces-more">+{{more}}</span>{{/more}}
+                </span>
+                <span class="ll-ch-count">{{{i.users}}}{{memberslabel}}</span>
+                {{#courses}}<span class="ll-ch-sync" data-ll-tip-self data-ll-tip="{{#str}}ch_sync_tip, theme_lmslabs{{/str}}">{{{i.book}}}{{courseslabel}}</span>{{/courses}}
+                <span class="ll-acc-chev">{{{i.chev}}}</span>
+            </summary>
+            <div class="ll-ch-body">
+                {{#canassign}}
+                <div class="ll-ch-ways">
+                    <a class="ll-way" href="{{membersurl}}">
+                        <span class="ll-way-ico">{{{i.userplus}}}</span>
+                        <strong>{{#str}}ch_pick, theme_lmslabs{{/str}}</strong>
+                        <span>{{#str}}ch_pick_desc, theme_lmslabs{{/str}}</span>
+                    </a>
+                    <form class="ll-way ll-way-paste" method="post" action="{{action}}">
+                        <input type="hidden" name="sesskey" value="{{sesskey}}">
+                        <input type="hidden" name="action" value="paste">
+                        <input type="hidden" name="id" value="{{id}}">
+                        <span class="ll-way-ico">{{{i.paste}}}</span>
+                        <strong>{{#str}}ch_paste, theme_lmslabs{{/str}}</strong>
+                        <textarea name="people" rows="3" class="form-control" placeholder="{{#str}}ch_paste_ph, theme_lmslabs{{/str}}" aria-label="{{#str}}ch_paste, theme_lmslabs{{/str}}"></textarea>
+                        <button type="submit" class="btn btn-primary btn-sm">{{#str}}ch_add, theme_lmslabs{{/str}}</button>
+                    </form>
+                    <a class="ll-way" href="{{bulkurl}}">
+                        <span class="ll-way-ico">{{{i.list}}}</span>
+                        <strong>{{#str}}ch_filter, theme_lmslabs{{/str}}</strong>
+                        <span>{{#str}}ch_filter_desc, theme_lmslabs{{/str}}</span>
+                    </a>
+                </div>
+                {{/canassign}}
+                {{#canmanage}}
+                <form class="ll-ch-edit" method="post" action="{{action}}">
+                    <input type="hidden" name="sesskey" value="{{sesskey}}">
+                    <input type="hidden" name="id" value="{{id}}">
+                    <label class="ll-f"><span>{{#str}}name{{/str}}</span><input type="text" name="name" class="form-control" value="{{rawname}}" required></label>
+                    <label class="ll-f"><span>{{#str}}description{{/str}}</span><input type="text" name="description" class="form-control" value="{{description}}"></label>
+                    <button type="submit" name="action" value="rename" class="btn btn-secondary">{{#str}}savechanges{{/str}}</button>
+                    <button type="submit" name="action" value="delete" class="ll-linkbtn ll-danger" data-ch-delete data-confirm="{{#str}}ch_delete_again, theme_lmslabs{{/str}}">{{{i.trash}}}<span>{{#str}}ch_delete, theme_lmslabs{{/str}}</span></button>
+                </form>
+                {{/canmanage}}
+            </div>
+        </details>
+        {{/rows}}
+    </div>
+    <p class="ll-ch-none" data-ch-none hidden>{{#str}}ch_nomatch, theme_lmslabs{{/str}}</p>
+    {{/hasrows}}
+    {{^hasrows}}
+    <div class="ll-empty ll-empty-flat">
+        <div class="ll-empty-ico">{{{i.contact}}}</div>
+        <h2>{{#str}}ch_empty, theme_lmslabs{{/str}}</h2>
+        <p>{{#str}}ch_empty_desc, theme_lmslabs{{/str}}</p>
+    </div>
+    {{/hasrows}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

@@ -1,0 +1,50 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/today
+
+    Dashboard "Today" panel.
+
+    Example context (json):
+    {"greeting": "Good morning, Sam", "due": [], "tiles": [], "i": {} }
+}}
+<section class="ll-today" aria-label="{{greeting}}">
+    <div class="ll-today-head">
+        <div>
+            <h2>{{greeting}}</h2>
+            <p>{{date}}</p>
+        </div>
+        <div class="ll-today-tiles">
+            {{#tiles}}
+            <a class="ll-today-tile{{#hot}} is-hot{{/hot}}" href="{{url}}">{{{icon}}}<b>{{value}}</b><span>{{label}}</span></a>
+            {{/tiles}}
+        </div>
+    </div>
+    <div class="ll-today-body">
+        {{#resume}}
+        {{> theme_lmslabs/resume_card }}
+        {{/resume}}
+        <div class="ll-today-due">
+            <div class="ll-today-duehead"><h3>{{{i.calendar}}}{{#str}}td_due, theme_lmslabs{{/str}}</h3><a href="{{calendarurl}}">{{#str}}calendar, calendar{{/str}} {{{i.arrow}}}</a></div>
+            {{#hasdue}}
+            <ul>
+                {{#due}}<li><a href="{{#url}}{{url}}{{/url}}{{^url}}{{calendarurl}}{{/url}}"><i class="ll-cal-c{{colour}}"></i><span><strong>{{name}}</strong><small>{{course}}</small></span><em class="ll-cal-tag{{#overdue}} is-overdue{{/overdue}}">{{#overdue}}{{#str}}cal_overdue, theme_lmslabs{{/str}}{{/overdue}}{{^overdue}}{{when}}{{/overdue}}</em></a></li>{{/due}}
+            </ul>
+            {{/hasdue}}
+            {{^hasdue}}<p class="ll-cal-allclear">{{{i.check}}} {{#str}}td_nothingdue, theme_lmslabs{{/str}}</p>{{/hasdue}}
+        </div>
+    </div>
+</section>

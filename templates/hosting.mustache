@@ -1,0 +1,45 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+{{!
+    @template theme_lmslabs/hosting
+
+    Hosting provider switches.
+
+    Example context (json):
+    {"action": "", "sesskey": "x", "hidepromo": false, "useaiformat": true, "i": {} }
+}}
+<form class="ll-hs" method="post" action="{{action}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <p class="ll-muted">{{#str}}hostingsettings_desc, theme_lmslabs{{/str}}</p>
+    <div class="ll-panel">
+        <div class="ll-panel-body ll-hs-list">
+            <div class="ll-hs-row">
+                <div><strong data-ll-tip="{{#str}}tip_hs_promo, theme_lmslabs{{/str}}">{{#str}}hidepromo, theme_lmslabs{{/str}}</strong>
+                    <p class="ll-muted">{{#str}}hs_promo_help, theme_lmslabs{{/str}}</p></div>
+                <label class="ll-toggle"><input type="hidden" name="hidepromo" value="0"><input type="checkbox" name="hidepromo" value="1"{{#hidepromo}} checked{{/hidepromo}} aria-label="{{#str}}hidepromo, theme_lmslabs{{/str}}"><span class="ll-switch-track"></span></label>
+            </div>
+            <div class="ll-hs-row">
+                <div><strong data-ll-tip="{{#str}}tip_hs_ai, theme_lmslabs{{/str}}">{{#str}}useaiformat, theme_lmslabs{{/str}}</strong>
+                    <p class="ll-muted">{{#str}}hs_ai_help, theme_lmslabs{{/str}}</p></div>
+                <label class="ll-toggle"><input type="hidden" name="useaiformat" value="0"><input type="checkbox" name="useaiformat" value="1"{{#useaiformat}} checked{{/useaiformat}} aria-label="{{#str}}useaiformat, theme_lmslabs{{/str}}"><span class="ll-switch-track"></span></label>
+            </div>
+        </div>
+    </div>
+    <div class="ll-formactions">
+        <button type="submit" class="btn btn-primary" data-ll-tip="{{#str}}tip_hs_save, theme_lmslabs{{/str}}">{{#str}}savechanges{{/str}}</button>
+    </div>
+    <p class="ll-classic"><a href="{{classicurl}}" data-ll-tip="{{#str}}gb_classic_tip, theme_lmslabs{{/str}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</form>

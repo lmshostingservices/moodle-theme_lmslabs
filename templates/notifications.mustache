@@ -1,0 +1,37 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/notifications
+
+    Notifications list.
+
+    Example context (json):
+    {"config": "{}", "i": {} }
+}}
+<div class="ll-notif" data-ll-notif>
+    <script type="application/json" data-nt-config>{{{config}}}</script>
+    <div class="ll-nt-bar">
+        <div class="ll-ib-tabs" role="tablist">
+            <button type="button" role="tab" class="is-on" data-nt-tab="all" aria-selected="true">{{#str}}all{{/str}}</button>
+            <button type="button" role="tab" data-nt-tab="unread" aria-selected="false">{{#str}}msg_unread, theme_lmslabs{{/str}} <b data-nt="count"></b></button>
+        </div>
+        <span class="ll-fb-spacer"></span>
+        <button type="button" class="ll-pill" data-nt="markall">{{{i.check}}}<span>{{#str}}nt_markall, theme_lmslabs{{/str}}</span></button>
+        <a class="ll-pill" href="{{prefsurl}}" data-ll-tip-self data-ll-tip="{{#str}}nt_prefs_tip, theme_lmslabs{{/str}}">{{{i.settings}}}<span>{{#str}}nt_prefs, theme_lmslabs{{/str}}</span></a>
+    </div>
+    <div class="ll-nt-list" data-nt="list"><div class="ll-ib-loading"></div></div>
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

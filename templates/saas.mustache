@@ -1,0 +1,354 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/saas
+
+    App shell: left sidebar, top bar, Boost page content, LMS Labs footer bar.
+
+    Example context (json):
+    {
+        "sitename": "Moodle",
+        "output": {"doctype": "<!DOCTYPE html>", "page_title": "Test", "favicon": "favicon.ico", "main_content": "<h1>Hi</h1>"},
+        "bodyattributes": "",
+        "navgroups": [],
+        "i": {}
+    }
+}}
+{{{ output.doctype }}}
+<html {{{ output.htmlattributes }}}>
+<head>
+    <title>{{{ output.page_title }}}</title>
+    <link rel="shortcut icon" href="{{{ output.favicon }}}" />
+    {{{ output.standard_head_html }}}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{#fontcss}}<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="{{fontcss}}">{{/fontcss}}
+    <style id="ll-accent">{{{accentcss}}}</style>
+    <script>try{if(localStorage.getItem('ll-collapsed')==='1'){document.documentElement.classList.add('ll-collapsed');}}catch(e){}</script>
+</head>
+<body {{{ bodyattributes }}}>
+{{> core/local/toast/wrapper}}
+<div id="page-wrapper" class="d-print-block">
+
+    {{{ output.standard_top_of_body_html }}}
+
+    <aside class="ll-sidebar d-print-none" id="ll-sidebar" aria-label="{{#str}}sitenavigation, theme_lmslabs{{/str}}">
+        <div class="ll-brand">
+            <a class="ll-brand-link" href="{{homeurl}}" title="{{sitename}}">
+                {{#logourl}}<img class="ll-logo" src="{{logourl}}" alt="">{{/logourl}}
+                {{^logourl}}<span class="ll-logo ll-logo-initial" aria-hidden="true">{{siteinitial}}</span>{{/logourl}}
+                <span class="ll-brand-name">{{sitename}}</span>
+            </a>
+            <button type="button" class="ll-iconbtn ll-collapse-btn" data-ll-action="collapse"
+                    title="{{#str}}togglesidebar, theme_lmslabs{{/str}}" aria-label="{{#str}}togglesidebar, theme_lmslabs{{/str}}">
+                {{{i.collapse}}}
+            </button>
+        </div>
+
+        <button type="button" class="ll-search-trigger" data-ll-action="palette">
+            {{{i.search}}}
+            <span class="ll-search-text">{{#str}}search, theme_lmslabs{{/str}}</span>
+            <kbd class="ll-kbd" data-ll-kbd>Ctrl K</kbd>
+        </button>
+
+        {{#setupcard}}
+        <div class="ll-setupcard">
+            <a class="ll-setupcard-main" href="{{url}}">
+                <span class="ll-setupcard-title">{{#str}}setup_title, theme_lmslabs{{/str}}</span>
+                <span class="ll-setupcard-count">{{#str}}setup_progress, theme_lmslabs, {"done": {{done}}, "total": {{total}} }{{/str}}</span>
+                <span class="ll-bar ll-bar-sm"><span class="ll-bar-fill" style="width: {{percent}}%"></span></span>
+            </a>
+            <a class="ll-setupcard-x" href="{{hideurl}}" aria-label="{{#str}}setup_hidecard, theme_lmslabs{{/str}}" title="{{#str}}setup_hidecard, theme_lmslabs{{/str}}">{{{i.x}}}</a>
+        </div>
+        {{/setupcard}}
+        <nav class="ll-nav" aria-label="{{#str}}sitenavigation, theme_lmslabs{{/str}}">
+            {{#navgroups}}
+            <div class="ll-group{{#collapsible}} is-collapsible{{/collapsible}}{{#hasactive}} has-active{{/hasactive}}" data-group="{{key}}">
+                {{#haslabel}}
+                <button type="button" class="ll-group-label" data-ll-action="group" aria-expanded="true">
+                    <span>{{label}}</span>{{#collapsible}}{{{i.chevron}}}{{/collapsible}}
+                </button>
+                {{/haslabel}}
+                <ul class="ll-list">
+                    {{#items}}
+                    {{^haschildren}}
+                    <li>
+                        <a class="ll-link{{#active}} is-active{{/active}}" href="{{url}}" data-key="{{key}}" title="{{name}}"{{#active}} aria-current="page"{{/active}}>
+                            {{{icon}}}<span class="ll-link-text">{{name}}</span>
+                        </a>
+                    </li>
+                    {{/haschildren}}
+                    {{#haschildren}}
+                    <li class="ll-has-sub{{#open}} is-open{{/open}}" data-sub="{{key}}">
+                        <button type="button" class="ll-link ll-link-parent" data-ll-action="sub" data-key="{{key}}" title="{{name}}"
+                                aria-expanded="{{#open}}true{{/open}}{{^open}}false{{/open}}" aria-controls="ll-sub-{{key}}">
+                            {{{icon}}}<span class="ll-link-text">{{name}}</span>{{{i.chevron}}}
+                        </button>
+                        <ul class="ll-sub" id="ll-sub-{{key}}">
+                            {{#children}}
+                            <li>
+                                <a class="ll-sublink{{#active}} is-active{{/active}}" href="{{url}}" data-key="{{key}}"{{#active}} aria-current="page"{{/active}}>
+                                    <span class="ll-link-text">{{name}}</span>
+                                </a>
+                            </li>
+                            {{/children}}
+                        </ul>
+                    </li>
+                    {{/haschildren}}
+                    {{/items}}
+                </ul>
+                {{#groupcourseindex}}
+                <div class="ll-courseindex">
+                    <div class="ll-subhead">{{#str}}coursecontent, theme_lmslabs{{/str}}</div>
+                    {{{groupcourseindex}}}
+                </div>
+                {{/groupcourseindex}}
+            </div>
+            {{/navgroups}}
+        </nav>
+
+    </aside>
+    <div class="ll-scrim d-print-none" data-ll-action="closenav" aria-hidden="true"></div>
+
+    <div class="ll-main">
+        <header class="ll-topbar navbar d-print-none">
+            <button type="button" class="ll-iconbtn ll-menu-btn" data-ll-action="opennav" aria-label="{{#str}}opennav, theme_lmslabs{{/str}}">
+                {{{i.menu}}}
+            </button>
+            <button type="button" class="ll-iconbtn ll-mobile-search" data-ll-action="palette" aria-label="{{#str}}search, theme_lmslabs{{/str}}">
+                {{{i.search}}}
+            </button>
+            {{#immersive}}
+            <a class="ll-pill ll-back" href="{{mycoursesurl}}">{{{i.back}}}<span>{{#str}}mycourses{{/str}}</span></a>
+            {{/immersive}}
+            {{#isloggedin}}
+            <nav class="ll-navicons" aria-label="{{#str}}quicklinks, theme_lmslabs{{/str}}">
+                <a class="ll-iconbtn{{#dashactive}} is-active{{/dashactive}}" href="{{dashurl}}" title="{{#str}}myhome{{/str}}" aria-label="{{#str}}myhome{{/str}}">{{{i.dash}}}</a>
+                <a class="ll-iconbtn{{#coursesactive}} is-active{{/coursesactive}}" href="{{mycoursesurl}}" title="{{#str}}mycourses{{/str}}" aria-label="{{#str}}mycourses{{/str}}">{{{i.courses}}}</a>
+                {{#adminmenu}}
+                <div class="ll-adm" data-ll-adm>
+                    <button type="button" class="ll-iconbtn ll-adm-btn" aria-haspopup="true" aria-expanded="false" data-ll-adm-toggle title="{{#str}}siteadmin, theme_lmslabs{{/str}}" aria-label="{{#str}}siteadmin, theme_lmslabs{{/str}}">{{{i.admin}}}</button>
+                    <div class="ll-adm-menu ll-adm-left" hidden data-ll-adm-menu role="menu">
+                        {{#groups}}
+                        <div class="ll-adm-group">
+                            <div class="ll-um-title">{{label}}</div>
+                            {{#items}}<a role="menuitem" class="ll-um-item" href="{{url}}">{{{icon}}}<span>{{name}}</span></a>{{/items}}
+                        </div>
+                        {{/groups}}
+                    </div>
+                </div>
+                {{/adminmenu}}
+            </nav>
+            {{/isloggedin}}
+            <div class="ll-crumbs">{{{breadcrumb}}}</div>
+            {{#contact}}
+            <div class="ll-topcontact" aria-label="{{#str}}needhelp, theme_lmslabs{{/str}}">
+                <span class="ll-topcontact-label">{{#str}}needhelp, theme_lmslabs{{/str}}</span>
+                {{#email}}<a href="mailto:{{email}}">{{{i.mail}}}<span>{{email}}</span></a>{{/email}}
+                {{#phone}}<a href="tel:{{phonelink}}">{{{i.phone}}}<span>{{phone}}</span></a>{{/phone}}
+            </div>
+            {{/contact}}
+            <div class="ll-actions">
+                {{#studentview}}
+                    {{#active}}
+                    <a class="ll-pill ll-pill-warn" href="{{url}}">{{{i.undo}}}<span>{{#str}}returntomyview, theme_lmslabs{{/str}}</span></a>
+                    {{/active}}
+                    {{^active}}
+                    <a class="ll-pill" href="{{url}}" title="{{#str}}studentview_help, theme_lmslabs{{/str}}">{{{i.eye}}}<span>{{#str}}studentview, theme_lmslabs{{/str}}</span></a>
+                    {{/active}}
+                {{/studentview}}
+                {{#editswitch}}<div class="ll-editswitch">{{{editswitch}}}</div>{{/editswitch}}
+
+                {{#canaccent}}
+                <div class="ll-accent" data-ll-accent>
+                    <button type="button" class="ll-iconbtn ll-accent-btn" data-ll-action="accent" aria-expanded="false"
+                            aria-haspopup="true" title="{{#str}}accentcolour, theme_lmslabs{{/str}}" aria-label="{{#str}}accentcolour, theme_lmslabs{{/str}}">
+                        <span class="ll-accent-dot" aria-hidden="true"></span>
+                    </button>
+                    <div class="ll-popover ll-accent-pop" role="dialog" aria-label="{{#str}}accentcolour, theme_lmslabs{{/str}}" hidden>
+                        <div class="ll-pop-head">
+                            <div class="ll-pop-title">{{#str}}accentcolour, theme_lmslabs{{/str}}</div>
+                            <div class="ll-pop-sub">{{#str}}accentcolour_help, theme_lmslabs{{/str}}</div>
+                        </div>
+                        <div class="ll-swatches">
+                            {{#swatches}}
+                            <button type="button" class="ll-swatch{{#selected}} is-selected{{/selected}}" data-hex="{{hex}}"
+                                    style="--sw: {{hex}}" title="{{label}}" aria-label="{{label}}" aria-pressed="{{#selected}}true{{/selected}}{{^selected}}false{{/selected}}">
+                                {{{i.check}}}
+                            </button>
+                            {{/swatches}}
+                        </div>
+                        <label class="ll-custom">
+                            <span class="ll-custom-chip">{{{i.pipette}}}<input type="color" value="{{accent}}" data-ll-custom aria-label="{{#str}}customcolour, theme_lmslabs{{/str}}"></span>
+                            <span class="ll-custom-label">{{#str}}customcolour, theme_lmslabs{{/str}}</span>
+                            <code class="ll-custom-hex" data-ll-hex>{{accent}}</code>
+                        </label>
+                    </div>
+                </div>
+                {{/canaccent}}
+
+                {{#hasblocks}}
+                <button type="button" class="ll-iconbtn ll-blocks-btn" data-ll-action="blocks" aria-controls="ll-blocks"
+                        aria-expanded="{{#blockdraweropen}}true{{/blockdraweropen}}{{^blockdraweropen}}false{{/blockdraweropen}}"
+                        title="{{#str}}opendrawerblocks, core{{/str}}" aria-label="{{#str}}opendrawerblocks, core{{/str}}">
+                    {{{i.blocks}}}
+                </button>
+                {{/hasblocks}}
+
+                {{#isloggedin}}
+                <button type="button" class="ll-iconbtn ll-tipsbtn" data-ll-tips-toggle aria-pressed="true"
+                        title="{{#str}}tipstoggle, theme_lmslabs{{/str}}" aria-label="{{#str}}tipstoggle, theme_lmslabs{{/str}}">{{{i.tips}}}</button>
+                {{/isloggedin}}
+                {{#langmenu}}<div class="ll-lang">{{> theme_boost/language_menu }}</div>{{/langmenu}}
+                <div class="ll-plugins">{{{ navbarplugins }}}</div>
+                {{#isloggedin}}
+                {{#um}}{{> theme_lmslabs/usermenu }}{{/um}}
+                {{^um}}{{#usermenu}}
+                <div class="d-flex align-items-stretch usermenu-container" data-region="usermenu">
+                    {{> core/user_menu }}
+                </div>
+                {{/usermenu}}{{/um}}
+                {{/isloggedin}}
+                {{^isloggedin}}
+                <a class="ll-pill ll-pill-solid" href="{{loginurl}}">{{#str}}login{{/str}}</a>
+                {{/isloggedin}}
+            </div>
+        </header>
+
+        <div class="ll-body{{#hasblocks}}{{#blockdraweropen}} blocks-open{{/blockdraweropen}}{{/hasblocks}}{{#forceblockdraweropen}} blocks-open{{/forceblockdraweropen}}" data-ll-body>
+            {{#courseindex}}
+                {{< theme_boost/drawer }}
+                    {{$id}}theme_boost-drawers-courseindex{{/id}}
+                    {{$drawerheading}}<span class="ll-ci-title">{{#str}}coursecontent, theme_lmslabs{{/str}}</span>{{/drawerheading}}
+                    {{$drawercontrols}}{{> theme_boost/courseindexdrawercontrols}}{{/drawercontrols}}
+                    {{$drawerclasses}}drawer drawer-left {{#courseindexopen}}show{{/courseindexopen}}{{/drawerclasses}}
+                    {{$drawercontent}}
+                        {{{courseindex}}}
+                    {{/drawercontent}}
+                    {{$drawerpreferencename}}drawer-open-index{{/drawerpreferencename}}
+                    {{$drawerstate}}show-drawer-left{{/drawerstate}}
+                    {{$tooltipplacement}}right{{/tooltipplacement}}
+                    {{$closebuttontext}}{{#str}}closecourseindex, core{{/str}}{{/closebuttontext}}
+                    {{$closebuttonicon}}{{{i.panelclose}}}{{/closebuttonicon}}
+                {{/ theme_boost/drawer}}
+            {{/courseindex}}
+            <div id="page" data-region="mainpage" data-usertour="scroller"{{#formatsync}} class="drawers{{#courseindexopen}} show-drawer-left{{/courseindexopen}} drag-container"{{/formatsync}}>
+                <div id="topofscroll" class="main-inner">
+                    {{#courseindex}}
+                    <div class="drawer-toggles d-flex">
+                        <div class="drawer-toggler drawer-left-toggle open-nav d-print-none">
+                            <button class="btn btn-icon icon-size-3 ll-index-open" data-toggler="drawers" data-action="toggle"
+                                    data-target="theme_boost-drawers-courseindex" data-bs-toggle="tooltip" data-toggle="tooltip"
+                                    data-bs-placement="right" data-placement="right" title="{{#str}}opendrawerindex, core{{/str}}">
+                                <span class="visually-hidden sr-only">{{#str}}opendrawerindex, core{{/str}}</span>
+                                {{{i.panelopen}}}
+                            </button>
+                        </div>
+                    </div>
+                    {{/courseindex}}
+                    {{#classicback}}
+                    <div class="ll-classicbar" role="note">
+                        <span>{{#str}}classicbar, theme_lmslabs{{/str}}</span>
+                        <a class="btn btn-primary ll-btn-icon" href="{{url}}">{{{icon}}}<span>{{#str}}returntolmslabs, theme_lmslabs{{/str}}</span></a>
+                    </div>
+                    {{/classicback}}
+                    {{{ output.full_header }}}
+                    {{#today}}{{> theme_lmslabs/today }}{{/today}}
+                    {{#secondaryhtml}}
+                    <div class="secondary-navigation d-print-none">{{{secondaryhtml}}}</div>
+                    {{/secondaryhtml}}
+                    <div id="page-content" class="d-print-block">
+                        <div id="region-main-box">
+                            {{#hasregionmainsettingsmenu}}
+                            <div id="region-main-settings-menu" class="d-print-none">
+                                <div> {{{ regionmainsettingsmenu }}} </div>
+                            </div>
+                            {{/hasregionmainsettingsmenu}}
+                            <div id="region-main">
+                                {{#pagehero}}<div class="ll-pagehero"><span class="ll-fcard-ico">{{{icon}}}</span><p>{{text}}</p></div>{{/pagehero}}
+                                {{#ourtitle}}<div class="ll-ptitle"><h1>{{title}}</h1><span>{{{sub}}}</span></div>{{/ourtitle}}
+                                {{#hasregionmainsettingsmenu}}
+                                    <div class="region_main_settings_menu_proxy"></div>
+                                {{/hasregionmainsettingsmenu}}
+                                {{{ output.course_content_header }}}
+                                {{#headercontent}}
+                                    {{> core/activity_header }}
+                                {{/headercontent}}
+                                {{#overflowhtml}}
+                                <div class="container-fluid tertiary-navigation">
+                                    <div class="navitem">{{{overflowhtml}}}</div>
+                                </div>
+                                {{/overflowhtml}}
+                                {{{ output.main_content }}}
+                                {{{ output.activity_navigation }}}
+                                {{{ output.course_content_footer }}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{{ output.standard_after_main_region_html }}}
+                {{> theme_lmslabs/footer }}
+            </div>
+
+            {{#hasblocks}}
+            <aside id="ll-blocks" class="ll-blocks d-print-none" aria-label="{{#str}}blocks{{/str}}">
+                <div class="ll-blocks-head">
+                    <span>{{#str}}blocks{{/str}}</span>
+                    <button type="button" class="ll-iconbtn" data-ll-action="blocks" aria-label="{{#str}}closeblockdrawer, core{{/str}}">{{{i.x}}}</button>
+                </div>
+                <div class="ll-blocks-body">
+                    {{{ addblockbutton }}}
+                    {{{ sidepreblocks }}}
+                </div>
+            </aside>
+            {{/hasblocks}}
+        </div>
+    </div>
+</div>
+
+<div class="ll-palette" data-ll-palette hidden>
+    <div class="ll-palette-backdrop" data-ll-action="closepalette"></div>
+    <div class="ll-palette-panel" role="dialog" aria-modal="true" aria-label="{{#str}}search, theme_lmslabs{{/str}}">
+        <div class="ll-palette-input">
+            {{{i.search}}}
+            <input type="search" data-ll-palette-input placeholder="{{#str}}palette_placeholder, theme_lmslabs{{/str}}" autocomplete="off" spellcheck="false"
+                   aria-controls="ll-palette-list" aria-autocomplete="list">
+            <kbd class="ll-kbd">Esc</kbd>
+        </div>
+        <div class="ll-palette-scope" data-ll-palette-scope hidden>
+            <div class="ll-seg"><button type="button" data-pal-scope="course"></button><button type="button" data-pal-scope="site"></button></div>
+            <span class="ll-muted" data-ll-scope-hint></span>
+        </div>
+        <ul class="ll-palette-list" id="ll-palette-list" role="listbox" data-ll-palette-list></ul>
+        <div class="ll-palette-foot">
+            <span><kbd class="ll-kbd">↑</kbd><kbd class="ll-kbd">↓</kbd> {{#str}}palette_move, theme_lmslabs{{/str}}</span>
+            <span><kbd class="ll-kbd">↵</kbd> {{#str}}palette_open, theme_lmslabs{{/str}}</span>
+        </div>
+    </div>
+</div>
+<script type="application/json" id="ll-config">{{{jsconfig}}}</script>
+<script type="application/json" id="ll-tips-config">{{{tipsconfig}}}</script>
+</body>
+</html>
+{{#js}}
+M.util.js_pending('theme_boost/loader');
+require(['theme_boost/loader'], function() {
+    M.util.js_complete('theme_boost/loader');
+});
+{{#courseindex}}
+require(['theme_boost/drawers'], function() {});
+{{/courseindex}}
+{{/js}}

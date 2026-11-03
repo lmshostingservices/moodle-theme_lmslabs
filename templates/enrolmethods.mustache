@@ -1,0 +1,51 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/enrolmethods
+
+    Enrolment methods as cards with one-click switches.
+
+    Example context (json):
+    {"methods": [], "add": [], "i": {} }
+}}
+<div class="ll-em">
+    <div class="ll-em-grid">
+        {{#methods}}
+        <section class="ll-em-card{{^on}} is-off{{/on}}">
+            <header>
+                <span class="ll-fcard-ico">{{{icon}}}</span>
+                <div><h2>{{name}}</h2>{{#desc}}<p>{{desc}}</p>{{/desc}}</div>
+                {{#canswitch}}
+                <a class="ll-em-switch" href="{{toggleurl}}" role="switch" aria-checked="{{#on}}true{{/on}}{{^on}}false{{/on}}" title="{{#on}}{{#str}}em_turnoff, theme_lmslabs{{/str}}{{/on}}{{^on}}{{#str}}em_turnon, theme_lmslabs{{/str}}{{/on}}"><span class="ll-switch-track" aria-hidden="true"></span></a>
+                {{/canswitch}}
+            </header>
+            <div class="ll-em-foot">
+                <span class="ll-em-users">{{{i.users}}}{{#str}}msg_learners, theme_lmslabs, {{users}}{{/str}}</span>
+                <span class="ll-em-state">{{#on}}{{#str}}on, theme_lmslabs{{/str}}{{/on}}{{^on}}{{#str}}off, theme_lmslabs{{/str}}{{/on}}</span>
+                {{#enrolurl}}<a class="ll-pill" href="{{enrolurl}}">{{{i.userplus}}}<span>{{#str}}pt_enrol, theme_lmslabs{{/str}}</span></a>{{/enrolurl}}
+                {{#editurl}}<a class="ll-iconbtn" href="{{editurl}}" title="{{#str}}edit{{/str}}" aria-label="{{#str}}edit{{/str}} {{name}}">{{{i.pencil}}}</a>{{/editurl}}
+            </div>
+        </section>
+        {{/methods}}
+    </div>
+    {{#hasadd}}
+    <h2 class="ll-mb-h">{{{i.plus}}}{{#str}}em_add, theme_lmslabs{{/str}}</h2>
+    <div class="ll-rp-links">
+        {{#add}}<a class="ll-way" href="{{url}}"><span class="ll-way-ico">{{{icon}}}</span><strong>{{name}}</strong>{{#desc}}<span>{{desc}}</span>{{/desc}}</a>{{/add}}
+    </div>
+    {{/hasadd}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>

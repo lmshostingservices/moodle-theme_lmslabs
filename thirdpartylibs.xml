@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>fonts</location>
+    <name>Geist</name>
+    <version>5.3.0 (Fontsource)</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+  </library>
+  <library>
+    <location>classes/local/icons.php</location>
+    <name>Lucide icons</name>
+    <version>1.66.0</version>
+    <license>ISC</license>
+    <licenseversion></licenseversion>
+  </library>
+</libraries>

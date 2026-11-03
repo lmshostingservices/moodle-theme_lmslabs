@@ -1,0 +1,132 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_lmslabs/filterbar
+
+    Search, one-click quick cards, filter pills, active chips and saved views.
+
+    Example context (json):
+    {"action": "#", "q": "", "pills": [], "quick": [], "chips": [], "views": [], "i": {} }
+}}
+<div class="ll-fb" data-ll-fb>
+    {{#hasquick}}
+    <nav class="ll-fb-quick" aria-label="{{#str}}fb_quickfilters, theme_lmslabs{{/str}}">
+        {{#quick}}
+        <a class="ll-fb-qcard{{#active}} is-active{{/active}}" href="{{url}}" title="{{label}}"{{#active}} aria-current="true"{{/active}}>
+            <span class="ll-fb-qico">{{{icon}}}</span>
+            <span class="ll-fb-qtext"><strong>{{count}}</strong><span>{{label}}</span></span>
+        </a>
+        {{/quick}}
+    </nav>
+    {{/hasquick}}
+
+    <div class="ll-fb-bar">
+        <form class="ll-fb-form" id="ll-fb-form" method="get" action="{{action}}" data-fb-form>
+            {{#baseparams}}<input type="hidden" name="{{name}}" value="{{value}}">{{/baseparams}}
+            {{#hidden}}<input type="hidden" name="{{name}}" value="{{value}}">{{/hidden}}
+            <label class="ll-fb-search">
+                {{{i.search}}}
+                <input type="search" name="q" value="{{q}}" placeholder="{{#str}}fb_searchph, theme_lmslabs{{/str}}" aria-label="{{#str}}fb_search, theme_lmslabs{{/str}}" data-fb-q>
+            </label>
+            {{#pills}}
+            <details class="ll-fb-pill{{#active}} is-on{{/active}}" data-fb-pill>
+                <summary>
+                    {{{icon}}}<span>{{label}}</span>
+                    {{#count}}<span class="ll-fb-count" title="{{{summary}}}">{{count}}</span>{{/count}}
+                    {{{i.chevron}}}
+                </summary>
+                <div class="ll-fb-panel" role="group" aria-label="{{label}}">
+                    {{#searchable}}<input type="search" class="ll-fb-psearch" placeholder="{{#str}}filter, theme_lmslabs{{/str}}" aria-label="{{#str}}filter, theme_lmslabs{{/str}} {{label}}" data-fb-psearch>{{/searchable}}
+                    <div class="ll-fb-options">
+                        {{#options}}
+                        {{#groupstart}}<div class="ll-fb-group">{{{groupstart}}}</div>{{/groupstart}}
+                        <label class="ll-fb-opt">
+                            <input type="{{#multi}}checkbox{{/multi}}{{^multi}}radio{{/multi}}" name="{{name}}" value="{{value}}"{{#checked}} checked{{/checked}}{{^multi}} data-fb-instant{{/multi}}>
+                            <span class="ll-fb-optlabel">{{{label}}}{{#hint}}<em>{{{hint}}}</em>{{/hint}}</span>
+                        </label>
+                        {{/options}}
+                        {{^hasoptions}}<p class="ll-fb-none">{{#str}}fb_nooptions, theme_lmslabs{{/str}}</p>{{/hasoptions}}
+                    </div>
+                    <div class="ll-fb-pfoot">
+                        <button type="button" class="ll-fb-link" data-fb-clear>{{#str}}fb_clear, theme_lmslabs{{/str}}</button>
+                        <button type="submit" class="btn btn-primary btn-sm">{{#str}}fb_apply, theme_lmslabs{{/str}}</button>
+                    </div>
+                </div>
+            </details>
+            {{/pills}}
+            {{#profile}}
+            <details class="ll-fb-pill{{#active}} is-on{{/active}}" data-fb-pill>
+                <summary>{{{icon}}}<span>{{#str}}fb_fields, theme_lmslabs{{/str}}</span>{{#active}}<span class="ll-fb-count">1</span>{{/active}}{{{i.chevron}}}</summary>
+                <div class="ll-fb-panel ll-fb-panel-form" role="group">
+                    <label class="ll-fb-field"><span>{{#str}}fb_field, theme_lmslabs{{/str}}</span>
+                        <select name="pf" class="form-select custom-select">
+                            <option value="">{{#str}}fb_choosefield, theme_lmslabs{{/str}}</option>
+                            {{#options}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{{label}}}</option>{{/options}}
+                        </select>
+                    </label>
+                    <label class="ll-fb-field"><span>{{#str}}op_contains, theme_lmslabs{{/str}}</span>
+                        <input type="text" name="pv" value="{{value}}" class="form-control" placeholder="{{#str}}value, theme_lmslabs{{/str}}">
+                    </label>
+                    <div class="ll-fb-pfoot">
+                        <button type="button" class="ll-fb-link" data-fb-clear>{{#str}}fb_clear, theme_lmslabs{{/str}}</button>
+                        <button type="submit" class="btn btn-primary btn-sm">{{#str}}fb_apply, theme_lmslabs{{/str}}</button>
+                    </div>
+                </div>
+            </details>
+            {{/profile}}
+        </form>
+
+        <details class="ll-fb-pill ll-fb-views" data-fb-pill>
+            <summary>{{{i.bookmark}}}<span>{{#str}}fb_views, theme_lmslabs{{/str}}</span>{{#hasviews}}<span class="ll-fb-count">{{viewcount}}</span>{{/hasviews}}{{{i.chevron}}}</summary>
+            <div class="ll-fb-panel ll-fb-panel-right">
+                {{#hasviews}}
+                <ul class="ll-fb-vlist">
+                    {{#views}}
+                    <li class="{{#current}}is-current{{/current}}">
+                        <a href="{{url}}">{{{name}}}</a>
+                        <form method="post" action="{{viewsurl}}">
+                            <input type="hidden" name="sesskey" value="{{sesskey}}"><input type="hidden" name="action" value="default">
+                            <input type="hidden" name="id" value="{{id}}"><input type="hidden" name="returnurl" value="{{current}}">
+                            <button type="submit" class="ll-fb-vbtn{{#isdefault}} is-default{{/isdefault}}" title="{{#str}}fb_setdefault, theme_lmslabs{{/str}}" aria-label="{{#str}}fb_setdefault, theme_lmslabs{{/str}}: {{{name}}}" aria-pressed="{{#isdefault}}true{{/isdefault}}{{^isdefault}}false{{/isdefault}}">{{{i.star}}}</button>
+                        </form>
+                        <form method="post" action="{{viewsurl}}">
+                            <input type="hidden" name="sesskey" value="{{sesskey}}"><input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="{{id}}"><input type="hidden" name="returnurl" value="{{current}}">
+                            <button type="submit" class="ll-fb-vbtn" aria-label="{{#str}}delete{{/str}}: {{{name}}}">{{{i.x}}}</button>
+                        </form>
+                    </li>
+                    {{/views}}
+                </ul>
+                {{/hasviews}}
+                {{^hasviews}}<p class="ll-fb-none">{{#str}}fb_noviews, theme_lmslabs{{/str}}</p>{{/hasviews}}
+                <form class="ll-fb-save" method="post" action="{{viewsurl}}">
+                    <input type="hidden" name="sesskey" value="{{sesskey}}"><input type="hidden" name="action" value="save">
+                    <input type="hidden" name="page" value="{{page}}"><input type="hidden" name="returnurl" value="{{current}}">
+                    <input type="text" name="name" class="form-control" placeholder="{{#str}}fb_viewname, theme_lmslabs{{/str}}" aria-label="{{#str}}fb_viewname, theme_lmslabs{{/str}}" required>
+                    <button type="submit" class="btn btn-primary btn-sm">{{#str}}fb_saveview, theme_lmslabs{{/str}}</button>
+                </form>
+            </div>
+        </details>
+    </div>
+
+    {{#haschips}}
+    <div class="ll-fb-chips">
+        {{#chips}}<a class="ll-fb-chip" href="{{url}}">{{{label}}}{{{i.x}}}</a>{{/chips}}
+        <a class="ll-fb-clearall" href="{{clearurl}}">{{#str}}fb_clearall, theme_lmslabs{{/str}}</a>
+    </div>
+    {{/haschips}}
+</div>

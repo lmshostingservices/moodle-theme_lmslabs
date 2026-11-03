@@ -1,0 +1,108 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}{{!
+    @template theme_lmslabs/mygrades
+
+    Grades overview for learners (and courses taught).
+
+    Example context (json):
+    {"learning": [], "teaching": [], "recent": [], "i": {} }
+}}
+<div class="ll-grades" data-ll-grades>
+    {{#haslearning}}
+    <section class="ll-gr-hero">
+        <div class="ll-gr-avg">
+            <div class="ll-gr-ring is-big band-{{avgband}}" style="--p: {{#hasaverage}}{{average}}{{/hasaverage}}{{^hasaverage}}0{{/hasaverage}}">
+                <span>{{#hasaverage}}<b>{{average}}</b><small>%</small>{{/hasaverage}}{{^hasaverage}}<b>–</b>{{/hasaverage}}</span>
+            </div>
+            <div>
+                <h2 data-ll-tip="{{#str}}gr_average_tip, theme_lmslabs{{/str}}">{{#str}}gr_average, theme_lmslabs{{/str}}</h2>
+                <p>{{summary}}</p>
+            </div>
+        </div>
+        {{#hasrecent}}
+        <div class="ll-gr-latest">
+            <h3>{{#str}}gr_latest, theme_lmslabs{{/str}}</h3>
+            <ul>
+                {{#recent}}
+                <li>
+                    <a class="ll-gr-mark" href="{{#url}}{{url}}{{/url}}{{^url}}#{{/url}}">
+                        <span class="ll-gr-markico">{{{icon}}}</span>
+                        <span class="ll-gr-marktext"><strong>{{{name}}}</strong><span>{{{course}}} · {{when}}</span>
+                            {{#feedback}}<q>{{feedback}}</q>{{/feedback}}</span>
+                        <span class="ll-gr-pill band-{{band}}">{{grade}}</span>
+                    </a>
+                </li>
+                {{/recent}}
+            </ul>
+        </div>
+        {{/hasrecent}}
+    </section>
+
+    <div class="ll-gr-head">
+        <h2>{{#str}}gr_yourcourses, theme_lmslabs{{/str}}</h2>
+        <label class="ll-fb-search">{{{i.search}}}<input type="search" placeholder="{{#str}}mc_search, theme_lmslabs{{/str}}" aria-label="{{#str}}mc_search, theme_lmslabs{{/str}}" data-gr-q></label>
+    </div>
+    <div class="ll-gr-grid">
+        {{#learning}}
+        <article class="ll-gr-card" data-gr-item data-name="{{name}}">
+            <div class="ll-gr-cover ll-tint-{{tint}}">{{#image}}<img src="{{image}}" alt="" loading="lazy">{{/image}}</div>
+            <div class="ll-gr-body">
+                <div class="ll-gr-ring band-{{band}}" style="--p: {{#percent}}{{percent}}{{/percent}}{{^percent}}0{{/percent}}">
+                    <span>{{#hasgrade}}{{#percent}}<b>{{percent}}</b><small>%</small>{{/percent}}{{^percent}}<b>{{grade}}</b>{{/percent}}{{/hasgrade}}{{^hasgrade}}<b>–</b>{{/hasgrade}}</span>
+                </div>
+                <div class="ll-gr-info">
+                    <strong>{{{name}}}</strong>
+                    <span>{{#hasgrade}}{{grade}}{{#letter}} · {{letter}}{{/letter}}{{/hasgrade}}{{^hasgrade}}{{#str}}gr_nograde, theme_lmslabs{{/str}}{{/hasgrade}}</span>
+                </div>
+            </div>
+            {{#progress}}
+            <div class="ll-gr-prog" data-ll-tip-self data-ll-tip="{{#str}}gr_progress_tip, theme_lmslabs{{/str}}"><div class="ll-bar"><div class="ll-bar-fill" style="width: {{progress}}%"></div></div><span>{{#str}}gr_complete, theme_lmslabs, {{progress}}{{/str}}</span></div>
+            {{/progress}}
+            <div class="ll-gr-actions">
+                <a class="btn btn-secondary btn-sm" href="{{reporturl}}">{{#str}}gr_seeall, theme_lmslabs{{/str}}</a>
+                <a class="ll-gr-open" href="{{courseurl}}">{{#str}}gr_opencourse, theme_lmslabs{{/str}} {{{i.arrow}}}</a>
+            </div>
+        </article>
+        {{/learning}}
+    </div>
+    <p class="ll-ch-none" data-gr-none hidden>{{#str}}nomatchingcourses, theme_lmslabs{{/str}}</p>
+    {{/haslearning}}
+
+    {{#hasteaching}}
+    <div class="ll-gr-head"><h2>{{#str}}gr_teaching, theme_lmslabs{{/str}}</h2></div>
+    <div class="ll-gr-grid">
+        {{#teaching}}
+        <article class="ll-gr-card is-teach" data-gr-item data-name="{{name}}">
+            <div class="ll-gr-cover ll-tint-{{tint}}">{{#image}}<img src="{{image}}" alt="" loading="lazy">{{/image}}</div>
+            <div class="ll-gr-info ll-gr-teachinfo">
+                <strong>{{{name}}}</strong>
+                <span>{{{i.users}}}{{#str}}msg_learners, theme_lmslabs, {{learners}}{{/str}}</span>
+            </div>
+            <div class="ll-gr-actions">
+                <a class="btn btn-primary btn-sm ll-btn-icon" href="{{gradingurl}}">{{{i.check}}}<span>{{#tomark}}{{#str}}gr_tomark, theme_lmslabs, {{tomark}}{{/str}}{{/tomark}}{{^tomark}}{{#str}}gr_title, theme_lmslabs{{/str}}{{/tomark}}</span></a>
+                <a class="btn btn-secondary btn-sm" href="{{graderurl}}">{{#str}}gr_gradebook, theme_lmslabs{{/str}}</a>
+            </div>
+        </article>
+        {{/teaching}}
+    </div>
+    {{/hasteaching}}
+
+    {{^haslearning}}{{^hasteaching}}
+    <div class="ll-empty ll-empty-flat"><div class="ll-empty-ico">{{{i.chart}}}</div><h2>{{#str}}gr_empty, theme_lmslabs{{/str}}</h2><p>{{#str}}gr_empty_desc, theme_lmslabs{{/str}}</p></div>
+    {{/hasteaching}}{{/haslearning}}
+    <p class="ll-classic"><a href="{{classicurl}}">{{#str}}classicview, theme_lmslabs{{/str}}</a></p>
+</div>
