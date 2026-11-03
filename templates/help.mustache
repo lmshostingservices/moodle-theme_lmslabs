@@ -55,7 +55,7 @@
                 {{#shot}}<img src="{{shot}}" alt="" loading="lazy">{{/shot}}
             </span>
             <span class="ll-help-body">
-                <span class="ll-help-meta"><span class="ll-help-tag">{{topic}}</span></span>
+                <span class="ll-help-meta"><span class="ll-help-tag">{{topic}}</span>{{#time}}<span class="ll-help-time">{{time}}</span>{{/time}}</span>
                 <strong>{{title}}</strong>
                 <span class="ll-help-sum">{{summary}}</span>
             </span>
@@ -86,7 +86,7 @@
                 {{#shot}}<div class="ll-help-imgwrap"><img src="{{shot}}" alt="{{title}}" decoding="async">{{#pins}}<span class="ll-help-pin" data-n="{{n}}"><i class="ll-help-box" style="left:{{rx}}%;top:{{ry}}%;width:{{rw}}%;height:{{rh}}%"></i><svg class="ll-help-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="{{x1}}" y1="{{y1}}" x2="{{x2}}" y2="{{y2}}" vector-effect="non-scaling-stroke"></line></svg><b style="left:{{cx}}%;top:{{cy}}%">{{n}}</b></span>{{/pins}}</div>{{/shot}}
             </div>
             <div class="ll-help-art-body">
-                <span class="ll-help-tag">{{topic}}</span>
+                <span class="ll-help-tag">{{topic}}</span>{{#time}} <span class="ll-help-time">Video {{time}}</span>{{/time}}
                 <h3 id="ll-help-ptitle-{{key}}">{{title}}</h3>
                 <p class="ll-help-lead">{{summary}}</p>
                 <ol class="ll-help-steps">

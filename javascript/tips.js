@@ -167,6 +167,121 @@
         });
     };
 
+    var slug = function(text) {
+        return (text || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    };
+
+    var scopeName = function() {
+        var m = window.location.pathname.match(/\/(?:local|enrol|blocks|mod|theme)\/([a-z0-9_]+)\//);
+        return m ? m[1] : '';
+    };
+
+    var labelOf = function(control) {
+        var l = control.id ? document.querySelector('label[for="' + control.id.replace(/"/g, '') + '"]') : null;
+        if (l) {
+            return l;
+        }
+        var box = control.closest('.mb-3, .fitem, .form-group, .form-item, [class*="col-md-"]');
+        return box ? box.querySelector('label:not(.tp-emp-item), .form-label, .col-form-label') : null;
+    };
+
+    /**
+     * Plugin pages: tips for fields and buttons, keyed by the plugin folder, so one plugin's "subject"
+     * is never confused with another's. Keys are scope__name, scope__label_<label>, scope__btn_<button>.
+     *
+     * @param {HTMLElement} root
+     * @param {Object} map
+     */
+    var decoratePlugin = function(root, map) {
+        var scope = scopeName();
+        if (!scope || !map) {
+            return;
+        }
+        var main = root.querySelector('#region-main') || root;
+        main.querySelectorAll('input, select, textarea').forEach(function(c) {
+            if (c.hasAttribute('data-ll-tip-done') || c.type === 'hidden' || c.type === 'submit' || c.type === 'button') {
+                return;
+            }
+            var label = labelOf(c);
+            var keys = [];
+            if (c.name) {
+                keys.push(scope + '__' + slug(c.name));
+            }
+            if (c.id && c.id.indexOf('form_autocomplete') !== 0) {
+                keys.push(scope + '__' + slug(c.id));
+            }
+            if (label) {
+                keys.push(scope + '__label_' + slug(label.textContent.replace(/\?$/, '')));
+            }
+            var text = null;
+            for (var i = 0; i < keys.length && !text; i++) {
+                text = map[keys[i]];
+            }
+            if (!text) {
+                return;
+            }
+            c.setAttribute('data-ll-tip-done', '1');
+            if (label && !label.hasAttribute('data-ll-tip-done') && !label.querySelector('.ll-tipi, .ll-tiphelp')) {
+                label.setAttribute('data-ll-tip-done', '1');
+                label.appendChild(icon(text));
+            } else if (!label) {
+                c.parentElement.appendChild(icon(text));
+            }
+        });
+        main.querySelectorAll('a.btn, button, input[type="submit"], .btn, .tm-btn, .tp-btn').forEach(function(b) {
+            if (b.hasAttribute('data-ll-tip-done') || b.hasAttribute('data-bs-toggle')) {
+                return;
+            }
+            var text = map[scope + '__btn_' + slug(b.value || b.textContent)];
+            if (!text) {
+                return;
+            }
+            b.setAttribute('data-ll-tip-done', '1');
+            b.setAttribute('data-ll-tip', text);
+            b.setAttribute('data-ll-tip-self', '1');
+        });
+    };
+
+    /**
+     * The page heading gets one (i) that says, in a sentence or two, what the whole page is for.
+     * Keys: scope__page_<file>_<tab> (tabbed pages), scope__page_<file>, scope__page.
+     *
+     * @param {Object} map
+     */
+    var decoratePage = function(map) {
+        var scope = scopeName();
+        if (!scope || !map) {
+            return;
+        }
+        var h = null;
+        document.querySelectorAll('#page-header h1, .page-header-headings h1, #region-main h1, #page-content h1, .tp-page-title, .gm-title').forEach(function(el) {
+            if (!h && el.offsetParent && !el.closest('.ll-pagehero, .modal, .card-deck, .ll-hero')) {
+                h = el;
+            }
+        });
+        if (!h || h.hasAttribute('data-ll-tip-done')) {
+            return;
+        }
+        var file = window.location.pathname.split('/').pop().replace(/\.php$/, '') || 'index';
+        var tab = new URLSearchParams(window.location.search).get('tab');
+        var keys = [];
+        if (tab) {
+            keys.push(scope + '__page_' + slug(file) + '_' + slug(tab));
+        }
+        keys.push(scope + '__page_' + slug(file), scope + '__page');
+        var text = null;
+        for (var i = 0; i < keys.length && !text; i++) {
+            text = map[keys[i]];
+        }
+        if (!text) {
+            return;
+        }
+        h.setAttribute('data-ll-tip-done', '1');
+        var i = icon(text);
+        i.classList.add('ll-tipi-page');
+        h.appendChild(i);
+    };
+
     var start = function() {
         body = document.body;
         var cfgEl = document.getElementById('ll-tips-config');
@@ -190,6 +305,8 @@
         body.appendChild(tip);
 
         decorate(document, map);
+        decoratePlugin(document, map);
+        decoratePage(map);
         // Forms that arrive later (modals, dynamic tabs) get tips too.
         var pending = false;
         new MutationObserver(function() {
@@ -200,6 +317,8 @@
             window.setTimeout(function() {
                 pending = false;
                 decorate(document, map);
+                decoratePlugin(document, map);
+                decoratePage(map);
             }, 250);
         }).observe(document.body, {childList: true, subtree: true});
 

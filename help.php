@@ -45,7 +45,7 @@ $PAGE->requires->js(new moodle_url('/theme/lmslabs/javascript/help.js'));
 $mine = help::audience();
 $articles = help::articles();
 $topics = [];
-foreach (help::TOPICS as $t) {
+foreach (help::topics() as $t) {
     $topics[] = ['name' => $t, 'count' => count(
         array_filter(
         $articles, function ($a) use ($t) {

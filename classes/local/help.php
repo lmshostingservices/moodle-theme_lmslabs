@@ -50,8 +50,63 @@ class help {
      *
      * @return array
      */
+    /**
+     * The video-aligned guides, one per tutorial scene, if the guide file is present.
+     *
+     * @return array|null
+     */
+    public static function guides(): ?array {
+        global $CFG;
+        $file = $CFG->dirroot . '/theme/lmslabs/pix/help/guides.json';
+        if (!is_readable($file)) {
+            return null;
+        }
+        $g = json_decode((string) file_get_contents($file), true);
+        return is_array($g) && !empty($g['guides']) ? $g : null;
+    }
+
+    /**
+     * Topic chips: the video chapters when the guide file exists.
+     *
+     * @return string[]
+     */
+    public static function topics(): array {
+        $g = self::guides();
+        return $g ? $g['chapters'] : self::TOPICS;
+    }
+
     public static function articles(): array {
         global $CFG, $OUTPUT;
+        if ($g = self::guides()) {
+            $items = [];
+            foreach ($g['guides'] as $x) {
+                $shot = '/theme/lmslabs/pix/help/' . $x['shot'] . '.jpg';
+                $pins = [];
+                foreach ($x['pins'] as $p) {
+                    $pins[] = $p + ['rx' => $p['r'][0], 'ry' => $p['r'][1], 'rw' => $p['r'][2], 'rh' => $p['r'][3],
+                        'cx' => $p['c'][0], 'cy' => $p['c'][1], 'x1' => $p['l'][0], 'y1' => $p['l'][1],
+                        'x2' => $p['l'][2], 'y2' => $p['l'][3]];
+                }
+                $items[] = [
+                    'key' => $x['key'],
+                    'pins' => $pins,
+                    'topic' => $x['chapter'],
+                    'time' => $x['time'],
+                    'audience' => $x['audience'],
+                    'icon' => icons::svg($x['icon']),
+                    'title' => $x['title'],
+                    'summary' => $x['summary'],
+                    'steps' => array_map(function ($text, $i) {
+                        return ['n' => $i + 1, 'text' => $text];
+                    }, $x['steps'], array_keys($x['steps'])),
+                    'tip' => 'Video ' . $x['time'] . ', chapter ' . $x['chapternum'] . ': ' . $x['chapter'] . '.',
+                    'url' => (new \moodle_url($x['url']))->out(false),
+                    'shot' => file_exists($CFG->dirroot . $shot) ? (new \moodle_url($shot))->out(false) : '',
+                    'search' => \core_text::strtolower($x['title'] . ' ' . $x['summary'] . ' ' . implode(' ', $x['steps']) . ' ' . $x['chapter']),
+                ];
+            }
+            return $items;
+        }
         $rows = [
             ['menu', 'Getting around', 'all', 'panel-left',
                 'Find your way around',

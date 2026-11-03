@@ -15753,3 +15753,22 @@ body.ll-app .ll-main .trainingmatrix-container .tm-header {
         opacity: 1;
     }
 }
+
+.ll-help-time {
+    background: var(--ll-accent-soft);
+    border-radius: 999px;
+    color: var(--ll-accent);
+    font-size: .72rem;
+    font-weight: 700;
+    margin-left: 6px;
+    padding: 2px 8px;
+}
+
+// Page heading tip: one (i) that says what the whole page is for.
+.ll-tipi-page {
+    width: 21px;
+    height: 21px;
+    margin-left: 10px;
+    font-size: 12px;
+    vertical-align: middle;
+}

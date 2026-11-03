@@ -2,6 +2,22 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.26] - 2026-11-04
+
+### Added
+- Every page heading on the LMS Labs plugin pages and the main admin pages has a (i) that explains, in a sentence or two, what the page is for.
+- Field and button tips for Email students, Group management, Course availability, Recertification, Auto-suspend, Course prerequisites, Training matrix, Training pathways, Evidence export, Media optimiser and Cohort branding.
+
+### Changed
+- Plugin pages opened for one course (Group management, Course availability, Recertification, Auto-suspend, Prerequisites) now use the full width, with no course index down the left.
+- The Training menu group is now called Workplace training.
+
+## [v1.5.25] - 2026-11-04
+
+### Added
+- The Help centre now follows the full video tutorial chapter by chapter: every screen, in the same order, with a 4K screenshot, numbered pins and the video timestamp for each step.
+- Guides for Email students, Group management, Course availability, Recertification, Auto-suspend, Course prerequisites, Evidence export, Media optimiser and Cohort branding.
+
 ## [v1.5.24] - 2026-11-06
 
 ### Added

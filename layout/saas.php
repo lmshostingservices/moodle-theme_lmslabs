@@ -43,7 +43,15 @@ if (!$hasblocks) {
 }
 // Theme tool pages inside a course (reset, completion, backup...) use the full width. Calling
 // core_course_drawer() queues the course index scripts, so it is skipped there rather than discarded.
-$courseindex = strpos($PAGE->url->get_path(false), '/theme/lmslabs/') !== false ? '' : core_course_drawer();
+// LMS Labs plugin tool pages (intakes, recertification, prerequisites...) are tool pages too, even when
+// they are opened for one course, so they also get the full width and no course index.
+$toolpath = $PAGE->url->get_path(false);
+$plugintool = (bool) preg_match(
+    '~/(?:local/(?:groupmanager|courseavailabilitydelay|recertify|completionsuspend|emailstudents|trainingmatrix|' .
+    'trainingpathways|student_export|mediaoptimiser|cohortbranding)|enrol/prerequisite)/~',
+    $toolpath
+);
+$courseindex = (strpos($toolpath, '/theme/lmslabs/') !== false || $plugintool) ? '' : core_course_drawer();
 $forceblockdraweropen = $OUTPUT->firstview_fakeblocks();
 
 $course = $PAGE->course;
