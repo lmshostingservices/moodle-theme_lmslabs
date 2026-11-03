@@ -146,7 +146,9 @@ var start = function() {
     // Collapsible groups, remembered per group; a group holding the current page always opens.
     document.querySelectorAll('.ll-group.is-collapsible').forEach(function(group) {
         var key = 'll-group-' + group.getAttribute('data-group');
-        if (store.get(key) === '0' && !group.classList.contains('has-active')) {
+        var saved = store.get(key);
+        var closeIt = saved === '0' || (saved === null && group.classList.contains('start-closed'));
+        if (closeIt && !group.classList.contains('has-active')) {
             group.classList.add('is-closed');
             var btn = group.querySelector('.ll-group-label');
             if (btn) {
@@ -910,13 +912,37 @@ var start = function() {
         }
     };
 
+
+    /**
+     * Plugin pages sometimes show the same licence notice twice. Keep one and mark it as a lock notice.
+     */
+    var tidyNotices = function() {
+        var seen = {};
+        document.querySelectorAll('#region-main .alert, #user-notifications .alert').forEach(function(el) {
+            var text = el.textContent.replace(/\s+/g, ' ').trim();
+            if (!text) {
+                return;
+            }
+            if (seen[text]) {
+                el.remove();
+                return;
+            }
+            seen[text] = true;
+            if (/requires .*credits to unlock|unlock this plugin/i.test(text)) {
+                el.classList.add('ll-locked');
+            }
+        });
+    };
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             start();
             resume();
+            tidyNotices();
         });
     } else {
         start();
         resume();
+        tidyNotices();
     }
 })();

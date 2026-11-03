@@ -25,11 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $sitecontext = context_course::instance(SITEID);
-\theme_lmslabs\local\tenants::remember(optional_param('tenant', '', PARAM_ALPHANUMEXT));
 $sitename = format_string($SITE->fullname, true, ['context' => $sitecontext, 'escape' => false]);
-if (($tenantnow = \theme_lmslabs\local\tenants::current()) && trim((string)$tenantnow->sitename) !== '') {
-    $sitename = format_string($tenantnow->sitename, true, ['context' => $sitecontext, 'escape' => false]);
-}
 $summary = trim(strip_tags(format_text($SITE->summary ?? '', FORMAT_HTML, ['context' => $sitecontext])));
 
 $templatecontext = [

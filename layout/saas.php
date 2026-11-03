@@ -189,9 +189,6 @@ if ($canaccent) {
 
 $logourl = theme_lmslabs_logo_url();
 $sitename = format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), 'escape' => false]);
-if (($tenantnow = \theme_lmslabs\local\tenants::current()) && trim((string)$tenantnow->sitename) !== '') {
-    $sitename = format_string($tenantnow->sitename, true, ['context' => context_course::instance(SITEID), 'escape' => false]);
-}
 
 $jsconfig = [
     'palette' => $nav['palette'],

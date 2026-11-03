@@ -10844,80 +10844,204 @@ body.ll-prefspage #page-header .header-button-group {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     .ll-ib-tabs {
         padding: 0;
         border: 0;
+        button b {
+            min-width: 18px;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: var(--ll-accent-soft);
+            color: var(--ll-accent-strong);
+            font-size: 11px;
+            line-height: 16px;
+            text-align: center;
+            &:empty {
+                display: none;
+            }
+        }
     }
 }
 .ll-nt-list {
-    max-width: 860px;
+    max-width: 1040px;
     border-radius: 16px;
     background: var(--ll-surface);
-    box-shadow: 0 0 0 1px var(--ll-line);
-    padding: 6px 10px 12px;
+    box-shadow: 0 0 0 1px var(--ll-line), var(--ll-shadow-xs);
+    padding: 4px 0 8px;
+    overflow: hidden;
 }
 .ll-nt-day {
-    margin: 14px 10px 6px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    padding: 16px 22px 8px;
+    background: var(--ll-surface);
     font-size: 12px !important;
     font-weight: 700;
+    letter-spacing: .01em;
     color: var(--ll-muted);
+    span {
+        font-weight: 600;
+        color: var(--ll-faint);
+    }
 }
 .ll-nt-row {
     position: relative;
     display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 12px 12px 12px 22px;
-    border-radius: 12px;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 22px 14px 34px;
+    border-top: 1px solid var(--ll-line);
     color: inherit !important;
     text-decoration: none !important;
+    transition: background .12s ease;
+    &:first-of-type,
+    .ll-nt-day + & {
+        border-top: 0;
+    }
     &:hover {
         background: var(--ll-hover);
+        .ll-nt-read {
+            opacity: 1;
+        }
     }
     &.is-unread {
-        background: var(--ll-accent-soft);
         &::before {
             content: '';
             position: absolute;
-            left: 8px;
-            top: 22px;
-            width: 7px;
-            height: 7px;
+            left: 15px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            margin-top: -4px;
             border-radius: 50%;
             background: var(--ll-accent);
         }
-        strong {
+        .ll-nt-text strong {
             font-weight: 700;
         }
-    }
-    time {
-        flex: 0 0 auto;
-        font-size: 12px;
-        color: var(--ll-faint);
+        .ll-nt-ico {
+            background: var(--ll-accent-soft);
+            color: var(--ll-accent-strong);
+        }
     }
 }
 .ll-nt-ico {
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     flex: 0 0 auto;
-    border-radius: 10px;
-    background: var(--ll-surface);
-    box-shadow: 0 0 0 1px var(--ll-line);
-    img {
-        width: 20px;
-        height: 20px;
+    border-radius: 12px;
+    background: var(--ll-hover);
+    color: var(--ll-muted);
+    svg {
+        width: 19px;
+        height: 19px;
     }
+}
+.ll-nt-row .ll-nt-ico[data-tone="amber"],
+.ll-nt-empty .ll-nt-ico[data-tone="amber"] {
+    background: rgba(217, 119, 6, .12);
+    color: #b45309;
+}
+.ll-nt-row .ll-nt-ico[data-tone="green"],
+.ll-nt-empty .ll-nt-ico[data-tone="green"] {
+    background: rgba(34, 197, 94, .13);
+    color: #15803d;
 }
 .ll-nt-text {
     display: flex;
     flex-direction: column;
+    gap: 2px;
     flex: 1;
     min-width: 0;
     strong {
         font-size: 14px;
+        font-weight: 600;
+        line-height: 1.35;
+        color: var(--ll-ink);
+    }
+    .ll-nt-body {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--ll-muted);
+    }
+    .ll-nt-meta {
+        margin-top: 2px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ll-faint);
+    }
+}
+.ll-nt-side {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    time {
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+        color: var(--ll-faint);
+    }
+}
+.ll-nt-read {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--ll-muted);
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity .12s ease, background .12s ease;
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+    &:hover,
+    &:focus-visible {
+        opacity: 1;
+        background: var(--ll-surface);
+        color: var(--ll-accent-strong);
+        box-shadow: 0 0 0 1px var(--ll-line);
+    }
+}
+.ll-nt-more {
+    display: block;
+    margin: 12px auto 4px;
+    border-radius: 10px;
+}
+.ll-nt-empty {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    padding: 64px 20px 56px;
+    text-align: center;
+    .ll-nt-ico {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        svg {
+            width: 26px;
+            height: 26px;
+        }
+    }
+    p {
+        margin: 8px 0 0;
+        font-size: 15px;
         font-weight: 600;
         color: var(--ll-ink);
     }
@@ -10926,18 +11050,10 @@ body.ll-prefspage #page-header .header-button-group {
         color: var(--ll-muted);
     }
 }
-.ll-nt-more {
-    display: block;
-    margin: 12px auto 0;
-    border-radius: 10px;
-}
 
 // Notification settings.
 .ll-nt-list {
     max-width: none;
-}
-.ll-nt-ico img {
-    opacity: .7;
 }
 .ll-np-top {
     display: flex;
@@ -13899,59 +14015,6 @@ body.ll-app.path-theme-lmslabs #page :is(#page-content, #region-main-box, #regio
     display: none;
 }
 
-/* Tenants */
-.ll-tn-card {
-    border-top: 4px solid var(--tn, var(--ll-accent));
-}
-.ll-tn-card.is-off {
-    opacity: .6;
-}
-.ll-tn-logo {
-    width: 56px;
-    height: 56px;
-    flex: 0 0 auto;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--tn, #2563eb) 12%, #fff);
-    overflow: hidden;
-}
-.ll-tn-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-.ll-tn-logo b {
-    color: var(--tn, #2563eb);
-    font-size: 1.4rem;
-}
-.ll-tn-swatch {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--tn, #2563eb);
-    flex: 0 0 auto;
-}
-.ll-tn-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 6px 8px 6px 10px;
-}
-.ll-tn-link code {
-    flex: 1 1 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: .78rem;
-    color: #475569;
-}
-.ll-tn-link .is-done {
-    color: #24c45f;
-}
-
 /* Sign-in page: the LMS Labs card as a tidy centred stack */
 body.ll-login .ll-promo.ll-promo-compact {
     flex-direction: column;
@@ -15480,5 +15543,213 @@ body.ll-navigating #region-main {
         &:hover {
             background: rgba(var(--ll-accent-rgb), .07);
         }
+    }
+}
+
+// ---------------------------------------------------------------------
+// LMS Labs add-ons: quiet menu entries for plugins the site does not have yet, and their info page.
+// ---------------------------------------------------------------------
+.ll-tag {
+    margin-left: auto;
+    padding: 1px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--ll-line);
+    background: transparent;
+    color: var(--ll-muted, #64748b);
+    font-size: .66rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.5;
+}
+.ll-link.is-addon {
+    opacity: .82;
+}
+.ll-link.is-addon:hover,
+.ll-link.is-addon.is-active {
+    opacity: 1;
+}
+.ll-addon-page {
+    max-width: 880px;
+    margin: 0 auto;
+    display: grid;
+    gap: 20px;
+}
+.ll-addon-hero {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid var(--ll-line);
+    border-radius: 14px;
+}
+.ll-addon-hero .ll-notice-ico {
+    margin: 0;
+}
+.ll-addon-hero h2 {
+    margin: 0 0 6px;
+    font-size: 1.35rem;
+}
+.ll-addon-hero p {
+    margin: 0 0 10px;
+    color: #475569;
+    max-width: 62ch;
+}
+.ll-addon-hero .ll-addon-where {
+    font-size: .82rem;
+    color: var(--ll-muted, #64748b);
+}
+.ll-addon-hero .ll-notice-actions {
+    justify-content: flex-start;
+    margin-top: 14px;
+}
+.ll-addon-hint {
+    font-size: .82rem;
+    color: var(--ll-muted, #64748b);
+    text-align: center;
+}
+@media (max-width: 640px) {
+    .ll-addon-hero {
+        grid-template-columns: 1fr;
+    }
+}
+.ll-addon-list {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+.ll-addon-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+.ll-addon-list svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    color: var(--ll-accent);
+}
+
+// ---------------------------------------------------------------------
+// LMS Labs training blocks (block_trainingmatrix, _teacher, block_trainingpathways): same look as the theme,
+// and compact on the dashboard so they never push everything else down the page.
+// ---------------------------------------------------------------------
+.ll-main .tmx[data-tmx-root] {
+    --tmx-ink: #0f172a;
+    --tmx-muted: #64748b;
+    --tmx-line: var(--ll-line);
+    --tmx-green: var(--ll-accent);
+    --tmx-green-deep: var(--ll-accent);
+    --tmx-green-wash: var(--ll-accent-soft, rgba(var(--ll-accent-rgb), .1));
+    --tmx-surface: #fff;
+    --tmx-control-height: 40px;
+    --tmx-body-size: 14px;
+    --tmx-secondary-size: 13px;
+    --tmx-action-size: 14px;
+    background: #fff;
+    border: 1px solid var(--ll-line);
+    border-radius: 14px;
+    box-shadow: none;
+    font-family: inherit;
+    line-height: 1.5;
+    .tmx-kicker {
+        color: var(--ll-muted, #64748b);
+    }
+    .tmx-kicker::before,
+    .tmx-primary,
+    .tmx-primary:hover {
+        background: var(--ll-accent);
+    }
+    .tmx-primary {
+        border-color: var(--ll-accent);
+    }
+    .tmx-head-mark,
+    .tmx-download {
+        background: var(--ll-accent-soft, rgba(var(--ll-accent-rgb), .1));
+        color: var(--ll-accent);
+    }
+    .tmx-title {
+        font-family: inherit;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0;
+    }
+    .tmx-status.available,
+    .tmx-status.completed,
+    .tmx-status.valid {
+        background: rgba(34, 198, 94, .12);
+        color: #15803d;
+    }
+}
+.ll-main .block .tmx[data-tmx-root] {
+    max-height: 460px;
+    overflow-y: auto;
+    padding: 18px;
+}
+.ll-main .block_trainingpathways .tp-block-card {
+    border-color: var(--ll-line);
+    border-radius: 12px;
+}
+
+/* Plugin pages: spacing under tables, tidy list boxes, licence notices. */
+body.ll-app #region-main .table-responsive {
+    margin-bottom: 24px;
+}
+body.ll-app #region-main select[multiple],
+body.ll-app #region-main select[size]:not([size='1']) {
+    background: #fff;
+    border: 1px solid var(--ll-line);
+    border-radius: 12px;
+    min-height: 220px;
+    padding: 6px;
+    width: 100%;
+    option {
+        border-radius: 8px;
+        margin: 1px 0;
+        padding: 7px 10px;
+    }
+    option:checked {
+        background: rgba(var(--ll-accent-rgb), .14) linear-gradient(0deg, rgba(var(--ll-accent-rgb), .14), rgba(var(--ll-accent-rgb), .14));
+        color: var(--ll-accent);
+        font-weight: 600;
+    }
+}
+body.ll-app #region-main .alert.ll-locked {
+    align-items: flex-start;
+    background: #fffaf0;
+    border: 1px solid #fcd9a0;
+    border-radius: 14px;
+    color: #92400e;
+    display: flex;
+    gap: 12px;
+    padding: 16px 18px;
+    &::before {
+        content: '\1F512';
+        font-size: 1.1rem;
+    }
+}
+body.ll-app .ll-main .purgecaches {
+    display: none;
+}
+
+/* Training matrix header: quiet card in the site accent instead of a loud banner. */
+body.ll-app .ll-main .trainingmatrix-container .tm-header {
+    background: var(--ll-accent-soft);
+    border: 1px solid var(--ll-accent-ring);
+    border-radius: 14px;
+    color: var(--ll-accent);
+    padding: 14px 20px;
+    .tm-title {
+        display: none;
+    }
+    .tm-subtitle {
+        color: var(--ll-accent);
+        font-size: .95rem;
+        font-weight: 600;
+        opacity: 1;
     }
 }

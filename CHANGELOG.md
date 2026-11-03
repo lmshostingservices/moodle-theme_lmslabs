@@ -2,6 +2,35 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.24] - 2026-11-06
+
+### Added
+- Help centre guides for Training matrix and pathways, and for the LMS Labs add-ons in the left menu.
+
+### Fixed
+- Licence notices from plugins are shown once, in a clear lock card, instead of repeating on a blank page.
+- Spacing under tables on plugin pages, and a cleaner list box where a plugin uses a multi-select.
+- The Training matrix header is a quiet card in your accent colour.
+- Developer notices about optional sources are hidden from learners on My training.
+- The Purge all caches link no longer shows at the foot of every page (it stays in the menu).
+
+## [v1.5.23] - 2026-11-06
+
+### Fixed
+- Group access banner from the Group management plugin was hidden behind the sidebar and top bar. It now shows under the top bar.
+- Training matrix, staff cards and pathways blocks now use the theme accent, spacing and type, and stay compact on the dashboard.
+
+## [v1.5.22] - 2026-11-06
+
+### Added
+- LMS Labs add-ons in the menu: Email students, Group management, Course availability, Recertification, Auto-suspend, Course prerequisites, Training matrix, Training pathways, Evidence export, Media optimiser and Cohort branding appear in the right menu section when installed, and open the plugin's own page.
+- New Training menu section for the training matrix, pathways and evidence export. Learners see "My training" and "My pathways".
+- Add-ons a site does not have yet show to site admins in one quiet, collapsed "LMS Labs add-ons" group with an Add-on tag, a tooltip and an info page. A theme setting hides it.
+- Notifications page redesigned: grouped by day, unread dot, one-click mark as read, icons by type.
+
+### Removed
+- Tenants and branding. Per-cohort logos, colours and site names now come from the Cohort branding plugin. The old table and logos are removed on upgrade.
+
 ## [v1.5.21] - 2026-11-03
 ### Added
 - Gradebook: choose how marks show (S / NYS, marks, percent, grade or points), filled green and magenta cells, a colour changer for each teacher, smart column widths, sticky learner column, a live Cohort row and stat chips. A "Needs marking" cell opens the marking screen (Fast Grade for assignments, the AI essay grader for quiz essays when installed).

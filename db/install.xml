@@ -70,25 +70,5 @@
         <INDEX NAME="userpage" UNIQUE="false" FIELDS="userid, page"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="theme_lmslabs_tenant" COMMENT="Tenants: a cohort of people with their own logo, colour and site name">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="idnumber" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Short name used in the login link"/>
-        <FIELD NAME="cohortid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="color" TYPE="char" LENGTH="7" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="sitename" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="logo" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="idnumber" UNIQUE="true" FIELDS="idnumber"/>
-        <INDEX NAME="cohortid" UNIQUE="false" FIELDS="cohortid"/>
-      </INDEXES>
-    </TABLE>
   </TABLES>
 </XMLDB>

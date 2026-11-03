@@ -43,8 +43,6 @@
 {{> core/local/toast/wrapper}}
 <div id="page-wrapper" class="d-print-block">
 
-    {{{ output.standard_top_of_body_html }}}
-
     <aside class="ll-sidebar d-print-none" id="ll-sidebar" aria-label="{{#str}}sitenavigation, theme_lmslabs{{/str}}">
         <div class="ll-brand">
             <a class="ll-brand-link" href="{{homeurl}}" title="{{sitename}}">
@@ -76,7 +74,7 @@
         {{/setupcard}}
         <nav class="ll-nav" aria-label="{{#str}}sitenavigation, theme_lmslabs{{/str}}">
             {{#navgroups}}
-            <div class="ll-group{{#collapsible}} is-collapsible{{/collapsible}}{{#hasactive}} has-active{{/hasactive}}" data-group="{{key}}">
+            <div class="ll-group{{#collapsible}} is-collapsible{{/collapsible}}{{#hasactive}} has-active{{/hasactive}}{{#startclosed}} start-closed{{/startclosed}}" data-group="{{key}}">
                 {{#haslabel}}
                 <button type="button" class="ll-group-label" data-ll-action="group" aria-expanded="true">
                     <span>{{label}}</span>{{#collapsible}}{{{i.chevron}}}{{/collapsible}}
@@ -86,8 +84,8 @@
                     {{#items}}
                     {{^haschildren}}
                     <li>
-                        <a class="ll-link{{#active}} is-active{{/active}}" href="{{url}}" data-key="{{key}}" title="{{name}}"{{#active}} aria-current="page"{{/active}}>
-                            {{{icon}}}<span class="ll-link-text">{{name}}</span>
+                        <a class="ll-link{{#active}} is-active{{/active}}{{#addon}} is-addon{{/addon}}" href="{{url}}" data-key="{{key}}" title="{{#hint}}{{hint}}{{/hint}}{{^hint}}{{name}}{{/hint}}"{{#active}} aria-current="page"{{/active}}>
+                            {{{icon}}}<span class="ll-link-text">{{name}}</span>{{#tag}}<em class="ll-tag">{{tag}}</em>{{/tag}}
                         </a>
                     </li>
                     {{/haschildren}}
@@ -227,6 +225,8 @@
                 {{/isloggedin}}
             </div>
         </header>
+
+        {{{ output.standard_top_of_body_html }}}
 
         <div class="ll-body{{#hasblocks}}{{#blockdraweropen}} blocks-open{{/blockdraweropen}}{{/hasblocks}}{{#forceblockdraweropen}} blocks-open{{/forceblockdraweropen}}" data-ll-body>
             {{#courseindex}}

@@ -51,6 +51,40 @@ class nav {
             ['section' => 'authsettingsimple2fa']],
     ];
 
+
+    /**
+     * LMS Labs add-ons: key => [component, group, string id, icon, capability, page, params].
+     * When the plugin is installed, its page appears in the group named here. When it is not, site admins see a
+     * quiet entry under "LMS Labs add-ons" that opens a page explaining what it does.
+     */
+    const ADDONS = [
+        'emailstudents' => ['local_emailstudents', 'users', 'ad_emailstudents', 'mail', 'local/emailstudents:sendsite',
+            '/local/emailstudents/compose.php', []],
+        'groupmanager' => ['local_groupmanager', 'courses', 'ad_groupmanager', 'users-round', 'local/groupmanager:view',
+            '/local/groupmanager/index.php', []],
+        'availability' => ['local_courseavailabilitydelay', 'courses', 'ad_availability', 'calendar-clock',
+            'local/courseavailabilitydelay:manage', '/local/courseavailabilitydelay/manage.php', []],
+        'recertify' => ['local_recertify', 'courses', 'ad_recertify', 'rotate-ccw', 'local/recertify:manage',
+            '/local/recertify/index.php', []],
+        'completionsuspend' => ['local_completionsuspend', 'courses', 'ad_completionsuspend', 'user-x',
+            'local/completionsuspend:manage', '/local/completionsuspend/index.php', []],
+        'prerequisite' => ['enrol_prerequisite', 'courses', 'ad_prerequisite', 'lock-keyhole', 'moodle/site:config',
+            '/enrol/prerequisite/gates.php', []],
+        'trainingmatrix' => ['local_trainingmatrix', 'training', 'ad_trainingmatrix', 'layout-grid',
+            'local/trainingmatrix:view', '/local/trainingmatrix/index.php', []],
+        'trainingpathways' => ['local_trainingpathways', 'training', 'ad_trainingpathways', 'route',
+            'local/trainingpathways:view', '/local/trainingpathways/manage.php', []],
+        'studentexport' => ['local_student_export', 'training', 'ad_studentexport', 'download', 'local/student_export:view',
+            '/local/student_export/index.php', []],
+        'mediaoptimiser' => ['local_mediaoptimiser', 'admintools', 'ad_mediaoptimiser', 'image',
+            'local/mediaoptimiser:viewdashboard', '/local/mediaoptimiser/index.php', []],
+        'cohortbranding' => ['local_cohortbranding', 'admintools', 'ad_cohortbranding', 'palette',
+            'local/cohortbranding:manage', '/local/cohortbranding/index.php', []],
+    ];
+
+    /** @var array add-ons that are not installed, collected while the menu is built */
+    protected $missing = [];
+
     /** @var moodle_page */
     protected $page;
 
@@ -323,6 +357,68 @@ class nav {
         }
     }
 
+
+    /**
+     * Menu items for the add-ons that belong to a group. Installed ones are real links; missing ones are collected
+     * for the "LMS Labs add-ons" group, which only site admins see.
+     *
+     * @param string $group users, courses, training or admintools
+     * @return array
+     */
+    protected function addon_items(string $group): array {
+        $out = [];
+        foreach (self::ADDONS as $key => [$component, $g, $string, $icon, $cap, $path, $params]) {
+            if ($g !== $group) {
+                continue;
+            }
+            if (!\core_component::get_component_directory($component)) {
+                $this->missing[] = [$key, $string, $icon];
+                continue;
+            }
+            if (!get_capability_info($cap)) {
+                continue;
+            }
+            $label = self::str($string);
+            // The training plugins show staff the management view and learners their own.
+            if ($key === 'trainingmatrix') {
+                if (!has_any_capability(['local/trainingmatrix:viewall', 'local/trainingmatrix:manage'], context_system::instance())) {
+                    [$path, $label] = ['/local/trainingmatrix/my.php', self::str('ad_mytraining')];
+                }
+            } else if ($key === 'trainingpathways') {
+                $sys = context_system::instance();
+                if (has_capability('local/trainingpathways:manage', $sys)) {
+                    $path = '/local/trainingpathways/manage.php';
+                } else if (has_capability('local/trainingpathways:viewall', $sys)) {
+                    $path = '/local/trainingpathways/dashboard.php';
+                } else {
+                    [$path, $label] = ['/local/trainingpathways/view.php', self::str('ad_mypathways')];
+                }
+            }
+            $out[] = $this->item('addon_' . $key, $label, $path, $params, $icon, $cap);
+        }
+        return $out;
+    }
+
+    /**
+     * The add-ons the site does not have yet, as one quiet group for site admins.
+     */
+    protected function add_missing_group(): void {
+        if (!is_siteadmin() || get_config('theme_lmslabs', 'showaddons') === '0' || !$this->missing) {
+            return;
+        }
+        $items = [];
+        foreach ($this->missing as [$key, $string, $icon]) {
+            $item = $this->item('addonmissing_' . $key, self::str($string), '/theme/lmslabs/addon.php', ['plugin' => $key], $icon);
+            $item['tag'] = self::str('ad_tag');
+            $item['hint'] = get_string('ad_hint', 'theme_lmslabs', self::str($string));
+            $item['addon'] = true;
+            $items[] = $item;
+        }
+        $this->group('addons', self::str('ad_group'), $items);
+        $last = count($this->groups) - 1;
+        $this->groups[$last]['startclosed'] = true;
+    }
+
     /**
      * Curated site administration.
      *
@@ -351,6 +447,7 @@ class nav {
                 'cohorts', get_string('cohorts', 'cohort'), '/cohort/index.php', [], 'contact-round',
                 ['moodle/cohort:manage', 'moodle/cohort:view']
             ),
+            ...$this->addon_items('users'),
         ]
         );
 
@@ -377,8 +474,11 @@ class nav {
                 'restoresite', self::str('restorecourse'), '/theme/lmslabs/restore.php', [],
                 'archive-restore', 'moodle/restore:restorecourse'
             ),
+            ...$this->addon_items('courses'),
         ]
         );
+
+        $this->group('training', self::str('ad_traininggroup'), $this->addon_items('training'));
 
         // Beacon Reports (LMS Labs). Without it, the links explain what's missing.
         $installed = (bool)\core_component::get_component_directory('local_beacon');
@@ -411,16 +511,17 @@ class nav {
                 $tools[] = $this->item($key, self::str($string), $path, $params, $icon, $cap);
             }
         }
+        $tools = array_merge($tools, $this->addon_items('admintools'));
         $tools[] = $this->item(
             'purge', self::str('purgecaches'), '/theme/lmslabs/purge.php', ['sesskey' => sesskey()],
             'rotate-ccw', $brand
         );
         $this->group('admintools', self::str('admintools'), $tools);
+        $this->add_missing_group();
 
         $this->group(
             'site', self::str('site'), [
             $this->item('setup', self::str('setup_title'), '/theme/lmslabs/getstarted.php', [], 'sparkles', $brand),
-            $this->item('tenants', self::str('tn_title'), '/theme/lmslabs/tenants.php', [], 'building-2', $brand),
             $this->item(
                 'themesettings', self::str('appearance'), '/theme/lmslabs/appearance.php', [],
                 'palette', $brand

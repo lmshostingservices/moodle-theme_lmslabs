@@ -53,6 +53,42 @@
             }
             return d.toLocaleDateString([], {weekday: 'long', day: 'numeric', month: 'long'});
         };
+        var ICON = cfg.icons || {};
+        var classify = function(n) {
+            var c = (n.component || '') + ' ' + (n.eventtype || '');
+            var t = (n.subject || '') + ' ' + (n.smallmessage || '');
+            if (/recertif|refresher|expir|due soon|overdue/i.test(c + ' ' + t)) {
+                return {icon: 'rotate', tone: 'amber', label: S.k_recert};
+            }
+            if (/groupmanager|group access/i.test(c + ' ' + t)) {
+                return {icon: 'users', tone: '', label: S.k_group};
+            }
+            if (/badge/i.test(c)) {
+                return {icon: 'award', tone: 'green', label: S.k_badge};
+            }
+            if (/completed|congratulations|passed/i.test(t)) {
+                return {icon: 'done', tone: 'green', label: S.k_done};
+            }
+            if (/assign/i.test(c)) {
+                return {icon: 'file', tone: '', label: S.k_assign};
+            }
+            if (/quiz/i.test(c)) {
+                return {icon: 'done', tone: '', label: S.k_quiz};
+            }
+            if (/forum/i.test(c)) {
+                return {icon: 'chat', tone: '', label: S.k_forum};
+            }
+            if (/grade/i.test(c)) {
+                return {icon: 'chart', tone: '', label: S.k_grade};
+            }
+            if (/enrol/i.test(c) || /welcome to/i.test(t)) {
+                return {icon: 'cap', tone: '', label: S.k_enrol};
+            }
+            if (/mail|message/i.test(c)) {
+                return {icon: 'mail', tone: '', label: S.k_message};
+            }
+            return {icon: 'bell', tone: '', label: S.k_other};
+        };
         var render = function() {
             var list = state.items.filter(function(n) {
                 return state.tab === 'all' || !n.read;
@@ -62,24 +98,41 @@
             }).length;
             q('count').textContent = unread || '';
             if (!list.length) {
-                q('list').innerHTML = '<div class="ll-cal-emptyview"><b>✓</b><p>' + esc(state.tab === 'all' ? S.none : S.nounread) +
-                    '</p></div>';
+                q('list').innerHTML = '<div class="ll-nt-empty"><span class="ll-nt-ico" data-tone="green">' + (ICON.done || '') +
+                    '</span><p>' + esc(state.tab === 'all' ? S.none : S.nounread) + '</p><span>' + esc(S.emptyhint) +
+                    '</span></div>';
                 return;
             }
+            var counts = {};
+            list.forEach(function(n) {
+                var k = new Date(n.timecreated * 1000).toDateString();
+                counts[k] = (counts[k] || 0) + 1;
+            });
             var html = '';
             var last = '';
             list.forEach(function(n) {
                 var day = new Date(n.timecreated * 1000).toDateString();
                 if (day !== last) {
-                    html += '<h3 class="ll-nt-day">' + esc(dayLabel(n.timecreated)) + '</h3>';
+                    html += '<h3 class="ll-nt-day">' + esc(dayLabel(n.timecreated)) + ' <span>' + counts[day] + '</span></h3>';
                     last = day;
                 }
-                html += '<a class="ll-nt-row' + (n.read ? '' : ' is-unread') + '" href="' + esc(n.contexturl || '#') +
-                    '" data-id="' + n.id + '"><span class="ll-nt-ico">' + (n.iconurl ? '<img src="' + esc(n.iconurl) +
-                    '" alt="">' : '') + '</span><span class="ll-nt-text"><strong>' + esc(n.subject) + '</strong>' +
-                    '<span>' + esc((n.smallmessage || '').replace(/\s+/g, ' ').slice(0, 180)) + '</span></span>' +
-                    '<time>' + esc(new Date(n.timecreated * 1000).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})) +
-                    '</time></a>';
+                var k = classify(n);
+                var tag = n.contexturl ? 'a' : 'div';
+                var body = (n.smallmessage || '').replace(/\s+/g, ' ').trim();
+                if (body === (n.subject || '').trim()) {
+                    body = '';
+                }
+                html += '<' + tag + ' class="ll-nt-row' + (n.read ? '' : ' is-unread') + '"' +
+                    (n.contexturl ? ' href="' + esc(n.contexturl) + '"' : '') + ' data-id="' + n.id + '">' +
+                    '<span class="ll-nt-ico" data-tone="' + k.tone + '">' + (ICON[k.icon] || ICON.bell || '') + '</span>' +
+                    '<span class="ll-nt-text"><strong>' + esc(n.subject) + '</strong>' +
+                    (body ? '<span class="ll-nt-body">' + esc(body.slice(0, 200)) + '</span>' : '') +
+                    '<span class="ll-nt-meta">' + esc(k.label) + '</span></span>' +
+                    '<span class="ll-nt-side"><time>' + esc(new Date(n.timecreated * 1000).toLocaleTimeString([],
+                        {hour: 'numeric', minute: '2-digit'})) + '</time>' +
+                    (n.read ? '' : '<button type="button" class="ll-nt-read" data-nt-read title="' + esc(S.markread) +
+                        '" aria-label="' + esc(S.markread) + '">' + (ICON.check || '') + '</button>') +
+                    '</span></' + tag + '>';
             });
             if (!state.done) {
                 html += '<button type="button" class="btn btn-secondary ll-nt-more" data-nt="more">' + esc(S.more) + '</button>';
@@ -107,11 +160,26 @@
             var n = state.items.filter(function(x) {
                 return String(x.id) === row.getAttribute('data-id');
             })[0];
+            if (n && !n.read && e.target.closest('[data-nt-read]')) {
+                e.preventDefault();
+                e.stopPropagation();
+                call('core_message_mark_notification_read', {notificationid: n.id, timeread: Math.floor(Date.now() / 1000)})
+                    .then(function() {
+                        n.read = true;
+                        render();
+                    });
+                return;
+            }
             if (n && !n.read) {
                 e.preventDefault();
                 call('core_message_mark_notification_read', {notificationid: n.id, timeread: Math.floor(Date.now() / 1000)})
                     .finally(function() {
-                        window.location.href = row.getAttribute('href');
+                        if (row.getAttribute('href')) {
+                            window.location.href = row.getAttribute('href');
+                        } else {
+                            n.read = true;
+                            render();
+                        }
                     });
             }
         });

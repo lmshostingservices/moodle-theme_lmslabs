@@ -152,8 +152,7 @@ function theme_lmslabs_accent(): string {
  * @return string
  */
 function theme_lmslabs_accent_css(?string $hex = null): string {
-    $tenant = \theme_lmslabs\local\tenants::current();
-    $hex = $hex ?? (($tenant && theme_lmslabs_clean_hex($tenant->color)) ? theme_lmslabs_clean_hex($tenant->color) : theme_lmslabs_accent());
+    $hex = $hex ?? theme_lmslabs_accent();
     $r = hexdec(substr($hex, 1, 2));
     $g = hexdec(substr($hex, 3, 2));
     $b = hexdec(substr($hex, 5, 2));
@@ -240,10 +239,6 @@ function theme_lmslabs_branch_at_least(int $branch): bool {
  */
 function theme_lmslabs_logo_url(int $size = 96): ?string {
     global $OUTPUT, $PAGE;
-    $tenant = \theme_lmslabs\local\tenants::current();
-    if ($tenant && ($tlogo = \theme_lmslabs\local\tenants::logo_url($tenant))) {
-        return $tlogo;
-    }
     $theme = theme_config::load('lmslabs');
     if (!empty($theme->settings->logo)) {
         $url = theme_lmslabs_absolute_url($theme->setting_file_url('logo', 'logo'));
@@ -286,17 +281,6 @@ function theme_lmslabs_contact(): ?array {
  * @return bool
  */
 function theme_lmslabs_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
-    if ($context->contextlevel == CONTEXT_SYSTEM && $filearea === 'tenantlogo' && count($args) >= 2) {
-        // Tenant logos are public: they show on the sign-in page too.
-        $file = get_file_storage()->get_file(
-            $context->id, 'theme_lmslabs', 'tenantlogo', (int)array_shift($args), '/',
-            array_pop($args)
-        );
-        if (!$file) {
-            return false;
-        }
-        send_stored_file($file, 86400, 0, false, $options);
-    }
     if ($context->contextlevel == CONTEXT_SYSTEM && ($filearea === 'logo' || $filearea === 'loginimage')) {
         $theme = theme_config::load('lmslabs');
         if (!array_key_exists('cacheability', $options)) {

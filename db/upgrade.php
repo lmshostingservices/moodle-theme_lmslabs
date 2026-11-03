@@ -174,5 +174,17 @@ function xmldb_theme_lmslabs_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2026110400, 'theme', 'lmslabs');
     }
+    if ($oldversion < 2026110600) {
+        // Tenants and branding moved to the LMS Labs Cohort branding plugin.
+        global $DB;
+        $dbman = $DB->get_manager();
+        $table = new xmldb_table('theme_lmslabs_tenant');
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+        $fs = get_file_storage();
+        $fs->delete_area_files(context_system::instance()->id, 'theme_lmslabs', 'tenantlogo');
+        upgrade_plugin_savepoint(true, 2026110600, 'theme', 'lmslabs');
+    }
     return true;
 }

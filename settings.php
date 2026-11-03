@@ -210,6 +210,12 @@ if ($ADMIN->fulltree) {
     );
     $setting->set_updatedcallback('theme_reset_all_caches');
     $hosting->add($setting);
+    $hosting->add(
+        new admin_setting_configcheckbox(
+            'theme_lmslabs/showaddons', get_string('showaddons', 'theme_lmslabs'),
+            get_string('showaddons_desc', 'theme_lmslabs'), 1
+        )
+    );
     $setting = new admin_setting_configcheckbox(
         'theme_lmslabs/useaiformat', get_string('useaiformat', 'theme_lmslabs'),
         get_string('useaiformat_desc', 'theme_lmslabs'), 1
