@@ -30,6 +30,7 @@ require_login(null, false);
 if (isguestuser()) {
     throw new require_login_exception('Guests have no notifications');
 }
+require_capability('moodle/user:editownprofile', context_system::instance());
 $url = new moodle_url('/theme/lmslabs/notifications.php');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);

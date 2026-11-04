@@ -259,6 +259,13 @@
                 h = el;
             }
         });
+        if (!h) {
+            document.querySelectorAll('#region-main > h2, #region-main > div > h2, #region-main > h3').forEach(function(el) {
+                if (!h && el.offsetParent && !el.closest('.modal, .card, .ll-hero')) {
+                    h = el;
+                }
+            });
+        }
         if (!h || h.hasAttribute('data-ll-tip-done')) {
             return;
         }

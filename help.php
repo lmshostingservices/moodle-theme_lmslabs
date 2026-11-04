@@ -34,6 +34,7 @@ if (isguestuser()) {
 }
 
 $context = context_system::instance();
+require_capability('moodle/user:editownprofile', $context);
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/theme/lmslabs/help.php'));
 $PAGE->set_pagelayout('admin');

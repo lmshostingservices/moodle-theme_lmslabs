@@ -2,6 +2,22 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.29] - 2026-11-04
+
+### Fixed
+- Beacon Reports, Help centre, Members, My badges and Notifications now check the right permission at the top of the page, so the release checks no longer warn.
+
+## [v1.5.28] - 2026-11-04
+
+### Added
+- Remedial learning (local_aiquizremedial) fits the theme: trainers get Remedial learning and learners get My revision in the Workplace training menu, its pages open full width with no course index, and every filter, button and page heading has a tip.
+- A page heading with the course name for Remedial learning insights opened inside a course.
+
+## [v1.5.27] - 2026-11-04
+
+### Changed
+- Help centre screenshots retaken to show the Workplace training menu, field tips and the full-width plugin pages. The help chapter is renamed Workplace training to match the video.
+
 ## [v1.5.26] - 2026-11-04
 
 ### Added

@@ -48,7 +48,7 @@ if (!$hasblocks) {
 $toolpath = $PAGE->url->get_path(false);
 $plugintool = (bool) preg_match(
     '~/(?:local/(?:groupmanager|courseavailabilitydelay|recertify|completionsuspend|emailstudents|trainingmatrix|' .
-    'trainingpathways|student_export|mediaoptimiser|cohortbranding)|enrol/prerequisite)/~',
+    'trainingpathways|student_export|mediaoptimiser|cohortbranding|aiquizremedial)|enrol/prerequisite)/~',
     $toolpath
 );
 $courseindex = (strpos($toolpath, '/theme/lmslabs/') !== false || $plugintool) ? '' : core_course_drawer();
@@ -251,7 +251,9 @@ $PAGE->requires->js(new moodle_url('/theme/lmslabs/javascript/tips.js'));
 $templatecontext = [
     'classicback' => $classicback,
     'pagehero' => \theme_lmslabs\local\pagehero::for_page($PAGE),
-    'ourtitle' => $ourpage && $incourse ? ['title' => $PAGE->heading,
+    'ourtitle' => ($ourpage || strpos($toolpath, '/local/aiquizremedial/insights.php') !== false) && $incourse ? [
+        'title' => strpos($toolpath, '/local/aiquizremedial/') !== false
+            ? get_string('reporttitle', 'local_aiquizremedial') : $PAGE->heading,
         'sub' => format_string($course->fullname, true, ['context' => context_course::instance($course->id)])] : null,
     'today' => $PAGE->pagetype === 'my-index' ? \theme_lmslabs\local\today::export() : null,
     'adminmenu' => $adminmenu ? ['groups' => $adminmenu] : null,

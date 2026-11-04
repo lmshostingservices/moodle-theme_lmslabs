@@ -15772,3 +15772,8 @@ body.ll-app .ll-main .trainingmatrix-container .tm-header {
     font-size: 12px;
     vertical-align: middle;
 }
+
+// Remedial learning pages opened for a course start with a little air under the top bar.
+.path-local-aiquizremedial #region-main {
+    padding-top: 14px;
+}

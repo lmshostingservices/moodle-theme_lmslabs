@@ -37,6 +37,7 @@ if (core_component::get_component_directory('local_beacon')) {
 }
 
 $context = context_system::instance();
+require_capability('moodle/site:viewreports', $context);
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/theme/lmslabs/beacon.php', ['view' => $view]));
 $PAGE->set_pagelayout('report');

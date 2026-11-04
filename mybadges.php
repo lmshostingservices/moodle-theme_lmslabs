@@ -34,6 +34,7 @@ if (empty($CFG->enablebadges)) {
 if (isguestuser()) {
     throw new require_login_exception('Guests have no badges');
 }
+require_capability('moodle/badges:viewbadges', context_system::instance());
 $url = new moodle_url('/theme/lmslabs/mybadges.php');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);

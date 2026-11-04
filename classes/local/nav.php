@@ -74,6 +74,8 @@ class nav {
             'local/trainingmatrix:view', '/local/trainingmatrix/index.php', []],
         'trainingpathways' => ['local_trainingpathways', 'training', 'ad_trainingpathways', 'route',
             'local/trainingpathways:view', '/local/trainingpathways/manage.php', []],
+        'remedial' => ['local_aiquizremedial', 'training', 'ad_remedial', 'life-buoy', 'local/aiquizremedial:viewown',
+            '/local/aiquizremedial/index.php', []],
         'studentexport' => ['local_student_export', 'training', 'ad_studentexport', 'download', 'local/student_export:view',
             '/local/student_export/index.php', []],
         'mediaoptimiser' => ['local_mediaoptimiser', 'admintools', 'ad_mediaoptimiser', 'image',
@@ -384,6 +386,15 @@ class nav {
                 if (!has_any_capability(['local/trainingmatrix:viewall', 'local/trainingmatrix:manage'], context_system::instance())) {
                     [$path, $label] = ['/local/trainingmatrix/my.php', self::str('ad_mytraining')];
                 }
+            } else if ($key === 'remedial') {
+                // Trainers see the report for their courses; learners see their own revision modules.
+                $isstaff = has_capability('local/aiquizremedial:viewall', context_system::instance())
+                    || (bool) get_user_capability_course('local/aiquizremedial:viewall', null, true, '', '', 1);
+                if ($isstaff) {
+                    [$path, $label] = ['/local/aiquizremedial/insights.php', self::str('ad_remedialstaff')];
+                } else {
+                    $label = self::str('ad_myrevision');
+                }
             } else if ($key === 'trainingpathways') {
                 $sys = context_system::instance();
                 if (has_capability('local/trainingpathways:manage', $sys)) {
@@ -393,6 +404,13 @@ class nav {
                 } else {
                     [$path, $label] = ['/local/trainingpathways/view.php', self::str('ad_mypathways')];
                 }
+            }
+            if ($key === 'remedial') {
+                // Learners hold the capability in their courses, not site-wide.
+                $held = has_capability($cap, context_system::instance())
+                    || (bool) get_user_capability_course($cap, null, true, '', '', 1);
+                $out[] = $held ? $this->item('addon_' . $key, $label, $path, $params, $icon) : null;
+                continue;
             }
             $out[] = $this->item('addon_' . $key, $label, $path, $params, $icon, $cap);
         }

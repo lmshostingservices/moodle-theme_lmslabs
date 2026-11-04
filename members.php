@@ -33,6 +33,7 @@ if ($type === 'group') {
     $group = $DB->get_record('groups', ['id' => $id], '*', MUST_EXIST);
     $course = get_course($group->courseid);
     require_login($course);
+    require_capability('moodle/course:managegroups', context_course::instance($course->id));
     $PAGE->set_url(new moodle_url('/theme/lmslabs/members.php', ['type' => 'group', 'id' => $id]));
     $PAGE->set_pagelayout('admin');
     $members = new \theme_lmslabs\local\members('group', $id);
@@ -49,6 +50,7 @@ if ($type === 'group') {
     require_login(null, false);
     $cohort = $DB->get_record('cohort', ['id' => $id], '*', MUST_EXIST);
     $context = context::instance_by_id($cohort->contextid);
+    require_capability('moodle/cohort:assign', $context);
     $PAGE->set_context($context);
     $PAGE->set_url(new moodle_url('/theme/lmslabs/members.php', ['type' => 'cohort', 'id' => $id]));
     $PAGE->set_pagelayout('admin');
