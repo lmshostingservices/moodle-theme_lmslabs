@@ -2,6 +2,11 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.31] - 2026-11-04
+
+### Fixed
+- Pages no longer show the same heading twice. When a plugin repeats the page title just under the top bar, the repeat is hidden and the title with its (i) explanation stays.
+
 ## [v1.5.30] - 2026-11-04
 
 ### Changed

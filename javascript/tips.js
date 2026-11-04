@@ -289,6 +289,39 @@
         h.appendChild(i);
     };
 
+    /**
+     * The page title already sits in the top bar, so a plugin's own matching
+     * heading just below it is hidden rather than shown twice.
+     */
+    var dedupeHeading = function() {
+        var top = document.querySelector('#page-header h1, .page-header-headings h1');
+        if (!top || !top.offsetParent) {
+            return;
+        }
+        var norm = function(t) {
+            return t.toLowerCase().replace(/\b(manage|management|the)\b/g, '').replace(/[^a-z0-9]/g, '');
+        };
+        var want = norm(top.textContent);
+        if (want.length < 4) {
+            return;
+        }
+        var seen = 0;
+        document.querySelectorAll('#region-main h1, #region-main h2, #region-main h3, #region-main .tp-page-title, #region-main .gm-title').forEach(function(el) {
+            if (seen >= 3 || el === top || el.hasAttribute('data-ll-dupe') || !el.offsetParent) {
+                return;
+            }
+            if (el.closest('.modal, .card, .ll-hero, table, form')) {
+                return;
+            }
+            seen++;
+            var got = norm(el.textContent);
+            if (got && (got === want || (got.length >= 5 && (got.indexOf(want) > -1 || want.indexOf(got) > -1)))) {
+                el.setAttribute('data-ll-dupe', '1');
+                el.style.display = 'none';
+            }
+        });
+    };
+
     var start = function() {
         body = document.body;
         var cfgEl = document.getElementById('ll-tips-config');
@@ -314,6 +347,7 @@
         decorate(document, map);
         decoratePlugin(document, map);
         decoratePage(map);
+        dedupeHeading();
         // Forms that arrive later (modals, dynamic tabs) get tips too.
         var pending = false;
         new MutationObserver(function() {
@@ -326,6 +360,7 @@
                 decorate(document, map);
                 decoratePlugin(document, map);
                 decoratePage(map);
+                dedupeHeading();
             }, 250);
         }).observe(document.body, {childList: true, subtree: true});
 
