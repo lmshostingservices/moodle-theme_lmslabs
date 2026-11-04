@@ -45,10 +45,10 @@
 
     <aside class="ll-sidebar d-print-none" id="ll-sidebar" aria-label="{{#str}}sitenavigation, theme_lmslabs{{/str}}">
         <div class="ll-brand">
-            <a class="ll-brand-link" href="{{homeurl}}" title="{{sitename}}">
-                {{#logourl}}<img class="ll-logo" src="{{logourl}}" alt="">{{/logourl}}
-                {{^logourl}}<span class="ll-logo ll-logo-initial" aria-hidden="true">{{siteinitial}}</span>{{/logourl}}
-                <span class="ll-brand-name">{{sitename}}</span>
+            <a class="ll-brand-link{{#logourl}} has-logo{{/logourl}}" href="{{homeurl}}" title="{{sitename}}">
+                {{#logourl}}<img class="ll-logo ll-logo-img" src="{{logourl}}" alt="{{sitename}}">{{/logourl}}
+                {{^logourl}}<span class="ll-logo ll-logo-initial" aria-hidden="true">{{siteinitial}}</span>
+                <span class="ll-brand-name">{{sitename}}</span>{{/logourl}}
             </a>
             <button type="button" class="ll-iconbtn ll-collapse-btn" data-ll-action="collapse"
                     title="{{#str}}togglesidebar, theme_lmslabs{{/str}}" aria-label="{{#str}}togglesidebar, theme_lmslabs{{/str}}">

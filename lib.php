@@ -237,7 +237,7 @@ function theme_lmslabs_branch_at_least(int $branch): bool {
  * @param int $size
  * @return string|null
  */
-function theme_lmslabs_logo_url(int $size = 96): ?string {
+function theme_lmslabs_logo_url(int $size = 80): ?string {
     global $OUTPUT, $PAGE;
     $theme = theme_config::load('lmslabs');
     if (!empty($theme->settings->logo)) {
@@ -246,7 +246,8 @@ function theme_lmslabs_logo_url(int $size = 96): ?string {
             return $url;
         }
     }
-    $url = $OUTPUT->get_compact_logo_url($size, $size) ?: $OUTPUT->get_logo_url($size * 3, $size);
+    // Ask for a wide box so a landscape logo keeps its shape (it is shown by height).
+    $url = $OUTPUT->get_compact_logo_url($size * 4, $size) ?: $OUTPUT->get_logo_url($size * 4, $size);
     return $url ? $url->out(false) : null;
 }
 

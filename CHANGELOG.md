@@ -2,6 +2,11 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.30] - 2026-11-04
+
+### Changed
+- When your site has a logo, it stands alone at the top of the menu with no site name beside it, sized by height so wide and square logos both fit. Without a logo, the initial and site name still show.
+
 ## [v1.5.29] - 2026-11-04
 
 ### Fixed
