@@ -4789,6 +4789,17 @@ body.ll-app.ll-formatsync.aicourse-player-on #page-wrapper .ll-body > #theme_boo
         width: 100%;
     }
 }
+// stylelint-disable declaration-no-important
+// A closed index takes no column at all. The format sets the drawer's width by id, which beats the
+// plain closed rule below, so a hidden drawer kept 342px of empty space and the banner and cards
+// stopped short of the right edge. Same id here, so the page fills the full width when it's closed.
+body.ll-app.ll-formatsync #page-wrapper .ll-body > #theme_boost-drawers-courseindex:not(.show) {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    border-right-width: 0;
+}
+// stylelint-enable declaration-no-important
 // Pages other than the course home (grader report, participants...) sit under the format's hero bar:
 // give their heading room to breathe instead of touching the bar.
 body.ll-app.ll-formatsync:not(.path-course-view):not(.path-mod) #page .main-inner {

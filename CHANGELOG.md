@@ -2,6 +2,11 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.32] - 2026-11-04
+
+### Fixed
+- AI course format: when the course index is hidden, the banner and cards now fill the full width instead of leaving a blank column on the left. Reopening the index brings the column back.
+
 ## [v1.5.31] - 2026-11-04
 
 ### Fixed
