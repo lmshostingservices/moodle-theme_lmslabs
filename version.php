@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'theme_lmslabs';
-$plugin->version   = 2026110804;
-$plugin->release   = '1.5.32';
+$plugin->version   = 2026110900;
+$plugin->release   = '1.5.33';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2024100700; // Moodle 4.5.
 $plugin->supported = [405, 503];

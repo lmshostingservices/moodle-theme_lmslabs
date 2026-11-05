@@ -2,6 +2,12 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.33] - 2026-11-05
+
+### Added
+- Report Studio now appears in the left menu under Reports › Beacon Reports, after Charts, and is highlighted while you're on it. It only shows when the installed Beacon includes Report Studio (Beacon 2.14 or later).
+- The "Beacon Reports is not installed" page and the Beacon help guide now mention Report Studio.
+
 ## [v1.5.32] - 2026-11-04
 
 ### Fixed

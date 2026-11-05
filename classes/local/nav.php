@@ -39,6 +39,7 @@ class nav {
         'kpis' => ['beacon_kpis', '/local/beacon/index.php', ['view' => 'kpis'], 'gauge'],
         'reports' => ['beacon_reports', '/local/beacon/index.php', ['view' => 'reports'], 'scroll-text'],
         'charts' => ['beacon_charts', '/local/beacon/charts.php', [], 'chart-pie'],
+        'studio' => ['beacon_studio', '/local/beacon/studio.php', [], 'chart-column'],
     ];
 
     /**
@@ -443,6 +444,7 @@ class nav {
      * @param \context_system $sys
      */
     protected function add_admin_groups($sys): void {
+        global $CFG;
         $this->group(
             'users', get_string('users'), [
             $this->item(
@@ -503,6 +505,10 @@ class nav {
         $caps = ['moodle/site:viewreports', 'theme/lmslabs:managebrand'];
         $children = [];
         foreach (self::BEACON_VIEWS as $view => [$string, $path, $params, $icon]) {
+            // Report Studio arrived in Beacon 2.14; skip it on older installs.
+            if ($installed && $view === 'studio' && !file_exists($CFG->dirroot . '/local/beacon/studio.php')) {
+                continue;
+            }
             // Without Beacon, each link opens a page explaining what's missing.
             [$path, $params] = $installed ? [$path, $params] : ['/theme/lmslabs/beacon.php', ['view' => $view]];
             $children[] = $this->item('beacon' . $view, self::str($string), $path, $params, $icon, $caps);

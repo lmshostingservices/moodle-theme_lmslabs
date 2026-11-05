@@ -59,6 +59,8 @@ $data = [
             'text' => get_string('beacon_reports_desc', 'theme_lmslabs')],
         ['icon' => icons::svg('chart-pie'), 'name' => get_string('beacon_charts', 'theme_lmslabs'),
             'text' => get_string('beacon_charts_desc', 'theme_lmslabs')],
+        ['icon' => icons::svg('chart-column'), 'name' => get_string('beacon_studio', 'theme_lmslabs'),
+            'text' => get_string('beacon_studio_desc', 'theme_lmslabs')],
     ],
 ];
 
