@@ -2,6 +2,12 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.35] - 2026-11-09
+- Include the Course Builder and conditional Course Report entries in the LMS Labs course navigation.
+
+## [v1.5.34] - 2026-11-07
+- Add the AI Course Builder entry and conditional Course Report link to course navigation.
+
 ## [v1.5.33] - 2026-11-05
 
 ### Added

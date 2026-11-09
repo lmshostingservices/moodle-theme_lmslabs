@@ -61,6 +61,8 @@ class nav {
     const ADDONS = [
         'emailstudents' => ['local_emailstudents', 'users', 'ad_emailstudents', 'mail', 'local/emailstudents:sendsite',
             '/local/emailstudents/compose.php', []],
+        'coursebuilder' => ['local_aicoursebuilder', 'courses', 'ad_coursebuilder', 'sparkles',
+            'local/aicoursebuilder:create', '/local/aicoursebuilder/index.php', []],
         'groupmanager' => ['local_groupmanager', 'courses', 'ad_groupmanager', 'users-round', 'local/groupmanager:view',
             '/local/groupmanager/index.php', []],
         'availability' => ['local_courseavailabilitydelay', 'courses', 'ad_availability', 'calendar-clock',
@@ -315,6 +317,13 @@ class nav {
                 'creports', get_string('reports'), '/theme/lmslabs/reports.php', ['id' => $id], 'chart-line',
                 'moodle/site:viewreports', $ctx
             ),
+            \core_component::get_component_directory('block_aiplugin_nav')
+                && file_exists($CFG->dirroot . '/blocks/aiplugin_nav/course_report.php')
+                ? $this->item(
+                    'coursereport', self::str('coursereport'), '/blocks/aiplugin_nav/course_report.php', ['id' => $id],
+                    'chart-pie', 'moodle/course:manageactivities', $ctx
+                )
+                : null,
             $this->item(
                 'completion', self::str('completion'), '/theme/lmslabs/completion.php', ['id' => $id], 'circle-check-big',
                 'moodle/course:update', $ctx
