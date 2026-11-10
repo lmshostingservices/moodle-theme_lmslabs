@@ -2,6 +2,13 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.36] - 2026-11-10
+
+### Fixed
+- Pages using the Premium SaaS layout no longer fail with "Class theme_lmslabs\\local\\setup not found". The Get started helper class was missing from the v1.5.35 package; it is restored as `classes/local/getstarted.php` (renamed so no theme file ends in setup.php), with the checklist steps, progress and the hide-card preference.
+- The sidebar Get started card can no longer break a page: if its helper is unavailable or a check fails, the card is simply left out.
+- The hide-card preference is now included in privacy exports.
+
 ## [v1.5.35] - 2026-11-09
 - Include the Course Builder and conditional Course Report entries in the LMS Labs course navigation.
 

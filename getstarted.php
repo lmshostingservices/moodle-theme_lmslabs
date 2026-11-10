@@ -24,7 +24,7 @@
 
 require(__DIR__ . '/../../config.php');
 
-use theme_lmslabs\local\setup;
+use theme_lmslabs\local\getstarted;
 use theme_lmslabs\local\icons;
 
 require_login(null, false);
@@ -33,12 +33,12 @@ require_capability('theme/lmslabs:managebrand', context_system::instance());
 // Hide or show the sidebar card.
 if ($hide = optional_param('hide', null, PARAM_INT)) {
     require_sesskey();
-    set_user_preference(setup::PREF_HIDDEN, 1);
+    set_user_preference(getstarted::PREF_HIDDEN, 1);
     redirect(get_local_referer(false) ?: new moodle_url('/my/'));
 }
 if (optional_param('show', 0, PARAM_BOOL)) {
     require_sesskey();
-    unset_user_preference(setup::PREF_HIDDEN);
+    unset_user_preference(getstarted::PREF_HIDDEN);
 }
 
 $PAGE->set_context(context_system::instance());
@@ -47,8 +47,8 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('setup_title', 'theme_lmslabs'));
 $PAGE->set_heading(get_string('setup_title', 'theme_lmslabs'));
 
-$steps = setup::steps();
-$progress = setup::progress($steps);
+$steps = getstarted::steps();
+$progress = getstarted::progress($steps);
 $next = null;
 foreach ($steps as &$step) {
     if (!$step['done'] && !$next) {
@@ -61,7 +61,7 @@ unset($step);
 $data = $progress + [
     'steps' => $steps,
     'dash' => round(150.8 * (1 - $progress['percent'] / 100), 2),
-    'hidden' => (bool)get_user_preferences(setup::PREF_HIDDEN, 0),
+    'hidden' => (bool)get_user_preferences(getstarted::PREF_HIDDEN, 0),
     'showurl' => (new moodle_url('/theme/lmslabs/getstarted.php', ['show' => 1, 'sesskey' => sesskey()]))->out(false),
     'hideurl' => (new moodle_url('/theme/lmslabs/getstarted.php', ['hide' => 1, 'sesskey' => sesskey()]))->out(false),
     'i' => ['check' => icons::svg('check'), 'arrow' => icons::svg('arrow-up-right'), 'sparkles' => icons::svg('sparkles')],

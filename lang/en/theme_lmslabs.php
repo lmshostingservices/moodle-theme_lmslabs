@@ -1039,6 +1039,7 @@ $string['privacy:metadata:pref:adduser'] = 'Choices remembered from the last tim
 $string['privacy:metadata:pref:boostview'] = 'Whether a site admin last used the Boost view.';
 $string['privacy:metadata:pref:reminders'] = 'Whether this person gets calendar reminder emails.';
 $string['privacy:metadata:pref:remsent'] = 'Which events this person has already been reminded about.';
+$string['privacy:metadata:pref:setuphidden'] = 'Whether this person has hidden the Get started card in the sidebar.';
 $string['privacy:metadata:view'] = 'Saved filter views on list pages such as People.';
 $string['privacy:metadata:view:name'] = 'The name given to the view.';
 $string['privacy:metadata:view:page'] = 'The page the view belongs to.';
