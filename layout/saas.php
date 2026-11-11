@@ -199,7 +199,7 @@ if ($canaccent) {
     }
 }
 
-$logourl = theme_lmslabs_logo_url();
+$logourl = theme_lmslabs_user_logo_url();
 $sitename = format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), 'escape' => false]);
 
 $jsconfig = [
@@ -268,8 +268,8 @@ $templatecontext = [
     'contact' => theme_lmslabs_contact(),
     'homeurl' => (new moodle_url('/my/'))->out(false),
     'output' => $OUTPUT,
-    'accentcss' => theme_lmslabs_accent_css(),
-    'fontcss' => theme_lmslabs_font()[1],
+    'accentcss' => theme_lmslabs_user_accent_css(),
+    'fontcss' => theme_lmslabs_user_font_url(),
     'navgroups' => $nav['groups'],
     'jsconfig' => json_encode($jsconfig, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES),
     'sidepreblocks' => $blockshtml,

@@ -2,6 +2,12 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.38] - 2026-11-11
+
+### Fixed
+- Cohort Branding now applies in the Premium SaaS theme. The theme's colours come from `--ll-accent`, its logo from the sidebar brand slot and its font from `--ll-font`, none of which Cohort Branding's Boost selectors reach. The layout now reads the signed-in user's cohort branding and uses its primary colour as the accent (sidebar, buttons, links, focus rings, Bootstrap runtime variables), its logo in the sidebar, and its font. Users without cohort branding still get the site settings.
+- The admin colour picker no longer wipes the font and text-size variables while previewing a colour.
+
 ## [v1.5.37] - 2026-11-11
 
 ### Fixed

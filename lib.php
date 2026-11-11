@@ -151,15 +151,138 @@ function theme_lmslabs_accent(): string {
  * @param string|null $hex
  * @return string
  */
-function theme_lmslabs_accent_css(?string $hex = null): string {
+function theme_lmslabs_accent_css(?string $hex = null, ?string $family = null): string {
     $hex = $hex ?? theme_lmslabs_accent();
     $r = hexdec(substr($hex, 1, 2));
     $g = hexdec(substr($hex, 3, 2));
     $b = hexdec(substr($hex, 5, 2));
-    [$family] = theme_lmslabs_font();
+    $family = $family ?? theme_lmslabs_font()[0];
     $size = theme_lmslabs_font_size();
     return ':root{--ll-accent:' . $hex . ';--ll-accent-rgb:' . "$r,$g,$b" . ';--ll-font:' . $family .
         ';--ll-size:' . $size . 'px;}';
+}
+
+/**
+ * The signed-in user's Cohort Branding (local_cohortbranding), normalised for this theme.
+ *
+ * The theme draws its colours from --ll-accent, its logo from the sidebar brand slot and its font from
+ * --ll-font, so Cohort Branding's Boost selectors cannot reach them. This hands the cohort's values to the
+ * layout instead. Returns null when the plugin is missing, the user has no enabled branding, or nothing usable is set.
+ *
+ * @return array|null ['accent' => ?string, 'secondary' => ?string, 'logo' => ?string, 'family' => ?string,
+ *                     'fonturl' => ?string]
+ */
+function theme_lmslabs_cohort_brand(): ?array {
+    global $USER;
+    static $resolved = [];
+    $userid = (int)($USER->id ?? 0);
+    if (array_key_exists($userid, $resolved)) {
+        return $resolved[$userid];
+    }
+    $resolved[$userid] = null;
+    if (during_initial_install() || !$userid || !isloggedin() || isguestuser() ||
+            !class_exists('\\local_cohortbranding\\manager')) {
+        return null;
+    }
+    $manager = '\\local_cohortbranding\\manager';
+    try {
+        $record = $manager::get_user_branding($userid);
+    } catch (\Throwable $e) {
+        debugging('theme_lmslabs: cohort branding lookup failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        return null;
+    }
+    if (!$record || empty($record->enabled)) {
+        return null;
+    }
+    $accent = theme_lmslabs_clean_hex($record->primarycolor ?? null);
+    $secondary = theme_lmslabs_clean_hex($record->secondarycolor ?? null);
+    $logo = !empty($record->logourl) ? ($manager::validate_url((string)$record->logourl) ?: null) : null;
+    $family = null;
+    $fonturl = null;
+    if (!empty($record->fontfamily)) {
+        $name = trim(preg_replace('/[^A-Za-z0-9 ]/', '', (string)$record->fontfamily));
+        if ($name !== '') {
+            $family = '"' . $name . '", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, ' .
+                '"Helvetica Neue", Arial, sans-serif';
+            if (!empty($record->fonturl)) {
+                $fonturl = $manager::validate_font_url((string)$record->fonturl) ?: null;
+            }
+        }
+    }
+    if (!$accent && !$secondary && !$logo && !$family) {
+        return null;
+    }
+    $resolved[$userid] = [
+        'accent' => $accent,
+        'secondary' => $secondary,
+        'logo' => $logo,
+        'family' => $family,
+        'fonturl' => $fonturl,
+    ];
+    return $resolved[$userid];
+}
+
+/**
+ * Head CSS for the current user: the site accent and font, or the user's cohort brand when they have one.
+ * Bootstrap's compiled $primary is site-wide, so its runtime variables are re-pointed too.
+ *
+ * @return string
+ */
+function theme_lmslabs_user_accent_css(): string {
+    $brand = theme_lmslabs_cohort_brand();
+    if (!$brand) {
+        return theme_lmslabs_accent_css();
+    }
+    $css = theme_lmslabs_accent_css($brand['accent'], $brand['family']);
+    $vars = [];
+    if ($brand['accent']) {
+        $hex = $brand['accent'];
+        $rgb = hexdec(substr($hex, 1, 2)) . ',' . hexdec(substr($hex, 3, 2)) . ',' . hexdec(substr($hex, 5, 2));
+        $vars[] = '--cohort-primary:' . $hex;
+        $vars[] = '--bs-primary:' . $hex;
+        $vars[] = '--bs-primary-rgb:' . $rgb;
+        $vars[] = '--bs-link-color:' . $hex;
+        $vars[] = '--bs-link-color-rgb:' . $rgb;
+        $vars[] = '--primary:' . $hex;
+    }
+    if ($brand['secondary']) {
+        $vars[] = '--cohort-secondary:' . $brand['secondary'];
+    }
+    if ($vars) {
+        $css .= ':root{' . implode(';', $vars) . ';}';
+    }
+    if ($brand['accent']) {
+        // Links compiled from the site $primary.
+        $css .= 'body.ll-app #region-main a:not(.btn):not(.dropdown-item):not(.nav-link){color:var(--ll-accent);}';
+    }
+    return $css;
+}
+
+/**
+ * Google Fonts stylesheet URL for the current user (cohort font first, then the site font).
+ *
+ * @return string|null
+ */
+function theme_lmslabs_user_font_url(): ?string {
+    $brand = theme_lmslabs_cohort_brand();
+    if ($brand && $brand['family']) {
+        return $brand['fonturl'];
+    }
+    return theme_lmslabs_font()[1];
+}
+
+/**
+ * Sidebar logo for the current user (cohort logo first, then the site logo).
+ *
+ * @param int $size
+ * @return string|null
+ */
+function theme_lmslabs_user_logo_url(int $size = 80): ?string {
+    $brand = theme_lmslabs_cohort_brand();
+    if ($brand && $brand['logo']) {
+        return $brand['logo'];
+    }
+    return theme_lmslabs_logo_url($size);
 }
 
 /**

@@ -207,10 +207,9 @@ var start = function() {
         return [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(',');
     };
     var applyAccent = function(hex) {
-        var tag = document.getElementById('ll-accent');
-        if (tag) {
-            tag.textContent = ':root{--ll-accent:' + hex + ';--ll-accent-rgb:' + hexToRgb(hex) + ';}';
-        }
+        // Set the two colour variables only, so the font, size and cohort variables in #ll-accent stay.
+        document.documentElement.style.setProperty('--ll-accent', hex);
+        document.documentElement.style.setProperty('--ll-accent-rgb', hexToRgb(hex));
         var hexLabel = document.querySelector('[data-ll-hex]');
         if (hexLabel) {
             hexLabel.textContent = hex;
