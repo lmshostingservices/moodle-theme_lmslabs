@@ -2,6 +2,16 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.39] - 2026-11-12
+
+### Added
+- Client portal (local_clientportal) now appears in the left menu under Users, opening its Clients page for anyone allowed to manage clients (site admins, Managers and Site Owners). When it is not installed, site admins see it under LMS Labs add-ons with a short explanation.
+
+### Fixed
+- AI Course Builder now shows in the Courses menu for teachers who were given the builder in their own course category, not only for site-wide builders. Before, they could open the builder but had no link to it.
+- The menu now keeps an LMS Labs add-on highlighted on its inner pages too (editing a cohort branding, CSV import, the course builder wizard and plan review, a client's staff and owned enrolments), so you never lose your place.
+- AI Course Builder and Client portal pages get the full-width tool layout, like the other LMS Labs plugins.
+
 ## [v1.5.38] - 2026-11-11
 
 ### Fixed

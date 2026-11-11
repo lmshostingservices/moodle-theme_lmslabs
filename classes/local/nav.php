@@ -61,6 +61,8 @@ class nav {
     const ADDONS = [
         'emailstudents' => ['local_emailstudents', 'users', 'ad_emailstudents', 'mail', 'local/emailstudents:sendsite',
             '/local/emailstudents/compose.php', []],
+        'clientportal' => ['local_clientportal', 'users', 'ad_clientportal', 'building-2',
+            'local/clientportal:manageclients', '/local/clientportal/admin/clients.php', []],
         'coursebuilder' => ['local_aicoursebuilder', 'courses', 'ad_coursebuilder', 'sparkles',
             'local/aicoursebuilder:create', '/local/aicoursebuilder/index.php', []],
         'groupmanager' => ['local_groupmanager', 'courses', 'ad_groupmanager', 'users-round', 'local/groupmanager:view',
@@ -415,6 +417,15 @@ class nav {
                     [$path, $label] = ['/local/trainingpathways/view.php', self::str('ad_mypathways')];
                 }
             }
+            if ($key === 'coursebuilder') {
+                // Teachers given the builder in their own category can use it too, not just site-wide builders.
+                $ui = '\\local_aicoursebuilder\\local\\ui';
+                $held = class_exists($ui) ? $ui::can_build()
+                    : (has_capability($cap, context_system::instance())
+                        || (bool)\core_course_category::make_categories_list($cap));
+                $out[] = $held ? $this->item('addon_' . $key, $label, $path, $params, $icon) : null;
+                continue;
+            }
             if ($key === 'remedial') {
                 // Learners hold the capability in their courses, not site-wide.
                 $held = has_capability($cap, context_system::instance())
@@ -615,6 +626,21 @@ class nav {
             if ($score > $bestscore) {
                 $best = $pos;
                 $bestscore = $score;
+            }
+        }
+        // Inside an LMS Labs add-on (editing a branding, a client's staff, a course-builder plan...), keep that
+        // add-on's menu item active: its inner pages need a record id, so they are never menu links themselves.
+        if (!$best) {
+            foreach ($candidates as [$pos, $item]) {
+                if (strpos($item['key'], 'addon_') !== 0) {
+                    continue;
+                }
+                $parts = explode('/', trim($item['path'], '/'));
+                $root = '/' . $parts[0] . '/' . ($parts[1] ?? '') . '/';
+                if (count($parts) > 1 && strpos($pagepath, $root) !== false) {
+                    $best = $pos;
+                    break;
+                }
             }
         }
         if ($best) {

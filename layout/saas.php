@@ -48,7 +48,8 @@ if (!$hasblocks) {
 $toolpath = $PAGE->url->get_path(false);
 $plugintool = (bool) preg_match(
     '~/(?:local/(?:groupmanager|courseavailabilitydelay|recertify|completionsuspend|emailstudents|trainingmatrix|' .
-    'trainingpathways|student_export|mediaoptimiser|cohortbranding|aiquizremedial)|enrol/prerequisite)/~',
+    'trainingpathways|student_export|mediaoptimiser|cohortbranding|aiquizremedial|aicoursebuilder|clientportal)|' .
+    'enrol/prerequisite)/~',
     $toolpath
 );
 $courseindex = (strpos($toolpath, '/theme/lmslabs/') !== false || $plugintool) ? '' : core_course_drawer();
