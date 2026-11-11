@@ -75,6 +75,10 @@ if ($immersive) {
 if ($formatsync) {
     $extraclasses[] = 'll-formatsync';
 }
+// LMS Labs plugin tool pages print plain Moodle tables; this class lets the theme give them the full width and a card edge.
+if ($plugintool) {
+    $extraclasses[] = 'll-plugintool';
+}
 $bodyattributes = $OUTPUT->body_attributes($extraclasses);
 
 // Secondary (tab) navigation and the tertiary selector, rendered with whichever core template this version ships.

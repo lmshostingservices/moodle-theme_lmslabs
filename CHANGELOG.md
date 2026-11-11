@@ -2,6 +2,12 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.37] - 2026-11-11
+
+### Fixed
+- LMS Labs plugin tool pages (Cohort branding, Training matrix, Recertification and the rest) now give plain Moodle tables the full content width and the theme's soft card edge, so a table no longer stops part-way across the page or loses its bottom and right borders.
+- Icon-only buttons (such as the back arrow on the cohort members screen, program move/edit buttons and people paging) no longer get a "?" tip icon squashed inside them; they show their tip on hover.
+
 ## [v1.5.36] - 2026-11-10
 
 ### Fixed

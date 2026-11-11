@@ -115,7 +115,9 @@
         // 1. Theme pages: labels carrying data-ll-tip get an (i); controls show the tip themselves.
         root.querySelectorAll('[data-ll-tip]:not([data-ll-tip-done])').forEach(function(el) {
             el.setAttribute('data-ll-tip-done', '1');
-            if (el.classList.contains('ll-tipi') || el.hasAttribute('data-ll-tip-self')) {
+            // Icon-only buttons show the tip on hover; a (?) inside them would squash the icon.
+            if (el.classList.contains('ll-tipi') || el.classList.contains('ll-iconbtn') ||
+                    el.hasAttribute('data-ll-tip-self')) {
                 return;
             }
             var text = el.getAttribute('data-ll-tip');

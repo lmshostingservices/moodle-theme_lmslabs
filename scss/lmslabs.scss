@@ -15808,3 +15808,37 @@ body.ll-app .ll-main .trainingmatrix-container .tm-header {
 .path-local-aiquizremedial #region-main {
     padding-top: 14px;
 }
+
+
+// LMS Labs plugin tool pages (Cohort branding, Training matrix, Recertification...): plain Moodle tables
+// use the full content width and sit in the same soft card as the theme's own tables, so they never
+// stop part-way across the page or lose their bottom and right edges.
+.ll-plugintool #region-main {
+    .table-responsive:has(> .generaltable) {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 0 0 1px var(--ll-line);
+        overflow-x: auto;
+        margin-bottom: 16px;
+    }
+    .table-responsive > .generaltable,
+    .local-cohortbranding-card > .table-responsive > .generaltable,
+    .generaltable.w-100 {
+        width: 100%;
+        margin-bottom: 0;
+    }
+    // A plugin that already draws its own card keeps just one edge.
+    .local-cohortbranding-card {
+        border: 0 !important;
+        border-radius: 12px;
+        box-shadow: 0 0 0 1px var(--ll-line);
+        .table-responsive {
+            box-shadow: none;
+            margin-bottom: 0;
+        }
+    }
+    .generaltable td.text-nowrap,
+    .generaltable td:last-child .btn {
+        white-space: nowrap;
+    }
+}
