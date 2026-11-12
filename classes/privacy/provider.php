@@ -39,7 +39,7 @@ class provider implements
 
     /** Preferences the theme stores. */
     const PREFS = ['theme_lmslabs_adduser', 'theme_lmslabs_addcourse', 'theme_lmslabs_reminders', 'theme_lmslabs_remsent',
-        'theme_lmslabs_boostview', 'theme_lmslabs_setuphidden'];
+        'theme_lmslabs_boostview', 'theme_lmslabs_setuphidden', 'theme_lmslabs_shortcuts'];
 
     /**
      * Describe the data.

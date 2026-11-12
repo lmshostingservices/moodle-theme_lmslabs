@@ -2,6 +2,13 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.40] - 2026-11-12
+
+### Added
+- Personal shortcuts in the top bar, beside the Dashboard, My courses and Site admin icons. Admins, teachers and students each pin up to 8 pages with the + button: choose the page, choose an icon and set the tooltip shown on hover. Reorder, edit or remove them from the same panel; changes save instantly.
+- Shortcuts are role aware. The page list offers exactly what that person already has in their own menus (sidebar, site admin menu and avatar menu), and every shortcut is rebuilt from those menus on each page, so it only shows where the person can open it. Course tools (Grades, Participants, Grading and so on) are pinned from inside a course and then appear in every course where the person can use them, and step aside in Student view.
+- Shortcuts are stored as a user preference (`theme_lmslabs_shortcuts`) and included in the privacy export.
+
 ## [v1.5.39] - 2026-11-12
 
 ### Added

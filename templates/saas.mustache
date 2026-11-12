@@ -149,6 +149,16 @@
                     </div>
                 </div>
                 {{/adminmenu}}
+                <div class="ll-sc" data-ll-sc>
+                    <div class="ll-sc-bar" data-ll-sc-bar>
+                        {{#shortcutbar}}
+                        <a class="ll-iconbtn ll-sc-link{{#active}} is-active{{/active}}" href="{{url}}" aria-label="{{tip}}" data-sc-tip="{{tip}}"{{#active}} aria-current="page"{{/active}}>{{{icon}}}</a>
+                        {{/shortcutbar}}
+                    </div>
+                    <button type="button" class="ll-iconbtn ll-sc-add" data-ll-sc-toggle aria-haspopup="dialog" aria-expanded="false"
+                            aria-label="{{#str}}sc_button, theme_lmslabs{{/str}}" data-sc-tip="{{#str}}sc_button, theme_lmslabs{{/str}}">{{{i.plus}}}</button>
+                    <div class="ll-popover ll-sc-pop" role="dialog" aria-label="{{#str}}sc_title, theme_lmslabs{{/str}}" hidden data-ll-sc-pop></div>
+                </div>
             </nav>
             {{/isloggedin}}
             <div class="ll-crumbs">{{{breadcrumb}}}</div>

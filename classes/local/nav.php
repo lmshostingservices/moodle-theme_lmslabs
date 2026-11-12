@@ -148,6 +148,7 @@ class nav {
             'path' => $path,
             'params' => $params,
             'icon' => icons::svg($icon),
+            'iconname' => $icon,
             'active' => false,
             'haschildren' => false,
             'children' => [],
@@ -261,6 +262,81 @@ class nav {
             'url' => (new moodle_url('/theme/lmslabs/help.php'))->out(false),
             'icon' => icons::svg('life-buoy'),
         ]]];
+        return $out;
+    }
+
+    /**
+     * Every page this person can open from the menus, flat, for the top bar shortcut picker.
+     *
+     * The same role-aware items as the sidebar, the site admin menu and the avatar menu. Course tools are included
+     * only when the page is inside a course; they are marked with scope 'c' and show in every course where the
+     * person can use them.
+     *
+     * @return array key => ['key', 'name', 'group', 'url', 'icon', 'scope']
+     */
+    public function catalogue(): array {
+        global $CFG;
+        $this->groups = [];
+        $this->missing = [];
+        if (!isloggedin() || isguestuser()) {
+            return [];
+        }
+        $this->group(
+            'main', self::str('sc_g_main'), [
+            $this->item('dashboard', get_string('myhome'), '/my/', [], 'layout-dashboard'),
+            $this->item('mycourses', get_string('mycourses'), '/theme/lmslabs/courses.php', [], 'book-open'),
+            $this->item('p_calendar', get_string('calendar', 'calendar'), '/theme/lmslabs/calendar.php', [], 'calendar'),
+            $this->item('p_grades', get_string('grades', 'grades'), '/theme/lmslabs/mygrades.php', [], 'chart-column'),
+            !empty($CFG->enablebadges) ? $this->item(
+                'p_badges', self::str('mybadges'), '/theme/lmslabs/mybadges.php', [], 'award'
+            ) : null,
+            !empty($CFG->messaging) ? $this->item(
+                'p_messages', get_string('messages', 'message'), '/theme/lmslabs/messages.php', [], 'message-square'
+            ) : null,
+            $this->item(
+                'p_notifications', get_string('notifications', 'message'), '/theme/lmslabs/notifications.php', [], 'bell'
+            ),
+            $this->item('p_profile', get_string('profile'), '/theme/lmslabs/profile.php', [], 'user-round'),
+            $this->item('p_preferences', get_string('preferences'), '/theme/lmslabs/prefs.php', [], 'settings'),
+        ]
+        );
+        $course = $this->page->course;
+        if ($course && $course->id != SITEID) {
+            $this->add_course_groups($course);
+        }
+        $this->add_admin_groups(context_system::instance());
+        $this->group(
+            'help', self::str('help'), [
+            $this->item('helpcentre', self::str('helpcentre'), '/theme/lmslabs/help.php', [], 'life-buoy'),
+        ]
+        );
+
+        $out = [];
+        foreach ($this->groups as $group) {
+            // Add-ons the site does not have are adverts, not destinations.
+            if ($group['key'] === 'addons') {
+                continue;
+            }
+            $incourse = in_array($group['key'], ['course', 'coursereuse'], true);
+            foreach ($group['items'] as $item) {
+                $list = $item['haschildren'] ? $item['children'] : [$item];
+                foreach ($list as $it) {
+                    if (isset($out[$it['key']])) {
+                        continue;
+                    }
+                    $out[$it['key']] = [
+                        'key' => $it['key'],
+                        'name' => $item['haschildren'] ? $item['name'] . ': ' . $it['name'] : $it['name'],
+                        'group' => $incourse ? self::str('sc_g_course') : (string)($group['label'] ?? ''),
+                        'url' => $it['url'],
+                        'icon' => $it['iconname'] ?? 'link',
+                        'scope' => $incourse ? 'c' : 's',
+                    ];
+                }
+            }
+        }
+        $this->groups = [];
+        $this->missing = [];
         return $out;
     }
 

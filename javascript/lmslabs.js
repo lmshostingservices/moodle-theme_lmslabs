@@ -827,6 +827,339 @@ var start = function() {
         });
     }
 
+    // ---------- Top bar shortcuts ----------
+    // Each person pins pages from their own role-aware menus, with an icon and tooltip of their choice.
+    var sc = document.querySelector('[data-ll-sc]');
+    if (sc && cfg.shortcuts) {
+        var scBtn = sc.querySelector('[data-ll-sc-toggle]');
+        var scPop = sc.querySelector('[data-ll-sc-pop]');
+        var scBar = sc.querySelector('[data-ll-sc-bar]');
+        var scData = null;
+        var scForm = null;
+        var scBusy = false;
+
+        var scPost = function(action, list) {
+            var fd = new FormData();
+            fd.append('sesskey', cfg.sesskey);
+            fd.append('action', action);
+            fd.append('courseid', cfg.shortcuts.courseid || 0);
+            (list || []).forEach(function(s, n) {
+                fd.append('k[' + n + ']', s.k);
+                fd.append('i[' + n + ']', s.i);
+                fd.append('t[' + n + ']', s.t || '');
+            });
+            return fetch(cfg.shortcuts.url, {method: 'POST', body: fd, credentials: 'same-origin'})
+                .then(function(r) {
+                    return r.json();
+                })
+                .then(function(res) {
+                    if (!res || !res.ok) {
+                        throw new Error('fail');
+                    }
+                    return res;
+                });
+        };
+
+        var scIcon = function(name) {
+            return (scData && scData.icons[name]) || (scData && scData.icons.link) || '';
+        };
+
+        var scItem = function(key) {
+            for (var n = 0; n < scData.items.length; n++) {
+                if (scData.items[n].k === key) {
+                    return scData.items[n];
+                }
+            }
+            return null;
+        };
+
+        var scRenderBar = function(bar) {
+            var here = window.location.href.split('#')[0];
+            scBar.innerHTML = bar.map(function(b) {
+                var active = b.url === here;
+                return '<a class="ll-iconbtn ll-sc-link' + (active ? ' is-active' : '') + '" href="' + escapeHtml(b.url) +
+                    '" aria-label="' + escapeHtml(b.tip) + '" data-sc-tip="' + escapeHtml(b.tip) + '"' +
+                    (active ? ' aria-current="page"' : '') + '>' + b.icon + '</a>';
+            }).join('');
+        };
+
+        var scSave = function(list) {
+            if (scBusy) {
+                return;
+            }
+            scBusy = true;
+            scPost('save', list)
+                .then(function(res) {
+                    scData.saved = res.saved;
+                    scRenderBar(res.bar);
+                    toast(res.message || str('sc_saved'));
+                    scForm = null;
+                    scRender();
+                })
+                .catch(function() {
+                    toast(str('sc_failed'), true);
+                })
+                .then(function() {
+                    scBusy = false;
+                });
+        };
+
+        var scHead = function(title, sub) {
+            return '<div class="ll-pop-head ll-sc-head"><div><div class="ll-pop-title">' + escapeHtml(title) + '</div>' +
+                (sub ? '<div class="ll-pop-sub">' + escapeHtml(sub) + '</div>' : '') + '</div>' +
+                '<button type="button" class="ll-iconbtn ll-sc-x" data-sc="close" aria-label="' +
+                escapeHtml(str('sc_close')) + '">' + scData.ui.x + '</button></div>';
+        };
+
+        var scRenderList = function() {
+            var saved = scData.saved;
+            var html = scHead(str('sc_title'), str('sc_help', saved.length + ' / ' + scData.max));
+            if (!saved.length) {
+                html += '<p class="ll-sc-empty">' + escapeHtml(str('sc_empty')) + '</p>';
+            } else {
+                html += '<ul class="ll-sc-list">' + saved.map(function(s, n) {
+                    var note = '';
+                    if (s.c && !s.here) {
+                        note = str('sc_incourse_hint');
+                    } else if (!s.here) {
+                        note = str('sc_unavailable');
+                    }
+                    return '<li class="ll-sc-row' + (s.here ? '' : ' is-away') + '">' +
+                        '<span class="ll-sc-ico">' + scIcon(s.i) + '</span>' +
+                        '<span class="ll-sc-name"><strong>' + escapeHtml(s.t) + '</strong>' +
+                        (s.c ? '<em class="ll-sc-tag">' + escapeHtml(str('sc_incourse')) + '</em>' : '') +
+                        (note ? '<small>' + escapeHtml(note) + '</small>' : '') + '</span>' +
+                        '<span class="ll-sc-acts">' +
+                        '<button type="button" class="ll-sc-act" data-sc="up" data-n="' + n + '"' + (n === 0 ? ' disabled' : '') +
+                        ' aria-label="' + escapeHtml(str('sc_up')) + '" title="' + escapeHtml(str('sc_up')) + '">&larr;</button>' +
+                        '<button type="button" class="ll-sc-act" data-sc="down" data-n="' + n + '"' +
+                        (n === saved.length - 1 ? ' disabled' : '') + ' aria-label="' + escapeHtml(str('sc_down')) +
+                        '" title="' + escapeHtml(str('sc_down')) + '">&rarr;</button>' +
+                        '<button type="button" class="ll-sc-act" data-sc="edit" data-n="' + n + '"' +
+                        (s.here ? '' : ' disabled') + '>' + escapeHtml(str('sc_edit')) + '</button>' +
+                        '<button type="button" class="ll-sc-act is-danger" data-sc="remove" data-n="' + n + '">' +
+                        escapeHtml(str('sc_remove')) + '</button>' +
+                        '</span></li>';
+                }).join('') + '</ul>';
+            }
+            if (saved.length >= scData.max) {
+                html += '<p class="ll-sc-note">' + escapeHtml(str('sc_full', scData.max)) + '</p>';
+            } else {
+                html += '<button type="button" class="ll-sc-addbtn" data-sc="new">' + scData.ui.plus + '<span>' +
+                    escapeHtml(str('sc_add')) + '</span></button>';
+            }
+            scPop.innerHTML = html;
+        };
+
+        var scRenderPicks = function() {
+            var box = scPop.querySelector('[data-sc-picks]');
+            if (!box) {
+                return;
+            }
+            var q = scForm.q.toLowerCase();
+            var html = '';
+            var group = null;
+            var count = 0;
+            scData.items.forEach(function(it) {
+                if (q && (it.n + ' ' + it.g).toLowerCase().indexOf(q) === -1) {
+                    return;
+                }
+                if (it.g !== group) {
+                    group = it.g;
+                    html += '<div class="ll-sc-pickgroup">' + escapeHtml(group) + '</div>';
+                }
+                count++;
+                var on = it.k === scForm.k;
+                html += '<button type="button" class="ll-sc-pick' + (on ? ' is-on' : '') + '" data-sc="pick" data-k="' +
+                    escapeHtml(it.k) + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + it.s +
+                    '<span>' + escapeHtml(it.n) + '</span></button>';
+            });
+            box.innerHTML = count ? html : '<p class="ll-sc-empty">' + escapeHtml(str('sc_nomatch')) + '</p>';
+        };
+
+        var scRenderForm = function() {
+            var html = scHead(scForm.n < 0 ? str('sc_add') : str('sc_edit'), '');
+            html += '<div class="ll-sc-field"><label class="ll-sc-label" for="ll-sc-q">' + escapeHtml(str('sc_linkto')) + '</label>' +
+                '<input type="search" id="ll-sc-q" class="ll-sc-input" data-sc-q autocomplete="off" placeholder="' +
+                escapeHtml(str('sc_search')) + '" value="' + escapeHtml(scForm.q) + '">' +
+                '<div class="ll-sc-picks" data-sc-picks role="group"></div>' +
+                (scData.incourse ? '' : '<p class="ll-sc-note">' + escapeHtml(str('sc_opencourse')) + '</p>') + '</div>';
+            html += '<div class="ll-sc-field"><div class="ll-sc-label">' + escapeHtml(str('sc_icon')) + '</div>' +
+                '<div class="ll-sc-icons" role="radiogroup" aria-label="' + escapeHtml(str('sc_icon')) + '">' +
+                Object.keys(scData.icons).map(function(name) {
+                    var on = name === scForm.i;
+                    return '<button type="button" class="ll-sc-iconopt' + (on ? ' is-on' : '') + '" data-sc="icon" data-i="' +
+                        name + '" role="radio" aria-checked="' + (on ? 'true' : 'false') + '" aria-label="' + name + '">' +
+                        scData.icons[name] + '</button>';
+                }).join('') + '</div></div>';
+            html += '<div class="ll-sc-field"><label class="ll-sc-label" for="ll-sc-t">' + escapeHtml(str('sc_tooltip')) + '</label>' +
+                '<div class="ll-sc-tiprow"><span class="ll-sc-preview" data-sc-preview>' + scIcon(scForm.i) + '</span>' +
+                '<input type="text" id="ll-sc-t" class="ll-sc-input" data-sc-t maxlength="' + scData.tipmax + '" value="' +
+                escapeHtml(scForm.t) + '"></div><small class="ll-sc-hint">' + escapeHtml(str('sc_tooltip_help')) + '</small></div>';
+            html += '<div class="ll-sc-foot"><button type="button" class="btn btn-secondary" data-sc="back">' +
+                escapeHtml(str('sc_back')) + '</button><button type="button" class="btn btn-primary" data-sc="save">' +
+                escapeHtml(str('sc_save')) + '</button></div>';
+            scPop.innerHTML = html;
+            scRenderPicks();
+        };
+
+        // Update the open form in place, so the page list keeps its scroll position.
+        var scSync = function() {
+            scPop.querySelectorAll('.ll-sc-pick').forEach(function(o) {
+                var on = o.getAttribute('data-k') === scForm.k;
+                o.classList.toggle('is-on', on);
+                o.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            scPop.querySelectorAll('.ll-sc-iconopt').forEach(function(o) {
+                var on = o.getAttribute('data-i') === scForm.i;
+                o.classList.toggle('is-on', on);
+                o.setAttribute('aria-checked', on ? 'true' : 'false');
+            });
+            var pv = scPop.querySelector('[data-sc-preview]');
+            if (pv) {
+                pv.innerHTML = scIcon(scForm.i);
+            }
+            var t = scPop.querySelector('[data-sc-t]');
+            if (t && t.value !== scForm.t) {
+                t.value = scForm.t;
+            }
+        };
+
+        var scRender = function() {
+            if (scForm) {
+                scRenderForm();
+            } else {
+                scRenderList();
+            }
+        };
+
+        var scOpen = function(open) {
+            scPop.hidden = !open;
+            scBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (!open) {
+                scForm = null;
+                return;
+            }
+            if (scData) {
+                scRender();
+                return;
+            }
+            scPop.innerHTML = '<p class="ll-sc-empty">' + escapeHtml(str('sc_loading')) + '</p>';
+            scPost('load')
+                .then(function(res) {
+                    scData = res;
+                    scRender();
+                })
+                .catch(function() {
+                    scPop.innerHTML = '<p class="ll-sc-empty">' + escapeHtml(str('sc_failed')) + '</p>';
+                });
+        };
+
+        scBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            scOpen(scPop.hidden);
+        });
+        document.addEventListener('click', function(e) {
+            // Re-rendering replaces the clicked node, so a detached target was inside the popover.
+            if (!scPop.hidden && document.contains(e.target) && !sc.contains(e.target)) {
+                scOpen(false);
+            }
+        });
+        sc.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !scPop.hidden) {
+                scOpen(false);
+                scBtn.focus();
+            }
+        });
+        scPop.addEventListener('input', function(e) {
+            if (!scForm) {
+                return;
+            }
+            if (e.target.hasAttribute('data-sc-q')) {
+                scForm.q = e.target.value;
+                scRenderPicks();
+            } else if (e.target.hasAttribute('data-sc-t')) {
+                scForm.t = e.target.value;
+                scForm.tipset = true;
+            }
+        });
+        scPop.addEventListener('click', function(e) {
+            var b = e.target.closest('[data-sc]');
+            if (!b || b.disabled) {
+                return;
+            }
+            var act = b.getAttribute('data-sc');
+            var n = parseInt(b.getAttribute('data-n'), 10);
+            var list = scData ? scData.saved.slice() : [];
+            if (act === 'close') {
+                scOpen(false);
+                scBtn.focus();
+            } else if (act === 'up' || act === 'down') {
+                var to = act === 'up' ? n - 1 : n + 1;
+                var moved = list.splice(n, 1)[0];
+                list.splice(to, 0, moved);
+                scSave(list);
+            } else if (act === 'remove') {
+                list.splice(n, 1);
+                scSave(list);
+            } else if (act === 'new') {
+                scForm = {n: -1, k: '', i: 'link', t: '', q: '', iconset: false, tipset: false};
+                scRender();
+                var q = scPop.querySelector('[data-sc-q]');
+                if (q) {
+                    q.focus();
+                }
+            } else if (act === 'edit') {
+                var s = list[n];
+                scForm = {n: n, k: s.k, i: s.i, t: s.t, q: '', iconset: true, tipset: true};
+                scRender();
+            } else if (act === 'back') {
+                scForm = null;
+                scRender();
+            } else if (act === 'pick') {
+                var it = scItem(b.getAttribute('data-k'));
+                if (!it) {
+                    return;
+                }
+                scForm.k = it.k;
+                if (!scForm.iconset) {
+                    scForm.i = scData.icons[it.i] ? it.i : 'link';
+                }
+                if (!scForm.tipset) {
+                    scForm.t = it.n;
+                }
+                scSync();
+            } else if (act === 'icon') {
+                scForm.i = b.getAttribute('data-i');
+                scForm.iconset = true;
+                scSync();
+            } else if (act === 'save') {
+                if (!scForm.k) {
+                    toast(str('sc_pick'), true);
+                    return;
+                }
+                var entry = {k: scForm.k, i: scForm.i, t: (scForm.t || '').trim()};
+                var dupe = -1;
+                list.forEach(function(x, idx) {
+                    if (x.k === entry.k) {
+                        dupe = idx;
+                    }
+                });
+                if (scForm.n >= 0) {
+                    list[scForm.n] = entry;
+                    if (dupe >= 0 && dupe !== scForm.n) {
+                        list.splice(dupe, 1);
+                    }
+                } else if (dupe >= 0) {
+                    list[dupe] = entry;
+                } else {
+                    list.push(entry);
+                }
+                scSave(list);
+            }
+        });
+    }
+
     // Messages: the top bar icon and every "Message" button open the full-page inbox instead of Moodle's drawer.
     document.addEventListener('click', function(e) {
         var t = e.target.closest ? e.target.closest('[id^="message-drawer-toggle"], #message-user-button, ' +

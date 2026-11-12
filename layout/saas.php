@@ -154,6 +154,9 @@ if ($courseindex && !$formatsync) {
     }
 }
 
+// Personal shortcut icons in the top bar, rebuilt from the role-aware menus on every page.
+$shortcutbar = isloggedin() && !isguestuser() ? \theme_lmslabs\local\shortcuts::bar($PAGE) : [];
+
 // Top bar actions.
 $studentview = null;
 if ($incourse && isloggedin() && !isguestuser()) {
@@ -212,6 +215,10 @@ $jsconfig = [
     'courseSearch' => (new moodle_url('/course/search.php'))->out(false),
     'settingsSearch' => is_siteadmin() ? (new moodle_url('/admin/search.php'))->out(false) : '',
     'searchAjax' => (new moodle_url('/theme/lmslabs/ajax/search.php'))->out(false),
+    'shortcuts' => isloggedin() && !isguestuser() ? [
+        'url' => (new moodle_url('/theme/lmslabs/ajax/shortcuts.php'))->out(false),
+        'courseid' => $incourse ? (int)$course->id : 0,
+    ] : null,
     'course' => ($PAGE->course && $PAGE->course->id != SITEID && isloggedin() && !isguestuser())
         ? ['id' => (int)$PAGE->course->id, 'name' => format_string(
             $PAGE->course->shortname, true,
@@ -232,6 +239,32 @@ $jsconfig = [
         'drop_choose' => get_string('drop_choose', 'theme_lmslabs'),
         'drop_or' => get_string('drop_or', 'theme_lmslabs'),
         'drop_more' => get_string('drop_more', 'theme_lmslabs'),
+        'sc_title' => get_string('sc_title', 'theme_lmslabs'),
+        'sc_help' => get_string('sc_help', 'theme_lmslabs'),
+        'sc_empty' => get_string('sc_empty', 'theme_lmslabs'),
+        'sc_add' => get_string('sc_add', 'theme_lmslabs'),
+        'sc_linkto' => get_string('sc_linkto', 'theme_lmslabs'),
+        'sc_search' => get_string('sc_search', 'theme_lmslabs'),
+        'sc_icon' => get_string('sc_icon', 'theme_lmslabs'),
+        'sc_tooltip' => get_string('sc_tooltip', 'theme_lmslabs'),
+        'sc_tooltip_help' => get_string('sc_tooltip_help', 'theme_lmslabs'),
+        'sc_save' => get_string('sc_save', 'theme_lmslabs'),
+        'sc_back' => get_string('sc_back', 'theme_lmslabs'),
+        'sc_edit' => get_string('sc_edit', 'theme_lmslabs'),
+        'sc_remove' => get_string('sc_remove', 'theme_lmslabs'),
+        'sc_up' => get_string('sc_up', 'theme_lmslabs'),
+        'sc_down' => get_string('sc_down', 'theme_lmslabs'),
+        'sc_saved' => get_string('sc_saved', 'theme_lmslabs'),
+        'sc_failed' => get_string('sc_failed', 'theme_lmslabs'),
+        'sc_loading' => get_string('sc_loading', 'theme_lmslabs'),
+        'sc_full' => get_string('sc_full', 'theme_lmslabs'),
+        'sc_incourse' => get_string('sc_incourse', 'theme_lmslabs'),
+        'sc_incourse_hint' => get_string('sc_incourse_hint', 'theme_lmslabs'),
+        'sc_unavailable' => get_string('sc_unavailable', 'theme_lmslabs'),
+        'sc_opencourse' => get_string('sc_opencourse', 'theme_lmslabs'),
+        'sc_nomatch' => get_string('sc_nomatch', 'theme_lmslabs'),
+        'sc_pick' => get_string('sc_pick', 'theme_lmslabs'),
+        'sc_close' => get_string('sc_close', 'theme_lmslabs'),
     ],
 ];
 
@@ -262,6 +295,7 @@ $templatecontext = [
         'sub' => format_string($course->fullname, true, ['context' => context_course::instance($course->id)])] : null,
     'today' => $PAGE->pagetype === 'my-index' ? \theme_lmslabs\local\today::export() : null,
     'adminmenu' => $adminmenu ? ['groups' => $adminmenu] : null,
+    'shortcutbar' => $shortcutbar,
     'tipsconfig' => json_encode($tips, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES),
     'sitename' => $sitename,
     'siteinitial' => core_text::strtoupper(core_text::substr($sitename, 0, 1)),
@@ -331,6 +365,7 @@ $templatecontext = [
         'arrow' => icons::svg('arrow-up-right'),
         'folder' => icons::svg('folder-open'),
         'back' => icons::svg('arrow-left'),
+        'plus' => icons::svg('plus'),
     ],
 ];
 
