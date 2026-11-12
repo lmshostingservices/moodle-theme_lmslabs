@@ -33,6 +33,14 @@ $capabilities = [
         'archetypes' => [],
     ],
 
+    // Set the default top bar shortcuts for all teachers and all students.
+    'theme/lmslabs:manageshortcuts' => [
+        'riskbitmask' => RISK_CONFIG,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => ['manager' => CAP_ALLOW],
+    ],
+
     // Arrange My courses: order, headings, visibility and unlock rules.
     'theme/lmslabs:manageprograms' => [
         'riskbitmask' => RISK_CONFIG,

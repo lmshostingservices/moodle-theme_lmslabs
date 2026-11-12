@@ -46,14 +46,25 @@ if (isguestuser()) {
     throw new require_login_exception('Guests cannot have shortcuts');
 }
 
-if ($action === 'save') {
-    $keys = optional_param_array('k', [], PARAM_ALPHANUMEXT);
-    $icons = optional_param_array('i', [], PARAM_ALPHANUMEXT);
-    $tips = optional_param_array('t', [], PARAM_TEXT);
-    shortcuts::save($keys, $icons, $tips, (new nav($PAGE))->catalogue());
+if ($action === 'save' || $action === 'reset') {
+    $target = optional_param('target', 'me', PARAM_ALPHA);
+    if (!in_array($target, ['me', 'teacher', 'student'], true)) {
+        $target = 'me';
+    }
+    if ($target !== 'me') {
+        require_capability('theme/lmslabs:manageshortcuts', context_system::instance());
+    }
+    if ($action === 'reset') {
+        shortcuts::reset();
+    } else {
+        $keys = optional_param_array('k', [], PARAM_ALPHANUMEXT);
+        $icons = optional_param_array('i', [], PARAM_ALPHANUMEXT);
+        $tips = optional_param_array('t', [], PARAM_TEXT);
+        shortcuts::save($keys, $icons, $tips, (new nav($PAGE))->catalogue(), $target);
+    }
     $data = shortcuts::picker($PAGE);
-    echo json_encode(['ok' => true, 'saved' => $data['saved'], 'bar' => $data['bar'],
-        'message' => get_string('sc_saved', 'theme_lmslabs')]);
+    $message = $action === 'reset' ? 'sc_resetdone' : ($target === 'me' ? 'sc_saved' : 'sc_defaultsaved_' . $target);
+    echo json_encode(['ok' => true, 'message' => get_string($message, 'theme_lmslabs')] + $data);
 } else {
     echo json_encode(['ok' => true] + shortcuts::picker($PAGE));
 }

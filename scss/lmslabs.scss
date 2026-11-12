@@ -16176,3 +16176,56 @@ body.ll-app .ll-main .trainingmatrix-container .tm-header {
     padding: 12px 16px;
     border-top: 1px solid var(--ll-line);
 }
+
+// Shortcuts panel: Mine / Teachers / Students tabs for Site Owners, the default banner and reset.
+.ll-sc-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--ll-line);
+}
+.ll-sc-tab {
+    flex: 1;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ll-muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover {
+        background: var(--ll-hover);
+        color: var(--ll-ink);
+    }
+    &.is-on {
+        color: var(--ll-accent);
+        background: rgba(var(--ll-accent-rgb), .07);
+        box-shadow: inset 0 0 0 1px rgba(var(--ll-accent-rgb), .45);
+    }
+}
+.ll-sc-pop > .ll-sc-banner {
+    margin: 10px 12px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--ll-ink);
+    background: rgba(var(--ll-accent-rgb), .05);
+    box-shadow: inset 0 0 0 1px rgba(var(--ll-accent-rgb), .25);
+}
+.ll-sc-pop > .ll-sc-pad {
+    padding: 10px 16px 0;
+}
+.ll-sc-reset {
+    display: block;
+    margin: -4px auto 12px;
+    padding: 4px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--ll-muted);
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+        color: var(--ll-accent);
+    }
+}

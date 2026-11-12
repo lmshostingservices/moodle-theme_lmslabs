@@ -2,12 +2,25 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.41] - 2026-11-13
+
+### Added
+- Popular admin tasks at the top of the shortcut picker: Add a new user, All users, Upload users, Bulk user actions, Add a cohort, Cohorts, Courses and categories, Add a course, Upload courses, Restore a course, Programs, Install plugins, Site notifications, Theme settings and Purge caches. As with every shortcut, each person only sees the tasks their role can open.
+- Default shortcuts for teachers and students. Site Owners (and site admins) get Mine / Teachers / Students tabs in the shortcuts panel and set one default set for all teachers and one for all students. Anyone who has not made their own set sees their group's default, with a note saying so. Changing anything makes the set their own, and "Reset to the default shortcuts" goes back. New capability `theme/lmslabs:manageshortcuts`, given to Site Owners and Managers by default.
+
+### Changed
+- Shortcuts a person cannot open on the current page are now hidden in the shortcuts panel too, not just in the top bar (no more "not available" rows). They stay saved and come back wherever the person can use them.
+
 ## [v1.5.40] - 2026-11-12
 
 ### Added
 - Personal shortcuts in the top bar, beside the Dashboard, My courses and Site admin icons. Admins, teachers and students each pin up to 8 pages with the + button: choose the page, choose an icon and set the tooltip shown on hover. Reorder, edit or remove them from the same panel; changes save instantly.
 - Shortcuts are role aware. The page list offers exactly what that person already has in their own menus (sidebar, site admin menu and avatar menu), and every shortcut is rebuilt from those menus on each page, so it only shows where the person can open it. Course tools (Grades, Participants, Grading and so on) are pinned from inside a course and then appear in every course where the person can use them, and step aside in Student view.
 - Shortcuts are stored as a user preference (`theme_lmslabs_shortcuts`) and included in the privacy export.
+
+### Fixed
+- Escape now closes the shortcuts panel after a save too (the panel redraws, which used to move keyboard focus out of it). Focus stays in the panel after each save.
+- Inside a course, a pinned course tool the person cannot use there (for example Marking in Student view) now says "Not available to you here" instead of "Shows inside your courses".
 
 ## [v1.5.39] - 2026-11-12
 

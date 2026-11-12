@@ -837,12 +837,30 @@ var start = function() {
         var scData = null;
         var scForm = null;
         var scBusy = false;
+        // Which set is being edited: the person's own, or (Site Owners) the teacher or student default.
+        var scTarget = 'me';
+
+        // The full list being edited, and the positions shown: a person's own panel hides shortcuts
+        // they cannot open on this page (they come back wherever they can use them).
+        var scFull = function() {
+            return (scTarget === 'me' ? scData.saved : scData.defaults[scTarget]) || [];
+        };
+        var scShown = function() {
+            var out = [];
+            scFull().forEach(function(s, n) {
+                if (scTarget !== 'me' || s.here) {
+                    out.push(n);
+                }
+            });
+            return out;
+        };
 
         var scPost = function(action, list) {
             var fd = new FormData();
             fd.append('sesskey', cfg.sesskey);
             fd.append('action', action);
             fd.append('courseid', cfg.shortcuts.courseid || 0);
+            fd.append('target', scTarget);
             (list || []).forEach(function(s, n) {
                 fd.append('k[' + n + ']', s.k);
                 fd.append('i[' + n + ']', s.i);
@@ -883,18 +901,23 @@ var start = function() {
             }).join('');
         };
 
-        var scSave = function(list) {
+        var scSave = function(list, action) {
             if (scBusy) {
                 return;
             }
             scBusy = true;
-            scPost('save', list)
+            scPost(action || 'save', list)
                 .then(function(res) {
-                    scData.saved = res.saved;
+                    scData = res;
                     scRenderBar(res.bar);
                     toast(res.message || str('sc_saved'));
                     scForm = null;
                     scRender();
+                    // Keep keyboard focus in the panel after it is redrawn.
+                    var next = scPop.querySelector('.ll-sc-addbtn') || scPop.querySelector('[data-sc="close"]');
+                    if (next) {
+                        next.focus();
+                    }
                 })
                 .catch(function() {
                     toast(str('sc_failed'), true);
@@ -912,41 +935,51 @@ var start = function() {
         };
 
         var scRenderList = function() {
-            var saved = scData.saved;
-            var html = scHead(str('sc_title'), str('sc_help', saved.length + ' / ' + scData.max));
-            if (!saved.length) {
-                html += '<p class="ll-sc-empty">' + escapeHtml(str('sc_empty')) + '</p>';
+            var full = scFull();
+            var shown = scShown();
+            var subs = {me: str('sc_help', full.length + ' / ' + scData.max), teacher: str('sc_def_teacher_help'),
+                student: str('sc_def_student_help')};
+            var html = scHead(str('sc_title'), subs[scTarget]);
+            if (scData.canmanage) {
+                html += '<div class="ll-sc-tabs" role="tablist">' + ['me', 'teacher', 'student'].map(function(k) {
+                    return '<button type="button" role="tab" class="ll-sc-tab' + (k === scTarget ? ' is-on' : '') +
+                        '" data-sc="tab" data-t="' + k + '" aria-selected="' + (k === scTarget ? 'true' : 'false') + '">' +
+                        escapeHtml(str('sc_tab_' + k)) + '</button>';
+                }).join('') + '</div>';
+            }
+            if (scTarget === 'me' && scData.usingdefault) {
+                html += '<p class="ll-sc-note ll-sc-banner">' + escapeHtml(str('sc_usingdefault')) + '</p>';
+            }
+            if (!shown.length) {
+                html += '<p class="ll-sc-empty">' + escapeHtml(str(scTarget === 'me' ? 'sc_empty' : 'sc_def_empty')) + '</p>';
             } else {
-                html += '<ul class="ll-sc-list">' + saved.map(function(s, n) {
-                    var note = '';
-                    if (s.c && !s.here) {
-                        note = str('sc_incourse_hint');
-                    } else if (!s.here) {
-                        note = str('sc_unavailable');
-                    }
-                    return '<li class="ll-sc-row' + (s.here ? '' : ' is-away') + '">' +
+                html += '<ul class="ll-sc-list">' + shown.map(function(n, pos) {
+                    var s = full[n];
+                    return '<li class="ll-sc-row">' +
                         '<span class="ll-sc-ico">' + scIcon(s.i) + '</span>' +
                         '<span class="ll-sc-name"><strong>' + escapeHtml(s.t) + '</strong>' +
-                        (s.c ? '<em class="ll-sc-tag">' + escapeHtml(str('sc_incourse')) + '</em>' : '') +
-                        (note ? '<small>' + escapeHtml(note) + '</small>' : '') + '</span>' +
+                        (s.c ? '<em class="ll-sc-tag">' + escapeHtml(str('sc_incourse')) + '</em>' : '') + '</span>' +
                         '<span class="ll-sc-acts">' +
-                        '<button type="button" class="ll-sc-act" data-sc="up" data-n="' + n + '"' + (n === 0 ? ' disabled' : '') +
+                        '<button type="button" class="ll-sc-act" data-sc="up" data-n="' + n + '"' + (pos === 0 ? ' disabled' : '') +
                         ' aria-label="' + escapeHtml(str('sc_up')) + '" title="' + escapeHtml(str('sc_up')) + '">&larr;</button>' +
                         '<button type="button" class="ll-sc-act" data-sc="down" data-n="' + n + '"' +
-                        (n === saved.length - 1 ? ' disabled' : '') + ' aria-label="' + escapeHtml(str('sc_down')) +
+                        (pos === shown.length - 1 ? ' disabled' : '') + ' aria-label="' + escapeHtml(str('sc_down')) +
                         '" title="' + escapeHtml(str('sc_down')) + '">&rarr;</button>' +
                         '<button type="button" class="ll-sc-act" data-sc="edit" data-n="' + n + '"' +
-                        (s.here ? '' : ' disabled') + '>' + escapeHtml(str('sc_edit')) + '</button>' +
+                        (scTarget !== 'me' || s.here ? '' : ' disabled') + '>' + escapeHtml(str('sc_edit')) + '</button>' +
                         '<button type="button" class="ll-sc-act is-danger" data-sc="remove" data-n="' + n + '">' +
                         escapeHtml(str('sc_remove')) + '</button>' +
                         '</span></li>';
                 }).join('') + '</ul>';
             }
-            if (saved.length >= scData.max) {
-                html += '<p class="ll-sc-note">' + escapeHtml(str('sc_full', scData.max)) + '</p>';
+            if (full.length >= scData.max) {
+                html += '<p class="ll-sc-note ll-sc-pad">' + escapeHtml(str('sc_full', scData.max)) + '</p>';
             } else {
                 html += '<button type="button" class="ll-sc-addbtn" data-sc="new">' + scData.ui.plus + '<span>' +
                     escapeHtml(str('sc_add')) + '</span></button>';
+            }
+            if (scTarget === 'me' && scData.ownset && scData.hasdefault) {
+                html += '<button type="button" class="ll-sc-reset" data-sc="reset">' + escapeHtml(str('sc_reset')) + '</button>';
             }
             scPop.innerHTML = html;
         };
@@ -983,7 +1016,8 @@ var start = function() {
                 '<input type="search" id="ll-sc-q" class="ll-sc-input" data-sc-q autocomplete="off" placeholder="' +
                 escapeHtml(str('sc_search')) + '" value="' + escapeHtml(scForm.q) + '">' +
                 '<div class="ll-sc-picks" data-sc-picks role="group"></div>' +
-                (scData.incourse ? '' : '<p class="ll-sc-note">' + escapeHtml(str('sc_opencourse')) + '</p>') + '</div>';
+                (scData.incourse ? '' : '<p class="ll-sc-note">' + escapeHtml(str('sc_opencourse')) + '</p>') +
+                (scTarget === 'me' ? '' : '<p class="ll-sc-note">' + escapeHtml(str('sc_def_hint')) + '</p>') + '</div>';
             html += '<div class="ll-sc-field"><div class="ll-sc-label">' + escapeHtml(str('sc_icon')) + '</div>' +
                 '<div class="ll-sc-icons" role="radiogroup" aria-label="' + escapeHtml(str('sc_icon')) + '">' +
                 Object.keys(scData.icons).map(function(name) {
@@ -1038,6 +1072,7 @@ var start = function() {
             scBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
             if (!open) {
                 scForm = null;
+                scTarget = 'me';
                 return;
             }
             if (scData) {
@@ -1065,7 +1100,8 @@ var start = function() {
                 scOpen(false);
             }
         });
-        sc.addEventListener('keydown', function(e) {
+        // On the document: after a save redraws the panel, focus is no longer inside it.
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && !scPop.hidden) {
                 scOpen(false);
                 scBtn.focus();
@@ -1090,14 +1126,27 @@ var start = function() {
             }
             var act = b.getAttribute('data-sc');
             var n = parseInt(b.getAttribute('data-n'), 10);
-            var list = scData ? scData.saved.slice() : [];
+            var list = scData ? scFull().slice() : [];
             if (act === 'close') {
                 scOpen(false);
                 scBtn.focus();
+            } else if (act === 'tab') {
+                scTarget = b.getAttribute('data-t');
+                scForm = null;
+                scRender();
+            } else if (act === 'reset') {
+                scSave([], 'reset');
             } else if (act === 'up' || act === 'down') {
-                var to = act === 'up' ? n - 1 : n + 1;
-                var moved = list.splice(n, 1)[0];
-                list.splice(to, 0, moved);
+                // Swap with the neighbour that is shown, so hidden shortcuts keep their place.
+                var shown = scShown();
+                var pos = shown.indexOf(n);
+                var other = shown[act === 'up' ? pos - 1 : pos + 1];
+                if (other === undefined) {
+                    return;
+                }
+                var tmp = list[n];
+                list[n] = list[other];
+                list[other] = tmp;
                 scSave(list);
             } else if (act === 'remove') {
                 list.splice(n, 1);

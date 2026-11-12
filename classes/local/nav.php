@@ -89,6 +89,10 @@ class nav {
             'local/cohortbranding:manage', '/local/cohortbranding/index.php', []],
     ];
 
+    /** Everyday admin tasks shown first in the shortcut picker, in this order, for whoever can open them. */
+    const POPULAR = ['adduser', 'users', 'uploadusers', 'bulkusers', 'addcohort', 'cohorts', 'managecourses', 'addcourse',
+        'uploadcourses', 'restoresite', 'programs', 'installaddon', 'adminnotifs', 'themesettings', 'purge'];
+
     /** @var array add-ons that are not installed, collected while the menu is built */
     protected $missing = [];
 
@@ -311,7 +315,7 @@ class nav {
         ]
         );
 
-        $out = [];
+        $flat = [];
         foreach ($this->groups as $group) {
             // Add-ons the site does not have are adverts, not destinations.
             if ($group['key'] === 'addons') {
@@ -321,10 +325,10 @@ class nav {
             foreach ($group['items'] as $item) {
                 $list = $item['haschildren'] ? $item['children'] : [$item];
                 foreach ($list as $it) {
-                    if (isset($out[$it['key']])) {
+                    if (isset($flat[$it['key']])) {
                         continue;
                     }
-                    $out[$it['key']] = [
+                    $flat[$it['key']] = [
                         'key' => $it['key'],
                         'name' => $item['haschildren'] ? $item['name'] . ': ' . $it['name'] : $it['name'],
                         'group' => $incourse ? self::str('sc_g_course') : (string)($group['label'] ?? ''),
@@ -337,7 +341,30 @@ class nav {
         }
         $this->groups = [];
         $this->missing = [];
-        return $out;
+
+        // Popular admin tasks come first, for whoever can open them.
+        $sys = context_system::instance();
+        $extra = [
+            'addcohort' => $this->item('addcohort', self::str('sc_addcohort'), '/cohort/edit.php', ['contextid' => $sys->id],
+                'contact-round', 'moodle/cohort:manage'),
+            'installaddon' => self::exists('/admin/tool/installaddon/index.php') ? $this->item('installaddon',
+                self::str('sc_installplugins'), '/admin/tool/installaddon/index.php', [], 'puzzle', 'moodle/site:config') : null,
+            'adminnotifs' => $this->item('adminnotifs', self::str('sc_adminnotifs'), '/admin/index.php', [], 'bell',
+                'moodle/site:config'),
+        ];
+        $out = [];
+        foreach (self::POPULAR as $key) {
+            $it = $flat[$key] ?? null;
+            if (!$it && !empty($extra[$key])) {
+                $e = $extra[$key];
+                $it = ['key' => $e['key'], 'name' => $e['name'], 'url' => $e['url'], 'icon' => $e['iconname'], 'scope' => 's'];
+            }
+            if ($it) {
+                $it['group'] = self::str('sc_g_popular');
+                $out[$key] = $it;
+            }
+        }
+        return $out + $flat;
     }
 
     /**

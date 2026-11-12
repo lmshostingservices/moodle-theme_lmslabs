@@ -31,6 +31,7 @@ class siteowner {
     const EXTRA = [
         'theme/lmslabs:managebrand',
         'theme/lmslabs:manageprograms',
+        'theme/lmslabs:manageshortcuts',
         'moodle/site:approvecourse',
     ];
 

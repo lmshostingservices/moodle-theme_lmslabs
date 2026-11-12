@@ -51,14 +51,12 @@ class shortcuts {
         'shield-check', 'key-round', 'lock-keyhole', 'server', 'globe', 'life-buoy', 'link'];
 
     /**
-     * The saved shortcuts, cleaned.
+     * Clean a stored list.
      *
-     * @param int|null $userid
+     * @param string|null $raw JSON
      * @return array list of ['k' => key, 'i' => icon, 't' => tooltip, 'c' => 1 for a course tool]
      */
-    public static function saved(?int $userid = null): array {
-        global $USER;
-        $raw = get_user_preferences(self::PREF, '', $userid ?? $USER->id);
+    protected static function clean(?string $raw): array {
         $list = $raw ? json_decode($raw, true) : [];
         $out = [];
         foreach (is_array($list) ? $list : [] as $s) {
@@ -79,6 +77,69 @@ class shortcuts {
     }
 
     /**
+     * The person's own shortcuts, or null when they have never made their own set.
+     *
+     * @param int|null $userid
+     * @return array|null
+     */
+    public static function own(?int $userid = null): ?array {
+        global $USER;
+        $raw = get_user_preferences(self::PREF, null, $userid ?? $USER->id);
+        return $raw === null ? null : self::clean($raw);
+    }
+
+    /**
+     * The default set a Site Owner made for teachers or students.
+     *
+     * @param string $who teacher or student
+     * @return array
+     */
+    public static function defaults(string $who): array {
+        return self::clean(get_config('theme_lmslabs', 'shortcuts_' . ($who === 'teacher' ? 'teacher' : 'student')) ?: null);
+    }
+
+    /**
+     * Which default set applies to the signed-in person: teachers (anyone who can edit a course) or students.
+     *
+     * @return string teacher or student
+     */
+    public static function audience(): string {
+        static $cache = null;
+        if ($cache === null) {
+            $teacher = has_capability('moodle/course:update', \context_system::instance())
+                || (bool)get_user_capability_course('moodle/course:manageactivities', null, false, '', '', 1);
+            $cache = $teacher ? 'teacher' : 'student';
+        }
+        return $cache;
+    }
+
+    /**
+     * The shortcuts in use: the person's own set, or their role's default when they have not made one.
+     *
+     * @return array
+     */
+    public static function saved(): array {
+        $own = self::own();
+        return $own ?? self::defaults(self::audience());
+    }
+
+    /**
+     * May this person set the defaults for teachers and students?
+     *
+     * @return bool
+     */
+    public static function can_manage(): bool {
+        return has_capability('theme/lmslabs:manageshortcuts', \context_system::instance());
+    }
+
+    /**
+     * Go back to the role default.
+     */
+    public static function reset(): void {
+        unset_user_preference(self::PREF);
+    }
+
+    /**
      * Save shortcuts. A new key must be in the person's own menus on the page they saved from; shortcuts already
      * pinned that they cannot open on this page are kept as they were.
      *
@@ -86,11 +147,12 @@ class shortcuts {
      * @param array $icons
      * @param array $tips
      * @param array $catalogue from nav::catalogue() for the page the person is on
+     * @param string $target me, teacher or student (the last two set a default and need the manage capability)
      * @return array the saved list
      */
-    public static function save(array $keys, array $icons, array $tips, array $catalogue): array {
+    public static function save(array $keys, array $icons, array $tips, array $catalogue, string $target = 'me'): array {
         $previous = [];
-        foreach (self::saved() as $s) {
+        foreach ($target === 'me' ? self::saved() : self::defaults($target) as $s) {
             $previous[$s['k']] = $s;
         }
         $out = [];
@@ -124,7 +186,13 @@ class shortcuts {
                 break;
             }
         }
-        set_user_preference(self::PREF, $out ? json_encode($out, JSON_UNESCAPED_UNICODE) : null);
+        $json = json_encode($out, JSON_UNESCAPED_UNICODE);
+        if ($target === 'me') {
+            // An empty list is kept too: it means "no shortcuts", not "use the default".
+            set_user_preference(self::PREF, $json);
+        } else {
+            set_config('shortcuts_' . $target, $out ? $json : '', 'theme_lmslabs');
+        }
         return $out;
     }
 
@@ -177,11 +245,15 @@ class shortcuts {
         foreach (self::ICONS as $name) {
             $icons[$name] = icons::svg($name);
         }
-        $saved = [];
-        foreach (self::saved() as $s) {
-            $s['here'] = isset($catalogue[$s['k']]) ? 1 : 0;
-            $saved[] = $s;
-        }
+        $mark = function (array $list) use ($catalogue): array {
+            foreach ($list as $n => $s) {
+                $list[$n]['here'] = isset($catalogue[$s['k']]) ? 1 : 0;
+            }
+            return $list;
+        };
+        $saved = $mark(self::saved());
+        $audience = self::audience();
+        $canmanage = self::can_manage();
         $incourse = $page->course && $page->course->id != SITEID;
         return [
             'items' => $items,
@@ -191,6 +263,11 @@ class shortcuts {
             'tipmax' => self::TIPMAX,
             'incourse' => $incourse ? 1 : 0,
             'ui' => ['x' => icons::svg('x'), 'plus' => icons::svg('plus')],
+            'usingdefault' => self::own() === null && $saved ? 1 : 0,
+            'hasdefault' => self::defaults($audience) ? 1 : 0,
+            'ownset' => self::own() !== null ? 1 : 0,
+            'canmanage' => $canmanage ? 1 : 0,
+            'defaults' => $canmanage ? ['teacher' => $mark(self::defaults('teacher')), 'student' => $mark(self::defaults('student'))] : null,
             'bar' => self::bar($page, $catalogue),
         ];
     }

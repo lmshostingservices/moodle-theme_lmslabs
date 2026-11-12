@@ -186,5 +186,10 @@ function xmldb_theme_lmslabs_upgrade($oldversion) {
         $fs->delete_area_files(context_system::instance()->id, 'theme_lmslabs', 'tenantlogo');
         upgrade_plugin_savepoint(true, 2026110600, 'theme', 'lmslabs');
     }
+    if ($oldversion < 2026111300) {
+        // Site Owners may set the default top bar shortcuts for teachers and students.
+        \theme_lmslabs\local\siteowner::ensure_role();
+        upgrade_plugin_savepoint(true, 2026111300, 'theme', 'lmslabs');
+    }
     return true;
 }
