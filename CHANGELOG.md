@@ -2,6 +2,11 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.42] - 2026-11-13
+
+### Added
+- "Clients report" in the left menu's Reports group when Client Portal 2.0.1 or later is installed. It opens the site owner's report on every client: courses built, trainers, learners, active learners, enrolments, LMS Labs credits used and the amount to invoice. Shown only to people who can manage clients. The Reports group now also appears without Beacon if this report is available.
+
 ## [v1.5.41] - 2026-11-13
 
 ### Added

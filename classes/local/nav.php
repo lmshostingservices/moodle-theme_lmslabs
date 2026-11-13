@@ -637,6 +637,7 @@ class nav {
             $children[] = $this->item('beacon' . $view, self::str($string), $path, $params, $icon, $caps);
         }
         $children = array_values(array_filter($children));
+        $reports = [];
         if ($children) {
             $parent = $this->item(
                 'beacon', self::str('beaconreports'), $children[0]['path'], $children[0]['params'],
@@ -644,7 +645,22 @@ class nav {
             );
             $parent['haschildren'] = true;
             $parent['children'] = $children;
-            $this->group('reports', get_string('reports'), [$parent]);
+            $reports[] = $parent;
+        }
+        // Client portal 2.0.1+: the site owner's report on every client (courses, people, credits to invoice).
+        if (
+            \core_component::get_component_directory('local_clientportal')
+            && file_exists($CFG->dirroot . '/local/clientportal/admin/report.php')
+            && get_capability_info('local/clientportal:manageclients')
+        ) {
+            $reports[] = $this->item(
+                'clientsreport', self::str('clientsreport'), '/local/clientportal/admin/report.php', [],
+                'chart-column', 'local/clientportal:manageclients'
+            );
+        }
+        $reports = array_values(array_filter($reports));
+        if ($reports) {
+            $this->group('reports', get_string('reports'), $reports);
         }
 
         // Admin Tools: LMS Labs tools that are installed, plus purge caches.
