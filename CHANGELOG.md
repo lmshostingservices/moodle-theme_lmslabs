@@ -2,6 +2,11 @@
 
 All notable changes to the Premium SaaS theme (theme_lmslabs) are listed here.
 
+## [v1.5.43] - 2026-11-17
+
+### Added
+- "Course catalogue" in the left menu and the shortcut picker, under My courses, for anyone who belongs to a client when Client Portal 2.1 or later is installed. It lists the courses of the person's organisations and the site's courses open to join.
+
 ## [v1.5.42] - 2026-11-13
 
 ### Added

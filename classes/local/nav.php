@@ -161,6 +161,33 @@ class nav {
     }
 
     /**
+     * Client Portal's course catalogue, for people who belong to a client (Client Portal 2.1 or later).
+     *
+     * @return array|null
+     */
+    protected function client_catalogue_item(): ?array {
+        global $USER;
+        $people = '\\local_clientportal\\people';
+        if (!class_exists($people) || !self::exists('/local/clientportal/catalogue.php')) {
+            return null;
+        }
+        try {
+            if (!$people::client_ids((int)$USER->id)) {
+                return null;
+            }
+        } catch (\Throwable $e) {
+            return null;
+        }
+        return $this->item(
+            'clientcatalogue',
+            get_string('catalogue', 'local_clientportal'),
+            '/local/clientportal/catalogue.php',
+            [],
+            'library'
+        );
+    }
+
+    /**
      * Add a group, dropping empty items.
      *
      * @param string $key
@@ -218,6 +245,7 @@ class nav {
             'main', null, [
             $this->item('dashboard', get_string('myhome'), '/my/', [], 'layout-dashboard'),
             $this->item('mycourses', get_string('mycourses'), '/theme/lmslabs/courses.php', [], 'book-open'),
+            $this->client_catalogue_item(),
         ], false
         );
 
@@ -289,6 +317,7 @@ class nav {
             'main', self::str('sc_g_main'), [
             $this->item('dashboard', get_string('myhome'), '/my/', [], 'layout-dashboard'),
             $this->item('mycourses', get_string('mycourses'), '/theme/lmslabs/courses.php', [], 'book-open'),
+            $this->client_catalogue_item(),
             $this->item('p_calendar', get_string('calendar', 'calendar'), '/theme/lmslabs/calendar.php', [], 'calendar'),
             $this->item('p_grades', get_string('grades', 'grades'), '/theme/lmslabs/mygrades.php', [], 'chart-column'),
             !empty($CFG->enablebadges) ? $this->item(
